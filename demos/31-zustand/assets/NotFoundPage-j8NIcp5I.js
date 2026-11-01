@@ -1,0 +1,1 @@
+import{o as e,r as t,s as n,u as r}from"./index-BPkBygTR.js";var i=e(),a=r();function o(){let e=(0,i.c)(1),r;return e[0]===Symbol.for(`react.memo_cache_sentinel`)?(r=(0,a.jsx)(t,{title:`Page not found`,action:(0,a.jsx)(n,{to:`/`,children:`Back to the shelf`}),children:`There's nothing at this address.`}),e[0]=r):r=e[0],r}export{o as default};

@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Suspense and lazy loading · Snack Shelf</title>
+<meta name="description" content="Let components wait for data and code without loading states of their own. useSuspenseQuery, Suspense boundaries, errors caught by lesson 25's boundary, and pages split into separate files that load on first visit.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head>
+<body class="lesson-page">
+<header class="bar">
+  <a class="wordmark" href="../index.html">Snack Shelf</a>
+  <nav aria-label="Site"><a href="../index.html#lessons">Lessons</a><a href="https://github.com/HaoKiet10/snack-shelf-course">GitHub</a></nav>
+</header>
+<main class="lesson">
+  <div class="lesson-head" data-reveal>
+    <h1>Suspense and lazy loading</h1>
+    <p class="lead">Let components wait for data and code without loading states of their own. useSuspenseQuery, Suspense boundaries, errors caught by lesson 25's boundary, and pages split into separate files that load on first visit.</p>
+    <p class="meta">Lesson 28 of 33, about 22 minutes</p>
+  </div>
+  <aside class="demo" aria-label="Live demo">
+    <div class="demo-sticky">
+      <div class="demo-frame" data-ui>
+        <iframe src="../demos/28-suspense/index.html" title="Live demo for Suspense and lazy loading" loading="lazy"></iframe>
+      </div>
+      <p class="demo-links"><a href="../demos/28-suspense/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a><a href="https://github.com/HaoKiet10/snack-shelf-course/tree/main/code/lessons/28-suspense">Read this lesson's code</a></p>
+    </div>
+  </aside>
+  <article class="prose">
+<p>The pages lost their loading and error checks, and <strong>SnacksStatus</strong> is deleted. Loading and failure are now handled <strong>around</strong> the pages, in one place. And the snack, basket and not-found pages are no longer in the main JavaScript file: each downloads the first time you open it.</p>
+<h2 id="the-problem-with-status-checks-everywhere">The problem with status checks everywhere</h2>
+<p>Since lesson 12, every page started like this:</p>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">const</span> <span class="token punctuation">{</span> snacks<span class="token punctuation">,</span> status <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">useSnacks</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>status <span class="token operator">!==</span> <span class="token string">'ready'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">SnacksStatus</span></span> <span class="token punctuation">/></span></span>
+<span class="token punctuation">}</span></code></pre>
+<p>Every component that needs data must handle &quot;not yet&quot; and &quot;failed&quot; itself, and TypeScript cannot tell that <code>snacks</code> is real only after the check. Ten components, ten copies.</p>
+<h2 id="suspense">Suspense</h2>
+<p><strong>Suspense</strong> moves &quot;not yet&quot; out of the component. A component that needs something not ready yet <strong>suspends</strong>, and React shows the nearest <code>&lt;Suspense&gt;</code> boundary&#39;s fallback instead, until it is ready:</p>
+<pre class="code" data-lang="tsx"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Suspense</span></span> <span class="token attr-name">fallback</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Panel</span></span><span class="token punctuation">></span></span><span class="token plain-text">Loading…</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Panel</span></span><span class="token punctuation">></span></span><span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Outlet</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Suspense</span></span><span class="token punctuation">></span></span></code></pre>
+<p>It is the loading twin of lesson 25&#39;s error boundary:</p>
+<div class="table-wrap"><table><thead><tr><th></th><th>catches</th><th>shows</th></tr></thead><tbody><tr><td><code>&lt;Suspense fallback&gt;</code></td><td>something still loading</td><td>the fallback until it is ready</td></tr>
+<tr><td>error boundary</td><td>something that threw</td><td>the fallback until reset</td></tr></tbody></table></div>
+<p>You do not make a component suspend yourself. Libraries do it: TanStack Query, React Router&#39;s data APIs, <code>lazy</code>, and React 19&#39;s <code>use()</code>.</p>
+<h2 id="usesuspensequery">useSuspenseQuery</h2>
+<pre class="code" data-lang="ts"><code><span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">useSnacks</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> <span class="token punctuation">{</span> data <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">useSuspenseQuery</span><span class="token punctuation">(</span>snacksQuery<span class="token punctuation">)</span>
+  <span class="token keyword">return</span> <span class="token punctuation">{</span> snacks<span class="token operator">:</span> data <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<p><code>useSuspenseQuery</code> <strong>never returns</strong> &quot;loading&quot; or &quot;error&quot;. While loading it suspends; on failure it <strong>throws</strong> the error during rendering, where an error boundary catches it. So when the line returns, <code>data</code> is always there, and its type is <code>Snack[]</code>, not <code>Snack[] | undefined</code>.</p>
+<p>The pages get simpler:</p>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">SnackPage</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> <span class="token punctuation">{</span> id <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">useParams</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">const</span> <span class="token punctuation">{</span> snacks <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">useSnacks</span><span class="token punctuation">(</span><span class="token punctuation">)</span>       <span class="token comment">// loaded, or we wouldn't be here</span>
+  <span class="token keyword">const</span> snack <span class="token operator">=</span> snacks<span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span> <span class="token operator">=></span> s<span class="token punctuation">.</span>id <span class="token operator">===</span> id<span class="token punctuation">)</span>
+  <span class="token comment">// …</span>
+<span class="token punctuation">}</span></code></pre>
+<p>The query is now described once, with TanStack Query&#39;s <code>queryOptions</code> helper:</p>
+<pre class="code" data-lang="ts"><code><span class="token keyword">export</span> <span class="token keyword">const</span> snacksQuery <span class="token operator">=</span> <span class="token function">queryOptions</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  queryKey<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'snacks'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  queryFn<span class="token operator">:</span> loadSnacks<span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span></code></pre>
+<p>and used in several places: <code>useSuspenseQuery(snacksQuery)</code> in pages, <code>useQuery(snacksQuery)</code> in <code>BasketProvider</code>. The provider wraps the <strong>whole app</strong>, and it must not suspend: that would hide everything, header included, while prices load. So it uses the ordinary <code>useQuery</code> with an empty list until the data arrives. Same key, same cache entry, still one request.</p>
+<h2 id="errors-and-trying-again">Errors, and trying again</h2>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">const</span> <span class="token punctuation">{</span> reset<span class="token operator">:</span> resetQueries <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">useQueryErrorResetBoundary</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token operator">&lt;</span>ErrorBoundary
+  key<span class="token operator">=</span><span class="token punctuation">{</span>location<span class="token punctuation">.</span>pathname<span class="token punctuation">}</span>
+  fallback<span class="token operator">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span>error<span class="token punctuation">,</span> retry<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Panel</span></span>
+      <span class="token attr-name">title</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Something went wrong on this page<span class="token punctuation">"</span></span>
+      <span class="token attr-name">action</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+          </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span> <span class="token function">resetQueries</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token function">retry</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">}</span><span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">Try again</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span><span class="token punctuation">{</span><span class="token string">' '</span><span class="token punctuation">}</span><span class="token plain-text">
+          </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Link</span></span> <span class="token attr-name">to</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">Back to the shelf</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Link</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span></span><span class="token punctuation">></span></span>
+      <span class="token punctuation">}</span></span>
+    <span class="token punctuation">></span></span><span class="token plain-text">…</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Panel</span></span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span><span class="token punctuation">}</span>
+<span class="token operator">></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Suspense</span></span> <span class="token attr-name">fallback</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Panel</span></span><span class="token punctuation">></span></span><span class="token plain-text">Loading…</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Panel</span></span><span class="token punctuation">></span></span><span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Outlet</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Suspense</span></span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">ErrorBoundary</span></span><span class="token punctuation">></span></span></code></pre>
+<p>A failed query is thrown into the boundary from lesson 25. &quot;Try again&quot; does two things: <code>resetQueries()</code> tells TanStack Query to forget the failed query, and <code>retry()</code> (the boundary&#39;s <code>reset</code>) renders the page again, which starts a new request and suspends while it runs. Order matters: Suspense <strong>inside</strong> the error boundary, so an error while loading still lands in the boundary.</p>
+<p>To see it: DevTools → Network → Offline, reload, then go back online and press <strong>Try again</strong>.</p>
+<h2 id="lazy-load-a-page-39-s-code-when-it-is-needed">lazy: load a page&#39;s code when it is needed</h2>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">const</span> SnackPage <span class="token operator">=</span> <span class="token function">lazy</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token keyword">import</span><span class="token punctuation">(</span><span class="token string">'./pages/SnackPage.tsx'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token keyword">const</span> BasketPage <span class="token operator">=</span> <span class="token function">lazy</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token keyword">import</span><span class="token punctuation">(</span><span class="token string">'./pages/BasketPage.tsx'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token keyword">const</span> NotFoundPage <span class="token operator">=</span> <span class="token function">lazy</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token keyword">import</span><span class="token punctuation">(</span><span class="token string">'./pages/NotFoundPage.tsx'</span><span class="token punctuation">)</span><span class="token punctuation">)</span></code></pre>
+<p><code>import(&#39;./x&#39;)</code>, written like a function call, is a <strong>dynamic import</strong>: it loads a module when that line runs and returns a Promise. <code>lazy</code> turns it into a component that <strong>suspends</strong> until the code has arrived. Vite sees each dynamic import and puts that page in its <strong>own file</strong>:</p>
+<pre class="diagram"><code>dist/assets/index-CpZruwCl.js         305 kB    the app, React, the shelf
+dist/assets/BasketPage-vDF5tdBU.js    6.7 kB    loaded on first visit to the basket
+dist/assets/SnackPage-BOdLC7Pp.js     2.5 kB
+dist/assets/NotFoundPage-BfVq4otY.js  0.3 kB</code></pre>
+<p>The first visit to a snack page shows the same <code>Loading…</code> fallback for a moment while its code downloads. Nothing else was needed: the Suspense boundary for data already covers code.</p>
+<p><code>ShelfPage</code> stays a normal import. Everyone sees it first, and splitting it out would only add a second request before anything appears. Split what is <strong>big and not needed at the start</strong>: other pages, a rich text editor, a chart library. Here the pages are tiny, so this is mostly to learn the technique; in a large app it can cut the first download in half.</p>
+<h2 id="where-to-put-suspense-boundaries">Where to put Suspense boundaries</h2>
+<p>Each boundary decides <strong>what disappears while waiting</strong>. One around the page means the header stays and only the page area shows <code>Loading…</code>. Put boundaries around the parts that can sensibly appear on their own, the same reasoning as error boundaries. Too few and the whole screen blanks; too many and the page pops in piece by piece.</p>
+<h2 id="check-yourself">Check yourself</h2>
+<details>
+<summary><span>What happens when a component suspends?</span></summary>
+
+<p>React stops rendering that part and shows the fallback of the nearest <code>&lt;Suspense&gt;</code> boundary above it, then tries again once whatever it was waiting for is ready.</p>
+</details>
+
+<details>
+<summary><span>Why can the pages drop their status checks with <code>useSuspenseQuery</code>?</span></summary>
+
+<p>It suspends while loading and throws on failure, so it only returns when the data is there. Loading and errors are handled by the Suspense and error boundaries around the page.</p>
+</details>
+
+<details>
+<summary><span>Why does <code>BasketProvider</code> use <code>useQuery</code> instead of <code>useSuspenseQuery</code>?</span></summary>
+
+<p>It wraps the whole app. Suspending there would hide everything, including the header, until the snacks loaded.</p>
+</details>
+
+<details>
+<summary><span>What does <code>lazy(() =&gt; import('./pages/SnackPage.tsx'))</code> change in the build?</span></summary>
+
+<p>The page goes into its own JavaScript file, downloaded the first time the page renders. Until then the component suspends.</p>
+</details>
+
+  </article>
+</main>
+<nav class="pager" aria-label="Lessons">
+  <a class="pager-prev" href="27-performance.html"><span>Previous</span>Performance and the React Compiler</a>
+  <a class="pager-next" href="29-transitions.html"><span>Next</span>Transitions</a>
+</nav>
+<footer class="foot-small">
+  <p>Snack Shelf, a course in React and TypeScript. 33 lessons.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TypeScript for components · Snack Shelf</title>
+<meta name="description" content="A generic component that stays fully typed for any options, types derived from data with as const and satisfies, a Button that accepts every real button prop, and a type guard that checks the server's data instead of trusting it.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head>
+<body class="lesson-page">
+<header class="bar">
+  <a class="wordmark" href="../index.html">Snack Shelf</a>
+  <nav aria-label="Site"><a href="../index.html#lessons">Lessons</a><a href="https://github.com/HaoKiet10/snack-shelf-course">GitHub</a></nav>
+</header>
+<main class="lesson">
+  <div class="lesson-head" data-reveal>
+    <h1>TypeScript for components</h1>
+    <p class="lead">A generic component that stays fully typed for any options, types derived from data with as const and satisfies, a Button that accepts every real button prop, and a type guard that checks the server's data instead of trusting it.</p>
+    <p class="meta">Lesson 30 of 33, about 22 minutes</p>
+  </div>
+  <aside class="demo" aria-label="Live demo">
+    <div class="demo-sticky">
+      <div class="demo-frame" data-ui>
+        <iframe src="../demos/30-typescript-patterns/index.html" title="Live demo for TypeScript for components" loading="lazy"></iframe>
+      </div>
+      <p class="demo-links"><a href="../demos/30-typescript-patterns/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a><a href="https://github.com/HaoKiet10/snack-shelf-course/tree/main/code/lessons/30-typescript-patterns">Read this lesson's code</a></p>
+    </div>
+  </aside>
+  <article class="prose">
+<p>Four TypeScript techniques that show up in every serious React codebase, each solving a real problem in the shelf. The Mystery Snack is gone from the shelf now: it is caught when the data arrives.</p>
+<h2 id="a-generic-component">A generic component</h2>
+<p>The sort buttons from lesson 29 are useful elsewhere: a size picker, a light/dark switch. A reusable <strong>segmented control</strong> needs to accept any set of options, and still know exactly which values are possible.</p>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">export</span> <span class="token keyword">type</span> <span class="token class-name">Option<span class="token operator">&lt;</span><span class="token constant">T</span> <span class="token keyword">extends</span> <span class="token builtin">string</span><span class="token operator">></span></span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+  value<span class="token operator">:</span> <span class="token constant">T</span>
+  label<span class="token operator">:</span> <span class="token builtin">string</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">type</span> <span class="token class-name">SegmentedControlProps<span class="token operator">&lt;</span><span class="token constant">T</span> <span class="token keyword">extends</span> <span class="token builtin">string</span><span class="token operator">></span></span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+  label<span class="token operator">:</span> <span class="token builtin">string</span>
+  options<span class="token operator">:</span> <span class="token keyword">readonly</span> Option<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">></span><span class="token punctuation">[</span><span class="token punctuation">]</span>
+  value<span class="token operator">:</span> <span class="token constant">T</span>
+  <span class="token function-variable function">onChange</span><span class="token operator">:</span> <span class="token punctuation">(</span>value<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token keyword">void</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token generic-function"><span class="token function">SegmentedControl</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token constant">T</span> <span class="token keyword">extends</span> <span class="token builtin">string</span><span class="token operator">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  label<span class="token punctuation">,</span> options<span class="token punctuation">,</span> value<span class="token punctuation">,</span> onChange<span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token operator">:</span> SegmentedControlProps<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>segmented<span class="token punctuation">"</span></span> <span class="token attr-name">role</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>group<span class="token punctuation">"</span></span> <span class="token attr-name">aria-label</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>label<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token punctuation">{</span>options<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span>o<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">(</span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">key</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>o<span class="token punctuation">.</span>value<span class="token punctuation">}</span></span> <span class="token attr-name">aria-pressed</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>o<span class="token punctuation">.</span>value <span class="token operator">===</span> value<span class="token punctuation">}</span></span> <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">onChange</span><span class="token punctuation">(</span>o<span class="token punctuation">.</span>value<span class="token punctuation">)</span><span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+          </span><span class="token punctuation">{</span>o<span class="token punctuation">.</span>label<span class="token punctuation">}</span><span class="token plain-text">
+        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
+      <span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<p><code>&lt;T extends string&gt;</code> makes the component <strong>generic</strong>, like lesson 18&#39;s <code>useLocalStorage&lt;T&gt;</code>: <code>T</code> is filled in by each use. <code>extends string</code> limits it to string types, because values are used as keys.</p>
+<pre class="code" data-lang="tsx"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">SegmentedControl</span></span>
+  <span class="token attr-name">label</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Sort by<span class="token punctuation">"</span></span>
+  <span class="token attr-name">options</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token constant">SORTS</span><span class="token punctuation">}</span></span>
+  <span class="token attr-name">value</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>sort<span class="token punctuation">}</span></span>
+  <span class="token attr-name">onChange</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span>next<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">startTransition</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">setSort</span><span class="token punctuation">(</span>next<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">}</span></span>
+<span class="token punctuation">/></span></span></code></pre>
+<p>TypeScript infers <code>T</code> as <code>&#39;name&#39; | &#39;price&#39; | &#39;likes&#39;</code> from <code>options</code> and <code>value</code>. So <code>next</code> in <code>onChange</code> has exactly that type, and <code>setSort(next)</code> type-checks with no casting. Pass a <code>value</code> that is not one of the options and it is an error. One component, precise types at every use.</p>
+<h2 id="types-derived-from-data">Types derived from data</h2>
+<p>Before, the sort keys were written twice, once as a type and once in the array:</p>
+<pre class="code" data-lang="ts"><code><span class="token keyword">type</span> <span class="token class-name">SortKey</span> <span class="token operator">=</span> <span class="token string">'name'</span> <span class="token operator">|</span> <span class="token string">'price'</span> <span class="token operator">|</span> <span class="token string">'likes'</span>
+<span class="token keyword">const</span> <span class="token constant">SORTS</span><span class="token operator">:</span> <span class="token punctuation">{</span> key<span class="token operator">:</span> SortKey<span class="token punctuation">;</span> label<span class="token operator">:</span> <span class="token builtin">string</span> <span class="token punctuation">}</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span> … <span class="token punctuation">]</span></code></pre>
+<p>Add a sort and you must remember both. Instead, write the data once and <strong>derive</strong> the type from it:</p>
+<pre class="code" data-lang="ts"><code><span class="token keyword">const</span> <span class="token constant">SORTS</span> <span class="token operator">=</span> <span class="token punctuation">[</span>
+  <span class="token punctuation">{</span> value<span class="token operator">:</span> <span class="token string">'name'</span><span class="token punctuation">,</span> label<span class="token operator">:</span> <span class="token string">'Name'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span> value<span class="token operator">:</span> <span class="token string">'price'</span><span class="token punctuation">,</span> label<span class="token operator">:</span> <span class="token string">'Cheapest'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span> value<span class="token operator">:</span> <span class="token string">'likes'</span><span class="token punctuation">,</span> label<span class="token operator">:</span> <span class="token string">'Most liked'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">]</span> <span class="token keyword">as</span> <span class="token keyword">const</span> satisfies <span class="token keyword">readonly</span> Option<span class="token operator">&lt;</span><span class="token builtin">string</span><span class="token operator">></span><span class="token punctuation">[</span><span class="token punctuation">]</span>
+
+<span class="token keyword">type</span> <span class="token class-name">SortKey</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">typeof</span> <span class="token constant">SORTS</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token builtin">number</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string">'value'</span><span class="token punctuation">]</span>   <span class="token comment">// 'name' | 'price' | 'likes'</span></code></pre>
+<p>Three pieces:</p>
+<ul>
+<li><strong><code>as const</code></strong> keeps the exact values. Without it, <code>value: &#39;name&#39;</code> widens to <code>value: string</code>, and the derived type would be just <code>string</code>.</li>
+<li><strong><code>satisfies</code></strong> checks the shape (every item must be a valid <code>Option</code>) <strong>without changing</strong> the type. <code>const SORTS: Option&lt;string&gt;[] = …</code> would also check it, but would throw away the exact values.</li>
+<li><strong><code>(typeof SORTS)[number][&#39;value&#39;]</code></strong> reads as &quot;the type of SORTS, any item of it, its <code>value</code> field&quot;.</li>
+</ul>
+<p>Now the array is the single source of truth. Add a sort and the type follows.</p>
+<h2 id="a-component-that-is-a-real-button">A component that is a real button</h2>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">type</span> <span class="token class-name">ButtonProps</span> <span class="token operator">=</span> ComponentProps<span class="token operator">&lt;</span><span class="token string">'button'</span><span class="token operator">></span> <span class="token operator">&amp;</span> <span class="token punctuation">{</span>
+  variant<span class="token operator">?</span><span class="token operator">:</span> <span class="token string">'soft'</span> <span class="token operator">|</span> <span class="token string">'primary'</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">Button</span><span class="token punctuation">(</span><span class="token punctuation">{</span> variant <span class="token operator">=</span> <span class="token string">'soft'</span><span class="token punctuation">,</span> className<span class="token punctuation">,</span> <span class="token operator">...</span>rest <span class="token punctuation">}</span><span class="token operator">:</span> ButtonProps<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> classes <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'btn'</span><span class="token punctuation">,</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">btn-</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>variant<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span> className<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span>Boolean<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token string">' '</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>button<span class="token punctuation">"</span></span> <span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>classes<span class="token punctuation">}</span></span> <span class="token spread"><span class="token punctuation">{</span><span class="token operator">...</span>rest<span class="token punctuation">}</span></span> <span class="token punctuation">/></span></span>
+<span class="token punctuation">}</span></code></pre>
+<p><code>ComponentProps&lt;&#39;button&#39;&gt;</code> is <strong>every prop a <code>&lt;button&gt;</code> accepts</strong>: <code>onClick</code>, <code>disabled</code>, <code>type</code>, <code>aria-label</code>, <code>form</code>, and dozens more. The <code>&amp;</code> adds our own. <code>...rest</code> collects everything not named, and <code>{...rest}</code> spreads it onto the real element. So <code>&lt;Button&gt;</code> works everywhere a <code>&lt;button&gt;</code> does, and TypeScript autocompletes all of it.</p>
+<p>It defaults to <code>type=&quot;button&quot;</code>, because a plain <code>&lt;button&gt;</code> inside a form defaults to <code>submit</code>, a classic source of forms sending by accident. Since <code>{...rest}</code> comes after, <code>&lt;Button type=&quot;submit&quot;&gt;</code> still overrides it. The snack page&#39;s three buttons use it.</p>
+<h2 id="do-not-trust-the-network">Do not trust the network</h2>
+<p>Lesson 25&#39;s Mystery Snack crashed because of one line from lesson 12:</p>
+<pre class="code" data-lang="ts"><code><span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token keyword">await</span> res<span class="token punctuation">.</span><span class="token function">json</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">as</span> Snack<span class="token punctuation">[</span><span class="token punctuation">]</span></code></pre>
+<p><code>as</code> is a promise to TypeScript, not a check. Data from outside (a server, <code>localStorage</code>, a URL, a form) can be anything. The fix is to start from <code>unknown</code> and <strong>check</strong>:</p>
+<pre class="code" data-lang="ts"><code><span class="token keyword">const</span> data<span class="token operator">:</span> <span class="token builtin">unknown</span> <span class="token operator">=</span> <span class="token keyword">await</span> res<span class="token punctuation">.</span><span class="token function">json</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token builtin">Array</span><span class="token punctuation">.</span><span class="token function">isArray</span><span class="token punctuation">(</span>data<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">Error</span><span class="token punctuation">(</span><span class="token string">'snacks.json is not a list'</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">const</span> snacks <span class="token operator">=</span> data<span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span>isSnack<span class="token punctuation">)</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>snacks<span class="token punctuation">.</span>length <span class="token operator">&lt;</span> data<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Skipped </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>data<span class="token punctuation">.</span>length <span class="token operator">-</span> snacks<span class="token punctuation">.</span>length<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> malformed snack(s) in snacks.json</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">return</span> snacks</code></pre>
+<p><code>unknown</code> is the safe opposite of <code>any</code>: TypeScript lets you do nothing with it until you have narrowed it. The narrowing is a <strong>type guard</strong>:</p>
+<pre class="code" data-lang="ts"><code><span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">isSnack</span><span class="token punctuation">(</span>value<span class="token operator">:</span> <span class="token builtin">unknown</span><span class="token punctuation">)</span><span class="token operator">:</span> value <span class="token keyword">is</span> Snack <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">typeof</span> value <span class="token operator">!==</span> <span class="token string">'object'</span> <span class="token operator">||</span> value <span class="token operator">===</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token keyword">return</span> <span class="token boolean">false</span>
+  <span class="token keyword">const</span> v <span class="token operator">=</span> value <span class="token keyword">as</span> Record<span class="token operator">&lt;</span><span class="token builtin">string</span><span class="token punctuation">,</span> <span class="token builtin">unknown</span><span class="token operator">></span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token keyword">typeof</span> v<span class="token punctuation">.</span>id <span class="token operator">===</span> <span class="token string">'string'</span> <span class="token operator">&amp;&amp;</span>
+    <span class="token keyword">typeof</span> v<span class="token punctuation">.</span>name <span class="token operator">===</span> <span class="token string">'string'</span> <span class="token operator">&amp;&amp;</span>
+    <span class="token keyword">typeof</span> v<span class="token punctuation">.</span>price <span class="token operator">===</span> <span class="token string">'number'</span> <span class="token operator">&amp;&amp;</span>
+    <span class="token keyword">typeof</span> v<span class="token punctuation">.</span>emoji <span class="token operator">===</span> <span class="token string">'string'</span> <span class="token operator">&amp;&amp;</span>
+    <span class="token keyword">typeof</span> v<span class="token punctuation">.</span>about <span class="token operator">===</span> <span class="token string">'string'</span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<p>The return type <code>value is Snack</code> means &quot;if this returns true, treat <code>value</code> as a <code>Snack</code>&quot;. <code>filter</code> understands type guards, so <code>data.filter(isSnack)</code> is a <code>Snack[]</code>. The Mystery Snack fails the check, is skipped with a warning, and never reaches a card. The error boundary stays, for bugs nobody predicted.</p>
+<p>For bigger data, libraries like <strong>Zod</strong> or <strong>Valibot</strong> let you describe the shape once and get both the check and the TypeScript type from it. Same idea, less typing. The guard has its own tests in <code>data/snacks.test.ts</code>.</p>
+<h2 id="check-yourself">Check yourself</h2>
+<details>
+<summary><span>In <code>SegmentedControl</code>, where does <code>T</code> come from?</span></summary>
+
+<p>TypeScript infers it from the props at each use: here from <code>options={SORTS}</code> and <code>value={sort}</code>, so <code>T</code> is <code>&#39;name&#39; | &#39;price&#39; | &#39;likes&#39;</code>.</p>
+</details>
+
+<details>
+<summary><span>What would <code>SortKey</code> be without <code>as const</code>?</span></summary>
+
+<p><code>string</code>. Without <code>as const</code>, the literal <code>&#39;name&#39;</code> widens to <code>string</code> in the array&#39;s type, so the derived type loses the exact values.</p>
+</details>
+
+<details>
+<summary><span>Why does <code>Button</code> spread <code>{...rest}</code> after <code>type="button"</code>?</span></summary>
+
+<p>So it has a safe default that a caller can still override: <code>&lt;Button type=&quot;submit&quot;&gt;</code> replaces it, because later props win.</p>
+</details>
+
+<details>
+<summary><span>What is the difference between <code>as Snack[]</code> and a type guard?</span></summary>
+
+<p><code>as</code> tells TypeScript to assume the type without checking anything at runtime. A type guard actually checks the value, and only then lets TypeScript treat it as a <code>Snack</code>.</p>
+</details>
+
+  </article>
+</main>
+<nav class="pager" aria-label="Lessons">
+  <a class="pager-prev" href="29-transitions.html"><span>Previous</span>Transitions</a>
+  <a class="pager-next" href="31-zustand.html"><span>Next</span>State libraries (Zustand)</a>
+</nav>
+<footer class="foot-small">
+  <p>Snack Shelf, a course in React and TypeScript. 33 lessons.</p>
+</footer>
+</body>
+</html>

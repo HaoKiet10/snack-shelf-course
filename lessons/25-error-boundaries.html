@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Error boundaries · Snack Shelf</title>
+<meta name="description" content="One snack with bad data used to blank the whole page. An error boundary catches a crash while rendering and shows a fallback instead, so one broken card stays one broken card.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head>
+<body class="lesson-page">
+<header class="bar">
+  <a class="wordmark" href="../index.html">Snack Shelf</a>
+  <nav aria-label="Site"><a href="../index.html#lessons">Lessons</a><a href="https://github.com/HaoKiet10/snack-shelf-course">GitHub</a></nav>
+</header>
+<main class="lesson">
+  <div class="lesson-head" data-reveal>
+    <h1>Error boundaries</h1>
+    <p class="lead">One snack with bad data used to blank the whole page. An error boundary catches a crash while rendering and shows a fallback instead, so one broken card stays one broken card.</p>
+    <p class="meta">Lesson 25 of 33, about 18 minutes</p>
+  </div>
+  <aside class="demo" aria-label="Live demo">
+    <div class="demo-sticky">
+      <div class="demo-frame" data-ui>
+        <iframe src="../demos/25-error-boundaries/index.html" title="Live demo for Error boundaries" loading="lazy"></iframe>
+      </div>
+      <p class="demo-links"><a href="../demos/25-error-boundaries/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a><a href="https://github.com/HaoKiet10/snack-shelf-course/tree/main/code/lessons/25-error-boundaries">Read this lesson's code</a></p>
+    </div>
+  </aside>
+  <article class="prose">
+<p>Part three starts by breaking something on purpose. <code>snacks.json</code> now has a seventh entry, a <strong>Mystery Snack</strong> with no price and no description. Its card shows &quot;can&#39;t be shown right now&quot;, and the other six work. Open its page (<code>#/snack/mystery</code>) and you get a message with a way back, not a white screen.</p>
+<h2 id="what-a-crash-does-without-one">What a crash does without one</h2>
+<p>In lesson 12, <code>loadSnacks</code> ends with <code>as Snack[]</code>: we <em>promised</em> TypeScript the data was right, and TypeScript believed us. The Mystery Snack breaks the promise. When its card renders:</p>
+<pre class="code" data-lang="tsx"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>price<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">$</span><span class="token punctuation">{</span>price<span class="token punctuation">.</span><span class="token function">toFixed</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span></code></pre>
+<p><code>price</code> is <code>undefined</code>, and <code>undefined.toFixed</code> throws. An error thrown <strong>while rendering</strong> means React cannot know what the screen should look like. Showing half a page could be worse than nothing (imagine a bank page with the balance missing), so React&#39;s rule is: <strong>if rendering throws and nobody catches it, remove the whole tree</strong>. The page goes white.</p>
+<p>Try it in lesson 24&#39;s demo with this lesson&#39;s data and the whole shelf would vanish because of one snack.</p>
+<h2 id="an-error-boundary">An error boundary</h2>
+<p>An <strong>error boundary</strong> is a component that catches errors thrown while rendering anything inside it, and renders a fallback instead.</p>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">class</span> <span class="token class-name">ErrorBoundary</span> <span class="token keyword">extends</span> <span class="token class-name">Component<span class="token operator">&lt;</span>ErrorBoundaryProps<span class="token punctuation">,</span> ErrorBoundaryState<span class="token operator">></span></span> <span class="token punctuation">{</span>
+  state<span class="token operator">:</span> ErrorBoundaryState <span class="token operator">=</span> <span class="token punctuation">{</span> error<span class="token operator">:</span> <span class="token keyword">null</span> <span class="token punctuation">}</span>
+
+  <span class="token keyword">static</span> <span class="token function">getDerivedStateFromError</span><span class="token punctuation">(</span>error<span class="token operator">:</span> <span class="token builtin">unknown</span><span class="token punctuation">)</span><span class="token operator">:</span> ErrorBoundaryState <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token punctuation">{</span> error<span class="token operator">:</span> error <span class="token keyword">instanceof</span> <span class="token class-name">Error</span> <span class="token operator">?</span> error <span class="token operator">:</span> <span class="token keyword">new</span> <span class="token class-name">Error</span><span class="token punctuation">(</span><span class="token function">String</span><span class="token punctuation">(</span>error<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token function">componentDidCatch</span><span class="token punctuation">(</span>error<span class="token operator">:</span> <span class="token builtin">unknown</span><span class="token punctuation">,</span> info<span class="token operator">:</span> ErrorInfo<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">'Caught by an error boundary:'</span><span class="token punctuation">,</span> error<span class="token punctuation">,</span> info<span class="token punctuation">.</span>componentStack<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token function-variable function">reset</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">setState</span><span class="token punctuation">(</span><span class="token punctuation">{</span> error<span class="token operator">:</span> <span class="token keyword">null</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token function">render</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>state<span class="token punctuation">.</span>error<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>props<span class="token punctuation">.</span><span class="token function">fallback</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>state<span class="token punctuation">.</span>error<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>reset<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>props<span class="token punctuation">.</span>children
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<p>Yes, a <strong>class</strong>. React has no hook for catching render errors, so this is the one place modern React code still uses a class component. You write it once and use it everywhere; many projects install the small <code>react-error-boundary</code> package instead, which is this same class with more options.</p>
+<p>How it works:</p>
+<ul>
+<li><code>static getDerivedStateFromError</code> is called when a child throws during rendering. It turns the error into state, and the next render shows the fallback. (JavaScript can throw anything, not just <code>Error</code> objects, so it makes sure it has one.)</li>
+<li><code>componentDidCatch</code> is called afterwards. It is where you would send the error to a logging service. <code>info.componentStack</code> says which components it happened in.</li>
+<li><code>render</code> shows the children normally, or the fallback once there is an error.</li>
+<li><code>reset</code> clears the error, so the fallback can offer &quot;try again&quot;.</li>
+</ul>
+<p><code>fallback</code> is a <strong>render prop</strong>: a function the boundary calls to get JSX, so the fallback can use the error and the reset function.</p>
+<h2 id="where-to-put-them">Where to put them</h2>
+<p>Boundaries are like fuses: place them so a failure takes out as little as possible.</p>
+<p><strong>One per card</strong>, in <code>Shelf</code>:</p>
+<pre class="code" data-lang="tsx"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">ErrorBoundary</span></span>
+  <span class="token attr-name">key</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>snack<span class="token punctuation">.</span>id<span class="token punctuation">}</span></span>
+  <span class="token attr-name">fallback</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>card-broken<span class="token punctuation">"</span></span> <span class="token attr-name">role</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>note<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>strong</span><span class="token punctuation">></span></span><span class="token punctuation">{</span>snack<span class="token punctuation">.</span>name<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>strong</span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span><span class="token punctuation">></span></span><span class="token plain-text">can't be shown right now</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span><span class="token punctuation">}</span></span>
+<span class="token punctuation">></span></span><span class="token plain-text">
+  &lt;SnackCard … />
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">ErrorBoundary</span></span><span class="token punctuation">></span></span></code></pre>
+<p>The key moved from <code>SnackCard</code> to the boundary, because the boundary is now the outermost element in the <code>map</code> (lesson 9&#39;s rule).</p>
+<p><strong>One around every page</strong>, in <code>Layout</code>:</p>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">const</span> location <span class="token operator">=</span> <span class="token function">useLocation</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">ErrorBoundary</span></span>
+  <span class="token attr-name">key</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>location<span class="token punctuation">.</span>pathname<span class="token punctuation">}</span></span>
+  <span class="token attr-name">fallback</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span>error<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Panel</span></span> <span class="token attr-name">title</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Something went wrong on this page<span class="token punctuation">"</span></span> <span class="token attr-name">action</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Link</span></span> <span class="token attr-name">to</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">Back to the shelf</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Link</span></span><span class="token punctuation">></span></span><span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token punctuation">{</span><span class="token keyword">import</span><span class="token punctuation">.</span>meta<span class="token punctuation">.</span>env<span class="token punctuation">.</span><span class="token constant">DEV</span> <span class="token operator">?</span> error<span class="token punctuation">.</span>message <span class="token operator">:</span> <span class="token string">'Sorry about that. The rest of the shop still works.'</span><span class="token punctuation">}</span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Panel</span></span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span><span class="token punctuation">}</span></span>
+<span class="token punctuation">></span></span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Outlet</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">ErrorBoundary</span></span><span class="token punctuation">></span></span></code></pre>
+<p>The header is outside it, so after a crash you can still navigate. <code>key={location.pathname}</code> gives each page a fresh boundary (lesson 9: a new key is a new component), so going to another page clears the error. In development the fallback shows the real message; visitors get a polite sentence.</p>
+<p>A good default is one boundary around each page, plus one around any independent widget on a page, so that one widget can fail without hiding the rest.</p>
+<h2 id="what-boundaries-do-not-catch">What boundaries do not catch</h2>
+<p>Only errors thrown <strong>while React is rendering</strong> (and in lifecycle code like effects). Not:</p>
+<div class="table-wrap"><table><thead><tr><th>error in</th><th>why not</th><th>handle it with</th></tr></thead><tbody><tr><td>an event handler</td><td>it runs after rendering, when React is not drawing anything</td><td><code>try</code>/<code>catch</code> in the handler</td></tr>
+<tr><td>async code (a <code>fetch</code>, a <code>setTimeout</code>)</td><td>it finishes later, outside rendering</td><td><code>.catch</code>, or put the error in state</td></tr>
+<tr><td>the boundary itself</td><td>it cannot catch its own crash</td><td>a boundary further up</td></tr></tbody></table></div>
+<p>Lesson 28 connects these: a failed query will be <em>thrown during rendering</em>, so boundaries can catch data errors too.</p>
+<h2 id="fixing-the-cause">Fixing the cause</h2>
+<p>The boundary keeps the page alive, but the real fix is not trusting the data. Lesson 30 adds a <strong>type guard</strong> that checks each snack when it arrives and skips malformed ones. Then the boundary is a last line of defence for bugs nobody predicted, which is what it is for.</p>
+<h2 id="check-yourself">Check yourself</h2>
+<details>
+<summary><span>Why does React remove the whole page when rendering throws?</span></summary>
+
+<p>It no longer knows what the screen should show, and a half-drawn page could mislead. Unless a boundary catches the error, the safest thing is to show nothing.</p>
+</details>
+
+<details>
+<summary><span>Why is <code>ErrorBoundary</code> a class component?</span></summary>
+
+<p>Catching render errors needs <code>getDerivedStateFromError</code> / <code>componentDidCatch</code>, and React has no hook equivalent for them.</p>
+</details>
+
+<details>
+<summary><span>Why does the page boundary have <code>key={location.pathname}</code>?</span></summary>
+
+<p>A new key creates a new boundary with no error, so moving to another page clears the fallback instead of showing it everywhere.</p>
+</details>
+
+<details>
+<summary><span>A button's click handler throws. Does the boundary catch it?</span></summary>
+
+<p>No. Event handlers run outside rendering. Catch it in the handler with <code>try</code>/<code>catch</code> and show an error through state.</p>
+</details>
+
+  </article>
+</main>
+<nav class="pager" aria-label="Lessons">
+  <a class="pager-prev" href="24-testing.html"><span>Previous</span>Testing</a>
+  <a class="pager-next" href="26-portals.html"><span>Next</span>Portals and toasts</a>
+</nav>
+<footer class="foot-small">
+  <p>Snack Shelf, a course in React and TypeScript. 33 lessons.</p>
+</footer>
+</body>
+</html>

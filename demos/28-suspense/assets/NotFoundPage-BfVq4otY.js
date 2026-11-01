@@ -1,0 +1,1 @@
+import{a as e,l as t,o as n,r}from"./index-CpZruwCl.js";var i=e(),a=t();function o(){let e=(0,i.c)(1),t;return e[0]===Symbol.for(`react.memo_cache_sentinel`)?(t=(0,a.jsx)(r,{title:`Page not found`,action:(0,a.jsx)(n,{to:`/`,children:`Back to the shelf`}),children:`There's nothing at this address.`}),e[0]=t):t=e[0],t}export{o as default};

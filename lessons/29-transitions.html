@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Transitions · Snack Shelf</title>
+<meta name="description" content="Keep typing instant while the shelf catches up. Urgent and non-urgent updates, useDeferredValue for the search, useTransition for sorting, and a slow-device switch to feel the difference.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head>
+<body class="lesson-page">
+<header class="bar">
+  <a class="wordmark" href="../index.html">Snack Shelf</a>
+  <nav aria-label="Site"><a href="../index.html#lessons">Lessons</a><a href="https://github.com/HaoKiet10/snack-shelf-course">GitHub</a></nav>
+</header>
+<main class="lesson">
+  <div class="lesson-head" data-reveal>
+    <h1>Transitions</h1>
+    <p class="lead">Keep typing instant while the shelf catches up. Urgent and non-urgent updates, useDeferredValue for the search, useTransition for sorting, and a slow-device switch to feel the difference.</p>
+    <p class="meta">Lesson 29 of 33, about 22 minutes</p>
+  </div>
+  <aside class="demo" aria-label="Live demo">
+    <div class="demo-sticky">
+      <div class="demo-frame" data-ui>
+        <iframe src="../demos/29-transitions/index.html" title="Live demo for Transitions" loading="lazy"></iframe>
+      </div>
+      <p class="demo-links"><a href="../demos/29-transitions/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a><a href="https://github.com/HaoKiet10/snack-shelf-course/tree/main/code/lessons/29-transitions">Read this lesson's code</a></p>
+    </div>
+  </aside>
+  <article class="prose">
+<p>The shelf can be <strong>sorted</strong> now: by name, cheapest first, or most liked. Tick <strong>Simulate a slow device</strong>, which makes the shelf take about half a second to render, and type in the search box. The letters still appear the moment you press the keys; the cards follow a moment later, faded while they are out of date.</p>
+<h2 id="one-slow-render-blocks-everything">One slow render blocks everything</h2>
+<p>JavaScript runs on one thread. While React renders, nothing else happens: no typing, no clicks, no scrolling. Normally a render takes a millisecond and nobody notices. On a slow phone, with a big list, it can take hundreds, and the whole page freezes: you type &quot;mo&quot; and nothing shows until the list has rebuilt.</p>
+<p>But not every update is equally urgent:</p>
+<ul>
+<li><strong>Urgent</strong>: the text in the box. People feel a delay of even 100ms in their own typing.</li>
+<li><strong>Not urgent</strong>: the list of results. It is fine if it updates a moment later, as long as typing never waits for it.</li>
+</ul>
+<p>React 18 added a way to say which is which. A <strong>non-urgent</strong> render can happen in the background, and React <strong>abandons it</strong> if something urgent comes along, then starts again with the newer value.</p>
+<h2 id="simulating-a-slow-device">Simulating a slow device</h2>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">function</span> <span class="token function">SlowDown</span><span class="token punctuation">(</span><span class="token punctuation">{</span> cards <span class="token punctuation">}</span><span class="token operator">:</span> SlowDownProps<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token string">'use no memo'</span>
+  <span class="token keyword">const</span> until <span class="token operator">=</span> performance<span class="token punctuation">.</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> cards <span class="token operator">*</span> <span class="token constant">MS_PER_CARD</span>
+  <span class="token keyword">while</span> <span class="token punctuation">(</span>performance<span class="token punctuation">.</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&lt;</span> until<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// busy-wait: block the main thread on purpose</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">return</span> <span class="token keyword">null</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">memo</span><span class="token punctuation">(</span>SlowDown<span class="token punctuation">)</span></code></pre>
+<p>Only for this lesson: it blocks for 60ms per card shown. <code>&#39;use no memo&#39;</code> is a directive that tells the React Compiler (lesson 27) to leave this component&#39;s body alone, because we <em>want</em> the waste. It still goes through <code>memo</code>, so it only re-runs when the cards, query or sort change.</p>
+<h2 id="usedeferredvalue-a-copy-that-may-lag">useDeferredValue: a copy that may lag</h2>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">const</span> <span class="token punctuation">[</span>query<span class="token punctuation">,</span> setQuery<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">useState</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> searchParams<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'q'</span><span class="token punctuation">)</span> <span class="token operator">??</span> <span class="token string">''</span><span class="token punctuation">)</span>
+<span class="token keyword">const</span> deferredQuery <span class="token operator">=</span> <span class="token function">useDeferredValue</span><span class="token punctuation">(</span>query<span class="token punctuation">)</span>
+
+<span class="token keyword">const</span> visible <span class="token operator">=</span> <span class="token function">sortSnacks</span><span class="token punctuation">(</span>
+  snacks<span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span> <span class="token operator">=></span> s<span class="token punctuation">.</span>name<span class="token punctuation">.</span><span class="token function">toLowerCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">includes</span><span class="token punctuation">(</span>deferredQuery<span class="token punctuation">.</span><span class="token function">trim</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toLowerCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  sort<span class="token punctuation">,</span>
+  likes<span class="token punctuation">,</span>
+<span class="token punctuation">)</span>
+<span class="token keyword">const</span> isStale <span class="token operator">=</span> query <span class="token operator">!==</span> deferredQuery <span class="token operator">||</span> isPending</code></pre>
+<p><code>useDeferredValue(query)</code> returns a value that <strong>lags behind</strong> <code>query</code>. When you type, React first does an urgent render where <code>query</code> is new but <code>deferredQuery</code> is still the <strong>old</strong> value, so the input updates and the list is unchanged (and cheap, because nothing it depends on changed). Then it starts a background render with the new <code>deferredQuery</code>. Type another letter before that finishes and React drops it and starts over with the newest text.</p>
+<p>The search box gets <code>query</code>. The shelf gets results from <code>deferredQuery</code>. While they differ, the results are stale, and the CSS fades them:</p>
+<pre class="code" data-lang="tsx"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>isStale <span class="token operator">?</span> <span class="token string">'results stale'</span> <span class="token operator">:</span> <span class="token string">'results'</span><span class="token punctuation">}</span></span><span class="token punctuation">></span></span></code></pre>
+<p>Measured in the running app with the slow device on: the box showed the typed letter <strong>6ms</strong> after the key, and the list caught up about half a second later.</p>
+<h2 id="why-the-query-moved-back-into-usestate">Why the query moved back into useState</h2>
+<p>In lesson 21 the search lived only in the URL. But React Router applies URL changes as a <strong>transition</strong>, which is non-urgent. An input reading its value straight from the URL would itself lag on a slow device; in a test it took about half a second for a letter to appear. So the text is local state again, the urgent copy, and every change is also written to the URL so Back and shared links still work:</p>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">function</span> <span class="token function">changeQuery</span><span class="token punctuation">(</span>next<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token function">setQuery</span><span class="token punctuation">(</span>next<span class="token punctuation">)</span>        <span class="token comment">// urgent: the input shows it now</span>
+  <span class="token function">setParam</span><span class="token punctuation">(</span><span class="token string">'q'</span><span class="token punctuation">,</span> next<span class="token punctuation">)</span>   <span class="token comment">// the URL catches up</span>
+<span class="token punctuation">}</span></code></pre>
+<p>The general rule: a controlled input&#39;s value must come from an urgent update.</p>
+<h2 id="usetransition-mark-your-own-update-as-non-urgent">useTransition: mark your own update as non-urgent</h2>
+<p><code>useDeferredValue</code> is for when you <strong>receive</strong> a value. When you <strong>make</strong> the update yourself, wrap it in a transition:</p>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">const</span> <span class="token punctuation">[</span>sort<span class="token punctuation">,</span> setSort<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token generic-function"><span class="token function">useState</span><span class="token generic class-name"><span class="token operator">&lt;</span>SortKey<span class="token operator">></span></span></span><span class="token punctuation">(</span><span class="token string">'name'</span><span class="token punctuation">)</span>
+<span class="token keyword">const</span> <span class="token punctuation">[</span>isPending<span class="token punctuation">,</span> startTransition<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">useTransition</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">startTransition</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">setSort</span><span class="token punctuation">(</span><span class="token string">'price'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">Cheapest</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span></code></pre>
+<p>Everything set inside <code>startTransition</code> renders in the background. The click returns immediately (0ms in the test, with the slow device on), the current list stays usable, and <code>isPending</code> is <code>true</code> until the new order is ready. If you click another sort first, the unfinished one is abandoned.</p>
+<p>You have already used transitions without seeing them: React 19 form actions (lesson 22) run in one, which is what <code>isPending</code> from <code>useActionState</code> reports, and React Router wraps navigation in one.</p>
+<div class="table-wrap"><table><thead><tr><th></th><th>useDeferredValue</th><th>useTransition</th></tr></thead><tbody><tr><td>you have</td><td>a value from props or state</td><td>the code that sets the state</td></tr>
+<tr><td>you get</td><td>a lagging copy of the value</td><td><code>startTransition</code> and <code>isPending</code></td></tr>
+<tr><td>use for</td><td>expensive results of a fast-changing input</td><td>switching tabs, sorting, filters</td></tr></tbody></table></div>
+<h2 id="what-transitions-are-not">What transitions are not</h2>
+<p>They do not make anything faster: the slow render still takes as long. They make the app <strong>stay responsive</strong> while it happens. If something is slow, the first fix is still to make it less slow (lesson 27, or render fewer items). Transitions are for the work that remains.</p>
+<h2 id="check-yourself">Check yourself</h2>
+<details>
+<summary><span>What is the difference between an urgent and a non-urgent update?</span></summary>
+
+<p>An urgent update renders immediately and blocks until done, which typing needs. A non-urgent one renders in the background and is abandoned if a newer update arrives.</p>
+</details>
+
+<details>
+<summary><span>While you type with the slow device on, what are <code>query</code> and <code>deferredQuery</code>?</span></summary>
+
+<p><code>query</code> is what is in the box right now. <code>deferredQuery</code> is the value the shelf last finished rendering with; it catches up when the background render completes.</p>
+</details>
+
+<details>
+<summary><span>Why does sorting use <code>useTransition</code> and the search use <code>useDeferredValue</code>?</span></summary>
+
+<p>The sort is set by our own click handler, so we can wrap the update in <code>startTransition</code>. The search box must update urgently, and the shelf receives a value it can only defer.</p>
+</details>
+
+<details>
+<summary><span>Why can't the input read its value straight from the URL here?</span></summary>
+
+<p>React Router updates the URL in a transition, which is non-urgent. On a slow render, the input would show each letter late.</p>
+</details>
+
+  </article>
+</main>
+<nav class="pager" aria-label="Lessons">
+  <a class="pager-prev" href="28-suspense.html"><span>Previous</span>Suspense and lazy loading</a>
+  <a class="pager-next" href="30-typescript-patterns.html"><span>Next</span>TypeScript for components</a>
+</nav>
+<footer class="foot-small">
+  <p>Snack Shelf, a course in React and TypeScript. 33 lessons.</p>
+</footer>
+</body>
+</html>

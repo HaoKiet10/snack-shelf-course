@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Accessibility · Snack Shelf</title>
+<meta name="description" content="Make the shelf work for keyboard and screen-reader users. A skip link, focus that follows navigation, page titles, real names for icon buttons, hidden decorations, reduced motion, and automated checks with axe, plus what they cannot catch.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head>
+<body class="lesson-page">
+<header class="bar">
+  <a class="wordmark" href="../index.html">Snack Shelf</a>
+  <nav aria-label="Site"><a href="../index.html#lessons">Lessons</a><a href="https://github.com/HaoKiet10/snack-shelf-course">GitHub</a></nav>
+</header>
+<main class="lesson">
+  <div class="lesson-head" data-reveal>
+    <h1>Accessibility</h1>
+    <p class="lead">Make the shelf work for keyboard and screen-reader users. A skip link, focus that follows navigation, page titles, real names for icon buttons, hidden decorations, reduced motion, and automated checks with axe, plus what they cannot catch.</p>
+    <p class="meta">Lesson 33 of 33, about 25 minutes</p>
+  </div>
+  <aside class="demo" aria-label="Live demo">
+    <div class="demo-sticky">
+      <div class="demo-frame" data-ui>
+        <iframe src="../demos/33-accessibility/index.html" title="Live demo for Accessibility" loading="lazy"></iframe>
+      </div>
+      <p class="demo-links"><a href="../demos/33-accessibility/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a><a href="https://github.com/HaoKiet10/snack-shelf-course/tree/main/code/lessons/33-accessibility">Read this lesson's code</a></p>
+    </div>
+  </aside>
+  <article class="prose">
+<p>The last lesson changes little you can see, and a lot you can hear. Press <kbd>Tab</kbd> on a fresh page and a <strong>Skip to content</strong> link appears. Open a snack and the browser tab says its name. Turn on a screen reader (Narrator on Windows: <kbd>Ctrl</kbd>+<kbd>Win</kbd>+<kbd>Enter</kbd>; VoiceOver on a Mac: <kbd>Cmd</kbd>+<kbd>F5</kbd>) and the heart button says &quot;Like Pocky, 3 likes&quot; instead of &quot;red heart, 3&quot;.</p>
+<h2 id="who-this-is-for">Who this is for</h2>
+<p>Around one in six people live with a disability. Some never use a mouse, some use a screen reader, some zoom to 300%, some get sick from motion. Many more are temporarily in the same position: a broken arm, bright sunlight, a phone held in one hand. Accessible apps are also better for everyone: clearer labels, working keyboard shortcuts, sensible headings.</p>
+<p>Much of it the course already did: real <code>&lt;button&gt;</code>s and <code>&lt;label&gt;</code>s, <code>aria-invalid</code> on form errors (lesson 22), <code>aria-pressed</code> on the sort (lesson 29), <code>aria-live</code> toasts (lesson 26). This lesson fixes the gaps.</p>
+<h2 id="names-for-things-that-are-only-pictures">Names for things that are only pictures</h2>
+<p>A screen reader reads a button&#39;s <strong>accessible name</strong>, usually its text. &quot;❤ 3&quot; is read as &quot;red heart, 3&quot;: no verb, no snack.</p>
+<pre class="code" data-lang="tsx"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span>
+  <span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>likeClass<span class="token punctuation">}</span></span>
+  <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">onLike</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">}</span></span>
+  <span class="token attr-name">aria-label</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Like </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>name<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">, </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>likes<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>likes <span class="token operator">===</span> <span class="token number">1</span> <span class="token operator">?</span> <span class="token string">'like'</span> <span class="token operator">:</span> <span class="token string">'likes'</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">}</span></span>
+<span class="token punctuation">></span></span><span class="token plain-text">
+  ❤ </span><span class="token punctuation">{</span>likes<span class="token punctuation">}</span><span class="token plain-text">
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span></code></pre>
+<p><code>aria-label</code> replaces the name with a sentence that says what the button does and its current state. The &quot;+ 🧺&quot; button already had one (&quot;Add Pocky to basket&quot;).</p>
+<p>The opposite case: things that are <strong>only decoration</strong> should be skipped:</p>
+<pre class="code" data-lang="tsx"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span> <span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>emoji<span class="token punctuation">}</span></span> <span class="token attr-name">aria-hidden</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token punctuation">{</span>emoji<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span></code></pre>
+<p>Without <code>aria-hidden</code>, every card begins &quot;chocolate bar, Pocky&quot;. The name already says what it is.</p>
+<p><code>aria-label</code> only works on elements that have a <strong>role</strong>: buttons, links, inputs, landmarks. Lesson 17&#39;s <code>&lt;span aria-label=&quot;quantity&quot;&gt;</code> was silently ignored. Real text that is visually hidden works everywhere:</p>
+<pre class="code" data-lang="tsx"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span><span class="token punctuation">></span></span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>visually-hidden<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">Quantity </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span><span class="token plain-text">
+  </span><span class="token punctuation">{</span>line<span class="token punctuation">.</span>qty<span class="token punctuation">}</span><span class="token plain-text">
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span></code></pre>
+<pre class="code" data-lang="css"><code><span class="token selector">.visually-hidden</span> <span class="token punctuation">{</span>
+  <span class="token property">position</span><span class="token punctuation">:</span> absolute<span class="token punctuation">;</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> 1px<span class="token punctuation">;</span>
+  <span class="token property">height</span><span class="token punctuation">:</span> 1px<span class="token punctuation">;</span>
+  <span class="token property">margin</span><span class="token punctuation">:</span> -1px<span class="token punctuation">;</span>
+  <span class="token property">padding</span><span class="token punctuation">:</span> 0<span class="token punctuation">;</span>
+  <span class="token property">overflow</span><span class="token punctuation">:</span> hidden<span class="token punctuation">;</span>
+  <span class="token property">clip-path</span><span class="token punctuation">:</span> <span class="token function">inset</span><span class="token punctuation">(</span>50%<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token property">white-space</span><span class="token punctuation">:</span> nowrap<span class="token punctuation">;</span>
+  <span class="token property">border</span><span class="token punctuation">:</span> 0<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>It is hidden on screen but still read aloud. (<code>display: none</code> would hide it from screen readers too.)</p>
+<h2 id="structure-one-main-headings-titles">Structure: one main, headings, titles</h2>
+<p>Screen-reader users jump around by <strong>landmarks</strong> and <strong>headings</strong>, the way sighted users skim. So:</p>
+<ul>
+<li><strong>One <code>&lt;main&gt;</code></strong>, in <code>Layout</code>, around every page. Before, only the shelf had one (inside <code>Shelf</code>), so the basket and snack pages had none.</li>
+<li><strong>Every page has a heading.</strong> The shelf gained <code>&lt;h2 className=&quot;visually-hidden&quot;&gt;All snacks&lt;/h2&gt;</code>: invisible, but &quot;next heading&quot; lands on it.</li>
+<li><strong>Every page has a title.</strong> React 19 moves a <code>&lt;title&gt;</code> rendered anywhere into the document&#39;s <code>&lt;head&gt;</code>:</li>
+</ul>
+<pre class="code" data-lang="tsx"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>title</span><span class="token punctuation">></span></span><span class="token punctuation">{</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>snack<span class="token punctuation">.</span>name<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> · Yune's Snack Shelf</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>title</span><span class="token punctuation">></span></span></code></pre>
+<p>The title is the first thing a screen reader announces on a new page, and what you see in tabs and history. (The template string matters: <code>&lt;title&gt;</code> must contain one string, not several pieces of JSX.)</p>
+<h2 id="keyboard-skip-link-and-focus">Keyboard: skip link and focus</h2>
+<p>Keyboard users move with <kbd>Tab</kbd>. Two problems in a single-page app:</p>
+<p><strong>Getting past the header</strong> on every page. A <strong>skip link</strong> is the first focusable thing, visible only while focused:</p>
+<pre class="code" data-lang="tsx"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>skip-link<span class="token punctuation">"</span></span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#main<span class="token punctuation">"</span></span> <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  e<span class="token punctuation">.</span><span class="token function">preventDefault</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  mainRef<span class="token punctuation">.</span>current<span class="token operator">?.</span><span class="token function">focus</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+  Skip to content
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Header</span></span> <span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>main</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>main<span class="token punctuation">"</span></span> <span class="token attr-name">ref</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>mainRef<span class="token punctuation">}</span></span> <span class="token attr-name">tabIndex</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">}</span></span><span class="token punctuation">></span></span></code></pre>
+<p><code>tabIndex={-1}</code> makes <code>&lt;main&gt;</code> focusable from code without adding a Tab stop. The click handler focuses it directly, because a <code>#main</code> link would be read by the HashRouter as a route.</p>
+<p><strong>Where focus goes after navigating.</strong> A normal website loads a new page and the screen reader starts at the top. A single-page app only swaps content: focus stays on the link you clicked, which may no longer exist, and nothing is announced. So <code>Layout</code> moves focus to <code>&lt;main&gt;</code> when the path changes:</p>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">const</span> lastPath <span class="token operator">=</span> <span class="token function">useRef</span><span class="token punctuation">(</span>location<span class="token punctuation">.</span>pathname<span class="token punctuation">)</span>
+<span class="token function">useEffect</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>lastPath<span class="token punctuation">.</span>current <span class="token operator">===</span> location<span class="token punctuation">.</span>pathname<span class="token punctuation">)</span> <span class="token keyword">return</span>
+  lastPath<span class="token punctuation">.</span>current <span class="token operator">=</span> location<span class="token punctuation">.</span>pathname
+  mainRef<span class="token punctuation">.</span>current<span class="token operator">?.</span><span class="token function">focus</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">[</span>location<span class="token punctuation">.</span>pathname<span class="token punctuation">]</span><span class="token punctuation">)</span></code></pre>
+<p>It compares with the last path instead of using a &quot;skip the first run&quot; flag. A flag broke in testing: StrictMode runs effects twice in development (lesson 12), so the second run on page load stole focus. Comparing values is safe however often the effect runs.</p>
+<p><strong>Seeing focus.</strong> Every focusable thing gets a clear ring, only for the keyboard:</p>
+<pre class="code" data-lang="css"><code><span class="token selector">:focus-visible</span> <span class="token punctuation">{</span>
+  <span class="token property">outline</span><span class="token punctuation">:</span> 3px solid <span class="token function">var</span><span class="token punctuation">(</span>--accent<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token property">outline-offset</span><span class="token punctuation">:</span> 2px<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p><code>:focus-visible</code> shows for keyboard focus and not for mouse clicks. Never remove focus outlines without replacing them.</p>
+<h2 id="less-motion">Less motion</h2>
+<pre class="code" data-lang="css"><code><span class="token atrule"><span class="token rule">@media</span> <span class="token punctuation">(</span><span class="token property">prefers-reduced-motion</span><span class="token punctuation">:</span> reduce<span class="token punctuation">)</span></span> <span class="token punctuation">{</span>
+  <span class="token selector">*, *::before, *::after</span> <span class="token punctuation">{</span>
+    <span class="token property">transition</span><span class="token punctuation">:</span> none <span class="token important">!important</span><span class="token punctuation">;</span>
+    <span class="token property">animation</span><span class="token punctuation">:</span> none <span class="token important">!important</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<p>Operating systems let people ask for less motion. This turns off the meter&#39;s slide and the stale fade for them.</p>
+<h2 id="automated-checks-and-their-limits">Automated checks, and their limits</h2>
+<p><strong>axe</strong> is an open-source accessibility checker. <code>src/test/axe.ts</code> runs it over what a test rendered:</p>
+<pre class="code" data-lang="ts"><code><span class="token keyword">export</span> <span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">a11yProblems</span><span class="token punctuation">(</span>container<span class="token operator">:</span> Element<span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span><span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">></span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> results <span class="token operator">=</span> <span class="token keyword">await</span> axe<span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span>container<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+    rules<span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token string-property property">'color-contrast'</span><span class="token operator">:</span> <span class="token punctuation">{</span> enabled<span class="token operator">:</span> <span class="token boolean">false</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      region<span class="token operator">:</span> <span class="token punctuation">{</span> enabled<span class="token operator">:</span> <span class="token boolean">false</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> results<span class="token punctuation">.</span>violations<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span>v<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>v<span class="token punctuation">.</span>id<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">: </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>v<span class="token punctuation">.</span>help<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> (</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>v<span class="token punctuation">.</span>nodes<span class="token punctuation">.</span>length<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">×)</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<pre class="code" data-lang="tsx"><code><span class="token function">it</span><span class="token punctuation">(</span><span class="token string">'the basket and checkout form have no problems'</span><span class="token punctuation">,</span> <span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  useBasketStore<span class="token punctuation">.</span><span class="token function">setState</span><span class="token punctuation">(</span><span class="token punctuation">{</span> lines<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span> id<span class="token operator">:</span> <span class="token string">'pocky'</span><span class="token punctuation">,</span> qty<span class="token operator">:</span> <span class="token number">2</span> <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> id<span class="token operator">:</span> <span class="token string">'ramune'</span><span class="token punctuation">,</span> qty<span class="token operator">:</span> <span class="token number">1</span> <span class="token punctuation">}</span><span class="token punctuation">]</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token keyword">const</span> <span class="token punctuation">{</span> container <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">render</span><span class="token punctuation">(</span><span class="token function">withApp</span><span class="token punctuation">(</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span></span><span class="token punctuation">></span></span><span class="token plain-text">&lt;BasketPanel /></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">CheckoutForm</span></span> <span class="token punctuation">/></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span></span><span class="token punctuation">></span></span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token function">expect</span><span class="token punctuation">(</span><span class="token keyword">await</span> <span class="token function">a11yProblems</span><span class="token punctuation">(</span>container<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toEqual</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span></code></pre>
+<p>Colour contrast is off because jsdom cannot compute colours; check that in the browser with DevTools or the axe browser extension.</p>
+<p>The honest part: <strong>these tests passed before this lesson&#39;s fixes, too.</strong> The unnamed heart, the emoji read aloud, the ignored <code>aria-label</code>, the missing <code>&lt;main&gt;</code>, the lost focus after navigation: axe flagged none of them. Automated tools catch roughly a third of real problems, the mechanical ones (a missing label, an invalid attribute, an image without alt text). They are worth running on every change. The rest needs a person: tab through every page, then try it with a screen reader, eyes closed.</p>
+<h2 id="check-yourself">Check yourself</h2>
+<details>
+<summary><span>Why does the heart button need an <code>aria-label</code>?</span></summary>
+
+<p>Its visible content, &quot;❤ 3&quot;, is read as &quot;red heart, 3&quot;, which says neither what it does nor for which snack.</p>
+</details>
+
+<details>
+<summary><span>Why did <code>&lt;span aria-label="quantity"&gt;</code> not work?</span></summary>
+
+<p><code>aria-label</code> is only used on elements with a role, like buttons, links and inputs. On a plain span it is ignored. Visually hidden text works anywhere.</p>
+</details>
+
+<details>
+<summary><span>Why move focus to <code>&lt;main&gt;</code> after navigation?</span></summary>
+
+<p>A single-page app swaps content without loading a page, so focus stays on the old link and nothing is announced. Moving focus puts keyboard and screen-reader users at the start of the new content.</p>
+</details>
+
+<details>
+<summary><span>The axe tests pass. Is the app accessible?</span></summary>
+
+<p>Not necessarily. Automated checks catch only the mechanical problems; most issues, like confusing names or lost focus, need testing by hand with a keyboard and a screen reader.</p>
+</details>
+
+  </article>
+</main>
+<nav class="pager" aria-label="Lessons">
+  <a class="pager-prev" href="32-server-components.html"><span>Previous</span>Server Components and Next.js</a>
+  
+</nav>
+<footer class="foot-small">
+  <p>Snack Shelf, a course in React and TypeScript. 33 lessons.</p>
+</footer>
+</body>
+</html>

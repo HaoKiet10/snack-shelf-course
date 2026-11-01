@@ -1,0 +1,46 @@
+.shelf-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 24px 0;
+}
+
+.sort {
+  display: flex;
+  gap: 4px;
+}
+
+.sort button {
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.sort button[aria-pressed='true'] {
+  background: var(--peach);
+  border-color: var(--peach);
+  font-weight: 600;
+}
+
+.slow-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.results {
+  transition: opacity 0.15s;
+}
+
+/* Showing older results than the search box: fade them a little. */
+.results.stale {
+  opacity: 0.5;
+}

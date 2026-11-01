@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Performance and the React Compiler · Snack Shelf</title>
+<meta name="description" content="Measure before you optimise, learn what memo, useMemo and useCallback actually do, then switch on the React Compiler, which adds them for you. And the one design change that makes it all work for lists.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head>
+<body class="lesson-page">
+<header class="bar">
+  <a class="wordmark" href="../index.html">Snack Shelf</a>
+  <nav aria-label="Site"><a href="../index.html#lessons">Lessons</a><a href="https://github.com/HaoKiet10/snack-shelf-course">GitHub</a></nav>
+</header>
+<main class="lesson">
+  <div class="lesson-head" data-reveal>
+    <h1>Performance and the React Compiler</h1>
+    <p class="lead">Measure before you optimise, learn what memo, useMemo and useCallback actually do, then switch on the React Compiler, which adds them for you. And the one design change that makes it all work for lists.</p>
+    <p class="meta">Lesson 27 of 33, about 25 minutes</p>
+  </div>
+  <aside class="demo" aria-label="Live demo">
+    <div class="demo-sticky">
+      <div class="demo-frame" data-ui>
+        <iframe src="../demos/27-performance/index.html" title="Live demo for Performance and the React Compiler" loading="lazy"></iframe>
+      </div>
+      <p class="demo-links"><a href="../demos/27-performance/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a><a href="https://github.com/HaoKiet10/snack-shelf-course/tree/main/code/lessons/27-performance">Read this lesson's code</a></p>
+    </div>
+  </aside>
+  <article class="prose">
+<p>The app looks the same. Underneath, liking Pocky no longer makes the other five cards do any work, and the code has <strong>no</strong> <code>memo</code>, <code>useMemo</code> or <code>useCallback</code> in it.</p>
+<h2 id="first-is-it-slow">First, is it slow?</h2>
+<p>Almost never, in an app this size. A re-render (lesson 7) means calling some functions and comparing their results; React only touches the DOM where something changed. Six cards re-rendering takes a fraction of a millisecond.</p>
+<p>So the rule is <strong>measure first</strong>. Install the <strong>React Developer Tools</strong> browser extension, which adds two tabs to DevTools:</p>
+<ul>
+<li><strong>Components</strong> → ⚙ → <em>Highlight updates when components render</em>: every re-rendering component flashes. Like a snack and watch which ones flash.</li>
+<li><strong>Profiler</strong> → record, click around, stop: a chart of every render, how long each component took, and <em>why</em> it rendered (&quot;props changed: onLike&quot;).</li>
+</ul>
+<p>Optimise when the Profiler shows a real cost: a big list, an expensive calculation, typing that feels sticky. Otherwise the tools below make the code harder to read for nothing.</p>
+<h2 id="why-everything-re-renders">Why everything re-renders</h2>
+<p>When a component re-renders, <strong>all of its children re-render too</strong>, by default. React does not check whether their props changed, because comparing props also costs time, and most components are cheap.</p>
+<p>Liking Pocky changes <code>likes</code> in <code>LikesProvider</code>, so every component reading that context re-renders: <code>Shelf</code>, then all six <code>SnackCard</code>s. Five of them get the same name, price and likes as before, and do work that produces exactly the same result.</p>
+<h2 id="the-manual-tools">The manual tools</h2>
+<p><strong><code>memo</code></strong> wraps a component so it skips re-rendering when its props are the same as last time:</p>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">memo</span><span class="token punctuation">(</span>SnackCard<span class="token punctuation">)</span></code></pre>
+<p>&quot;The same&quot; means <code>Object.is</code> for each prop, the identity check from lesson 11. Numbers and strings compare by value. <strong>Functions and objects compare by identity</strong>, and here is the trap:</p>
+<pre class="code" data-lang="tsx"><code><span class="token operator">&lt;</span>SnackCard onLike<span class="token operator">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">like</span><span class="token punctuation">(</span>snack<span class="token punctuation">.</span>id<span class="token punctuation">)</span><span class="token punctuation">}</span> … <span class="token operator">/</span><span class="token operator">></span></code></pre>
+<p>That arrow function is created <strong>new on every render</strong>. To <code>memo</code>, a new function is a different prop, so the card re-renders anyway. <code>memo</code> alone did nothing.</p>
+<p><strong><code>useCallback</code></strong> keeps the same function between renders, until its dependencies change:</p>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">const</span> like <span class="token operator">=</span> <span class="token function">useCallback</span><span class="token punctuation">(</span><span class="token punctuation">(</span>id<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  <span class="token function">setLikes</span><span class="token punctuation">(</span><span class="token punctuation">(</span>prev<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">(</span><span class="token punctuation">{</span> <span class="token operator">...</span>prev<span class="token punctuation">,</span> <span class="token punctuation">[</span>id<span class="token punctuation">]</span><span class="token operator">:</span> <span class="token punctuation">(</span>prev<span class="token punctuation">[</span>id<span class="token punctuation">]</span> <span class="token operator">??</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">1</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">[</span>setLikes<span class="token punctuation">]</span><span class="token punctuation">)</span></code></pre>
+<p><strong><code>useMemo</code></strong> does the same for a calculated value:</p>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">const</span> visible <span class="token operator">=</span> <span class="token function">useMemo</span><span class="token punctuation">(</span>
+  <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> snacks<span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span> <span class="token operator">=></span> s<span class="token punctuation">.</span>name<span class="token punctuation">.</span><span class="token function">toLowerCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">includes</span><span class="token punctuation">(</span>q<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token punctuation">[</span>snacks<span class="token punctuation">,</span> q<span class="token punctuation">]</span><span class="token punctuation">,</span>
+<span class="token punctuation">)</span></code></pre>
+<p>Getting all three right by hand is fiddly. Miss one dependency and you get stale values (lesson 12&#39;s warning). Add one unstable prop and the <code>memo</code> is silently useless. That is why the React team built a compiler.</p>
+<h2 id="the-react-compiler">The React Compiler</h2>
+<p>The <strong>React Compiler</strong> reads your components and hooks at build time and inserts the memoisation for you: it works out what each value depends on and caches it, at a finer grain than you would by hand. It is a Babel plugin, added to <code>vite.config.ts</code>:</p>
+<pre class="code" data-lang="bash"><code><span class="token function">npm</span> <span class="token function">install</span> <span class="token parameter variable">-D</span> @rolldown/plugin-babel @babel/core babel-plugin-react-compiler</code></pre>
+<pre class="code" data-lang="ts"><code><span class="token keyword">import</span> babel <span class="token keyword">from</span> <span class="token string">'@rolldown/plugin-babel'</span>
+<span class="token keyword">import</span> react<span class="token punctuation">,</span> <span class="token punctuation">{</span> reactCompilerPreset <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'@vitejs/plugin-react'</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">defineConfig</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  plugins<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token function">react</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">babel</span><span class="token punctuation">(</span><span class="token punctuation">{</span> presets<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token function">reactCompilerPreset</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token comment">// …</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span></code></pre>
+<p>That is the whole setup. In React DevTools, compiled components get a <strong>Memo ✨</strong> badge.</p>
+<p>It relies on the rules you have followed since lesson 4: components are <strong>pure</strong> (same props and state, same JSX), and you <strong>never change props, state or values from a previous render</strong> in place. Code that breaks those rules is skipped by the compiler, and works as before.</p>
+<h2 id="the-design-change-it-still-needs">The design change it still needs</h2>
+<p>The compiler cannot memoise <em>per item inside a loop</em>. In a <code>map</code>, an arrow function like <code>() =&gt; like(snack.id)</code> is still created fresh for each card on each render. So the card&#39;s API changed: the card passes <strong>its own id</strong> back, and the shelf hands every card <strong>the same function</strong>:</p>
+<pre class="code" data-lang="tsx"><code><span class="token comment">// SnackCard: the callback takes the id</span>
+<span class="token keyword">type</span> <span class="token class-name">SnackCardProps</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+  id<span class="token operator">:</span> <span class="token builtin">string</span>
+  …
+  <span class="token function-variable function">onLike</span><span class="token operator">:</span> <span class="token punctuation">(</span>id<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token keyword">void</span>
+  <span class="token function-variable function">onAdd</span><span class="token operator">:</span> <span class="token punctuation">(</span>id<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token keyword">void</span>
+<span class="token punctuation">}</span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">onLike</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">…</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span></code></pre>
+<pre class="code" data-lang="tsx"><code><span class="token comment">// Shelf: one function for all cards</span>
+<span class="token operator">&lt;</span>SnackCard … onLike<span class="token operator">=</span><span class="token punctuation">{</span>like<span class="token punctuation">}</span> onAdd<span class="token operator">=</span><span class="token punctuation">{</span>add<span class="token punctuation">}</span> <span class="token operator">/</span><span class="token operator">></span></code></pre>
+<p><code>like</code> comes from context, and <code>add</code> only uses <code>dispatch</code> and the toast&#39;s <code>show</code>, which never change, plus the list of snacks for the name. So the compiler keeps both functions identical between renders, unless the visible snacks change. Now, when Pocky is liked, Onigiri&#39;s card gets props that are all the same as before, and the compiled card returns its cached result without re-creating anything.</p>
+<p>Undo needed the same treatment. The old version remembered the quantity before adding, which made <code>add</code> depend on the basket and change on every add. A new action, <code>removedOne</code>, takes one away instead, so <code>add</code> no longer needs the basket at all:</p>
+<pre class="code" data-lang="ts"><code><span class="token keyword">case</span> <span class="token string">'removedOne'</span><span class="token operator">:</span>
+  <span class="token keyword">return</span> lines
+    <span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span>l<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">(</span>l<span class="token punctuation">.</span>id <span class="token operator">===</span> action<span class="token punctuation">.</span>id <span class="token operator">?</span> <span class="token punctuation">{</span> <span class="token operator">...</span>l<span class="token punctuation">,</span> qty<span class="token operator">:</span> l<span class="token punctuation">.</span>qty <span class="token operator">-</span> <span class="token number">1</span> <span class="token punctuation">}</span> <span class="token operator">:</span> l<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span><span class="token punctuation">(</span>l<span class="token punctuation">)</span> <span class="token operator">=></span> l<span class="token punctuation">.</span>qty <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span></code></pre>
+<p>This was checked in the running app: after liking Pocky, Onigiri&#39;s card received the very same <code>onLike</code> and <code>onAdd</code> functions, and its rendered output was reused.</p>
+<h2 id="should-you-still-write-usememo">Should you still write useMemo?</h2>
+<p>With the compiler on: rarely. Its docs suggest keeping your existing ones but not adding new ones by default. Reach for them when the Profiler shows a specific problem the compiler did not solve, or when a value is used as an effect dependency and must not change identity. Without the compiler, the advice is the same as always: measure, then memoise the part that is actually slow.</p>
+<h2 id="check-yourself">Check yourself</h2>
+<details>
+<summary><span>When Shelf re-renders, why do all the cards re-render by default?</span></summary>
+
+<p>React re-renders every child of a re-rendering component unless told otherwise, because checking props has its own cost and most components are cheap.</p>
+</details>
+
+<details>
+<summary><span>Why does <code>memo(SnackCard)</code> alone not help with <code>onLike={() =&gt; like(snack.id)}</code>?</span></summary>
+
+<p>The arrow function is new on every render, so it is a different prop each time, and <code>memo</code> sees changed props.</p>
+</details>
+
+<details>
+<summary><span>What does the React Compiler need from your code?</span></summary>
+
+<p>Pure components and hooks, and no mutating of props, state or earlier render values. It skips code that breaks the rules.</p>
+</details>
+
+<details>
+<summary><span>Why did <code>onLike</code> change to take the snack's id?</span></summary>
+
+<p>So the shelf can pass the same function to every card. Per-item arrow functions in a <code>map</code> cannot be memoised, so they would change on every render.</p>
+</details>
+
+  </article>
+</main>
+<nav class="pager" aria-label="Lessons">
+  <a class="pager-prev" href="26-portals.html"><span>Previous</span>Portals and toasts</a>
+  <a class="pager-next" href="28-suspense.html"><span>Next</span>Suspense and lazy loading</a>
+</nav>
+<footer class="foot-small">
+  <p>Snack Shelf, a course in React and TypeScript. 33 lessons.</p>
+</footer>
+</body>
+</html>

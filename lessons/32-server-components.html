@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Server Components and Next.js · Snack Shelf</title>
+<meta name="description" content="React that runs on the server. Rebuild the shelf in Next.js with Server Components that read data directly, Client Components only where there is interaction, and a server action behind the order form.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head>
+<body class="lesson-page">
+<header class="bar">
+  <a class="wordmark" href="../index.html">Snack Shelf</a>
+  <nav aria-label="Site"><a href="../index.html#lessons">Lessons</a><a href="https://github.com/HaoKiet10/snack-shelf-course">GitHub</a></nav>
+</header>
+<main class="lesson">
+  <div class="lesson-head" data-reveal>
+    <h1>Server Components and Next.js</h1>
+    <p class="lead">React that runs on the server. Rebuild the shelf in Next.js with Server Components that read data directly, Client Components only where there is interaction, and a server action behind the order form.</p>
+    <p class="meta">Lesson 32 of 33, about 30 minutes</p>
+  </div>
+  <aside class="demo" aria-label="Running this lesson's app">
+    <div class="demo-sticky">
+      <div class="demo-frame demo-note">
+        <p>This lesson's app runs on a Node server, so it can't play inside this page. Run it on your computer:</p>
+        <pre><code>cd code/lessons/32-server-components
+npm install
+npm run dev</code></pre>
+        <p>Then open http://localhost:3000.</p>
+      </div>
+      <p class="demo-links"><a href="https://github.com/HaoKiet10/snack-shelf-course/tree/main/code/lessons/32-server-components">Read this lesson's code</a></p>
+    </div>
+  </aside>
+  <article class="prose">
+<p>This lesson&#39;s app is a <strong>separate project</strong>, <code>snack-shelf-next</code>, because it needs something the Vite app cannot have: a server. It shows the shelf, a page per snack, like buttons, and an order form whose action runs on the server.</p>
+<h2 id="everything-so-far-ran-in-the-browser">Everything so far ran in the browser</h2>
+<p>The Vite app is a <strong>single-page app</strong> (lesson 14). The server sends an almost empty <code>index.html</code> and a JavaScript file; the browser downloads it, runs React, then fetches <code>snacks.json</code>, then finally shows snacks. Every component, and every library it imports, is downloaded by every visitor.</p>
+<p>That has costs: a blank page until the JavaScript runs, a waterfall of &quot;load code, then load data&quot;, and secrets that can never go in front-end code (lesson 14).</p>
+<p><strong>React Server Components</strong> let some components run <strong>on the server</strong> instead. They render there, send their result to the browser, and their own code is never downloaded.</p>
+<h2 id="server-components">Server Components</h2>
+<p>In Next.js&#39;s <code>app</code> folder, every component is a Server Component unless it says otherwise:</p>
+<pre class="code" data-lang="tsx"><code><span class="token comment">// app/page.tsx: the page at "/"</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">ShelfPage</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> snacks <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token function">getSnacks</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>shelf<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token punctuation">{</span>snacks<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span>snack<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">(</span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>card<span class="token punctuation">"</span></span> <span class="token attr-name">key</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>snack<span class="token punctuation">.</span>id<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+          </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>emoji<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token punctuation">{</span>snack<span class="token punctuation">.</span>emoji<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span><span class="token plain-text">
+          </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h2</span><span class="token punctuation">></span></span><span class="token plain-text">&lt;Link href=</span><span class="token punctuation">{</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">/snack/</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>snack<span class="token punctuation">.</span>id<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">}</span><span class="token plain-text">></span><span class="token punctuation">{</span>snack<span class="token punctuation">.</span>name<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Link</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h2</span><span class="token punctuation">></span></span><span class="token plain-text">
+          </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>price<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">$</span><span class="token punctuation">{</span>snack<span class="token punctuation">.</span>price<span class="token punctuation">.</span><span class="token function">toFixed</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span><span class="token plain-text">
+          </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">LikeButton</span></span> <span class="token attr-name">snackId</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>snack<span class="token punctuation">.</span>id<span class="token punctuation">}</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
+        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+      <span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<p>Look at what is missing: no <code>useEffect</code>, no <code>useQuery</code>, no loading state, no error state. The component is <strong>async</strong> and simply awaits its data, because it runs on the server <strong>before</strong> anything is sent. The visitor receives finished HTML with the snacks already in it.</p>
+<p>And <code>getSnacks</code> reads a file from disk:</p>
+<pre class="code" data-lang="ts"><code><span class="token keyword">export</span> <span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">getSnacks</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span>Snack<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">></span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> file <span class="token operator">=</span> path<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span>process<span class="token punctuation">.</span><span class="token function">cwd</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">'data'</span><span class="token punctuation">,</span> <span class="token string">'snacks.json'</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span><span class="token keyword">await</span> <span class="token function">readFile</span><span class="token punctuation">(</span>file<span class="token punctuation">,</span> <span class="token string">'utf8'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">as</span> Snack<span class="token punctuation">[</span><span class="token punctuation">]</span>
+<span class="token punctuation">}</span></code></pre>
+<p>A browser cannot read files. On the server this could just as well be a database query with a password in it: the code never leaves the server.</p>
+<h2 id="client-components">Client Components</h2>
+<p>Server Components cannot have state, effects or event handlers: there is no user on the server to click anything. Interactive parts are <strong>Client Components</strong>, marked by a directive at the top of the file:</p>
+<pre class="code" data-lang="tsx"><code><span class="token string">'use client'</span>
+
+<span class="token keyword">import</span> <span class="token punctuation">{</span> useState <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'react'</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">LikeButton</span><span class="token punctuation">(</span><span class="token punctuation">{</span> snackId <span class="token punctuation">}</span><span class="token operator">:</span> <span class="token punctuation">{</span> snackId<span class="token operator">:</span> <span class="token builtin">string</span> <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> <span class="token punctuation">[</span>likes<span class="token punctuation">,</span> setLikes<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">useState</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>likes <span class="token operator">></span> <span class="token number">0</span> <span class="token operator">?</span> <span class="token string">'like liked'</span> <span class="token operator">:</span> <span class="token string">'like'</span><span class="token punctuation">}</span></span> <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">setLikes</span><span class="token punctuation">(</span><span class="token punctuation">(</span>l<span class="token punctuation">)</span> <span class="token operator">=></span> l <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+      ❤ </span><span class="token punctuation">{</span>likes<span class="token punctuation">}</span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<p>This is ordinary React, the kind from lessons 4 to 31. Its code is sent to the browser. <code>&#39;use client&#39;</code> marks a <strong>boundary</strong>: this file and everything it imports become client code.</p>
+<p>Server Components can render Client Components and pass them props, as the shelf does with <code>LikeButton</code>. Those props cross from the server to the browser, so they must be <strong>serialisable</strong>: strings, numbers, plain objects and arrays, and JSX. Not functions (except server functions, below) and not class instances.</p>
+<p>The usual design: <strong>Server Components by default, Client Components at the leaves</strong>, where the interaction is. The shelf&#39;s HTML, names and prices cost the browser no JavaScript; only the like buttons and the order form do.</p>
+<h2 id="routing-by-folders">Routing by folders</h2>
+<p>Next.js routes by files instead of a <code>&lt;Routes&gt;</code> list (lesson 21):</p>
+<pre class="diagram"><code>app/
+  layout.tsx           wraps every page (lesson 21's Layout)
+  page.tsx             &quot;/&quot;
+  not-found.tsx        anything that doesn't exist
+  snack/[id]/page.tsx  &quot;/snack/pocky&quot;, &quot;/snack/mochi&quot;, …</code></pre>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">type</span> <span class="token class-name">Props</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+  params<span class="token operator">:</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span><span class="token punctuation">{</span> id<span class="token operator">:</span> <span class="token builtin">string</span> <span class="token punctuation">}</span><span class="token operator">></span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">export</span> <span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">generateStaticParams</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> snacks <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token function">getSnacks</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> snacks<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">(</span><span class="token punctuation">{</span> id<span class="token operator">:</span> s<span class="token punctuation">.</span>id <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">SnackPage</span><span class="token punctuation">(</span><span class="token punctuation">{</span> params <span class="token punctuation">}</span><span class="token operator">:</span> Props<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> <span class="token punctuation">{</span> id <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token keyword">await</span> params
+  <span class="token keyword">const</span> snack <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token function">getSnack</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>snack<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">notFound</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+  <span class="token comment">// …</span>
+<span class="token punctuation">}</span></code></pre>
+<p><code>[id]</code> in the folder name is the parameter. <code>params</code> is a Promise in current Next.js, so it is awaited. <code>notFound()</code> stops rendering and shows <code>not-found.tsx</code>; it never returns, so TypeScript knows <code>snack</code> is defined after it. <code>generateStaticParams</code> lists the ids so Next can render those pages <strong>at build time</strong>: <code>npm run build</code> reports six pre-rendered snack pages.</p>
+<h2 id="server-actions">Server actions</h2>
+<p>The order form is a Client Component using lesson 22&#39;s <code>useActionState</code>, but its action is imported from a file marked <code>&#39;use server&#39;</code>:</p>
+<pre class="code" data-lang="ts"><code><span class="token string">'use server'</span>
+
+<span class="token keyword">export</span> <span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">placeOrder</span><span class="token punctuation">(</span>_prev<span class="token operator">:</span> OrderState<span class="token punctuation">,</span> formData<span class="token operator">:</span> FormData<span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span>OrderState<span class="token operator">></span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> snackId <span class="token operator">=</span> <span class="token function">String</span><span class="token punctuation">(</span>formData<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'snackId'</span><span class="token punctuation">)</span> <span class="token operator">??</span> <span class="token string">''</span><span class="token punctuation">)</span>
+  <span class="token keyword">const</span> qty <span class="token operator">=</span> <span class="token function">Number</span><span class="token punctuation">(</span>formData<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'qty'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+  <span class="token keyword">const</span> snack <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token function">getSnack</span><span class="token punctuation">(</span>snackId<span class="token punctuation">)</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>snack<span class="token punctuation">)</span> <span class="token keyword">return</span> <span class="token punctuation">{</span> error<span class="token operator">:</span> <span class="token string">'That snack no longer exists.'</span> <span class="token punctuation">}</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>Number<span class="token punctuation">.</span><span class="token function">isInteger</span><span class="token punctuation">(</span>qty<span class="token punctuation">)</span> <span class="token operator">||</span> qty <span class="token operator">&lt;</span> <span class="token number">1</span> <span class="token operator">||</span> qty <span class="token operator">></span> <span class="token number">9</span><span class="token punctuation">)</span> <span class="token keyword">return</span> <span class="token punctuation">{</span> error<span class="token operator">:</span> <span class="token string">'Choose between 1 and 9.'</span> <span class="token punctuation">}</span>
+
+  <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">[server] order: </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>qty<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> × </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>snack<span class="token punctuation">.</span>name<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> <span class="token punctuation">{</span> orderNo<span class="token operator">:</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">YS-</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token function">String</span><span class="token punctuation">(</span>Date<span class="token punctuation">.</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">slice</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">5</span><span class="token punctuation">)</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">-</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>qty<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<pre class="code" data-lang="tsx"><code><span class="token string">'use client'</span>
+
+<span class="token keyword">const</span> <span class="token punctuation">[</span>state<span class="token punctuation">,</span> formAction<span class="token punctuation">,</span> isPending<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token generic-function"><span class="token function">useActionState</span><span class="token generic class-name"><span class="token operator">&lt;</span>OrderState<span class="token punctuation">,</span> FormData<span class="token operator">></span></span></span><span class="token punctuation">(</span>placeOrder<span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>form</span> <span class="token attr-name">action</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>formAction<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">…</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>form</span><span class="token punctuation">></span></span></code></pre>
+<p>Every function exported from a <code>&#39;use server&#39;</code> file is a <strong>server function</strong>. Its code stays on the server; the browser gets a reference, and calling it becomes a request that Next.js handles for you. No API route, no <code>fetch</code>, no JSON by hand. When this was tested, ordering 3 Pocky in the browser printed <code>[server] order: 3 × Pocky</code> in the <strong>server&#39;s</strong> terminal.</p>
+<p>Two important consequences:</p>
+<ul>
+<li><strong>Validate on the server.</strong> Anyone can call a server function with any data, not only your form. The <code>qty</code> check here is the real one; the <code>min</code>/<code>max</code> on the input are only a convenience.</li>
+<li><strong>It works before JavaScript loads.</strong> The form posts like a classic HTML form, and the server runs the action. This is called <strong>progressive enhancement</strong>.</li>
+</ul>
+<h2 id="running-it">Running it</h2>
+<pre class="code" data-lang="bash"><code><span class="token builtin class-name">cd</span> snack-shelf-next
+<span class="token function">npm</span> <span class="token function">install</span>
+<span class="token function">npm</span> run dev</code></pre>
+<p>Then open <a href="http://localhost:3000">http://localhost:3000</a>. The course repository has the same project in <code>code/lessons/32-server-components</code>. It cannot run inside this page as the other demos do, because it needs a server.</p>
+<h2 id="when-to-use-which">When to use which</h2>
+<div class="table-wrap"><table><thead><tr><th></th><th>Vite single-page app</th><th>Next.js with Server Components</th></tr></thead><tbody><tr><td>hosting</td><td>any static host (lesson 15)</td><td>a Node server, or a host that supports Next</td></tr>
+<tr><td>first screen</td><td>blank until JavaScript runs</td><td>HTML with content straight away</td></tr>
+<tr><td>data</td><td>fetched from the browser</td><td>read directly on the server</td></tr>
+<tr><td>secrets</td><td>impossible in front-end code</td><td>safe in server code</td></tr>
+<tr><td>best for</td><td>apps behind a login, tools, dashboards</td><td>public sites, shops, content, SEO</td></tr></tbody></table></div>
+<p>Everything from the earlier lessons still applies: Client Components are the React you know, and state, effects, context, forms and testing all work the same in them. Server Components add a second kind of component on top. Next.js is the most widely used framework for them, and other frameworks are adding support too.</p>
+<h2 id="check-yourself">Check yourself</h2>
+<details>
+<summary><span>Why can a Server Component be <code>async</code> and await its data directly?</span></summary>
+
+<p>It runs on the server before anything is sent to the browser, so it can wait for data and send finished HTML. There is no screen to show a loading state on yet.</p>
+</details>
+
+<details>
+<summary><span>What does <code>'use client'</code> mean?</span></summary>
+
+<p>This file and everything it imports run in the browser too, so they can use state, effects and event handlers. Their code is sent to the browser.</p>
+</details>
+
+<details>
+<summary><span>Why can't a Server Component pass an ordinary function as a prop to a Client Component?</span></summary>
+
+<p>Props from a Server Component travel from the server to the browser and must be serialisable. A function is code with a closure and cannot be sent like that. Server functions are the exception, sent as references.</p>
+</details>
+
+<details>
+<summary><span>Why must <code>placeOrder</code> validate <code>qty</code> even though the input has <code>min</code> and <code>max</code>?</span></summary>
+
+<p>A server function is a public endpoint. Anyone can call it with any data, bypassing the form, so only the server&#39;s own check can be trusted.</p>
+</details>
+
+  </article>
+</main>
+<nav class="pager" aria-label="Lessons">
+  <a class="pager-prev" href="31-zustand.html"><span>Previous</span>State libraries (Zustand)</a>
+  <a class="pager-next" href="33-accessibility.html"><span>Next</span>Accessibility</a>
+</nav>
+<footer class="foot-small">
+  <p>Snack Shelf, a course in React and TypeScript. 33 lessons.</p>
+</footer>
+</body>
+</html>

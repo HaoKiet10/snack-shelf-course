@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>State libraries (Zustand) · Snack Shelf</title>
+<meta name="description" content="Move the basket out of React context into a small Zustand store. No provider, components that re-render only when the part they pick changes, saving built in, and the same reducer underneath.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head>
+<body class="lesson-page">
+<header class="bar">
+  <a class="wordmark" href="../index.html">Snack Shelf</a>
+  <nav aria-label="Site"><a href="../index.html#lessons">Lessons</a><a href="https://github.com/HaoKiet10/snack-shelf-course">GitHub</a></nav>
+</header>
+<main class="lesson">
+  <div class="lesson-head" data-reveal>
+    <h1>State libraries (Zustand)</h1>
+    <p class="lead">Move the basket out of React context into a small Zustand store. No provider, components that re-render only when the part they pick changes, saving built in, and the same reducer underneath.</p>
+    <p class="meta">Lesson 31 of 33, about 20 minutes</p>
+  </div>
+  <aside class="demo" aria-label="Live demo">
+    <div class="demo-sticky">
+      <div class="demo-frame" data-ui>
+        <iframe src="../demos/31-zustand/index.html" title="Live demo for State libraries (Zustand)" loading="lazy"></iframe>
+      </div>
+      <p class="demo-links"><a href="../demos/31-zustand/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a><a href="https://github.com/HaoKiet10/snack-shelf-course/tree/main/code/lessons/31-zustand">Read this lesson's code</a></p>
+    </div>
+  </aside>
+  <article class="prose">
+<p>The basket works exactly as before. But <code>BasketContext</code>, <code>BasketProvider</code> and <code>useBasketState</code> are <strong>deleted</strong>, and the basket changing no longer re-renders the shelf.</p>
+<h2 id="where-context-gets-awkward">Where context gets awkward</h2>
+<p>Lesson 19&#39;s context works, with two costs that grow with the app:</p>
+<ul>
+<li><strong>Every reader re-renders on any change.</strong> <code>Shelf</code> only needs <code>dispatch</code>, which never changes, yet it re-rendered on every add, because the context <em>value</em> (lines, count, total, dispatch) changed.</li>
+<li><strong>Providers pile up</strong> in <code>main.tsx</code>, in an order that matters, and every test has to wrap components in the right ones.</li>
+</ul>
+<p>For app-wide client state that changes often, many teams use a small <strong>state library</strong> instead. <strong>Zustand</strong> is one of the simplest.</p>
+<pre class="code" data-lang="bash"><code><span class="token function">npm</span> <span class="token function">install</span> zustand</code></pre>
+<h2 id="a-store">A store</h2>
+<pre class="code" data-lang="ts"><code><span class="token keyword">type</span> <span class="token class-name">BasketStore</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+  lines<span class="token operator">:</span> BasketLine<span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token function-variable function">dispatch</span><span class="token operator">:</span> <span class="token punctuation">(</span>action<span class="token operator">:</span> BasketAction<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token keyword">void</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">export</span> <span class="token keyword">const</span> useBasketStore <span class="token operator">=</span> <span class="token generic-function"><span class="token function">create</span><span class="token generic class-name"><span class="token operator">&lt;</span>BasketStore<span class="token operator">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">(</span>
+  <span class="token function">persist</span><span class="token punctuation">(</span>
+    <span class="token punctuation">(</span>set<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">(</span><span class="token punctuation">{</span>
+      lines<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+      <span class="token function-variable function">dispatch</span><span class="token operator">:</span> <span class="token punctuation">(</span>action<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">set</span><span class="token punctuation">(</span><span class="token punctuation">(</span>state<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">(</span><span class="token punctuation">{</span> lines<span class="token operator">:</span> <span class="token function">basketReducer</span><span class="token punctuation">(</span>state<span class="token punctuation">.</span>lines<span class="token punctuation">,</span> action<span class="token punctuation">)</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      name<span class="token operator">:</span> <span class="token string">'snack-shelf-basket-store'</span><span class="token punctuation">,</span>
+      <span class="token function-variable function">partialize</span><span class="token operator">:</span> <span class="token punctuation">(</span>state<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">(</span><span class="token punctuation">{</span> lines<span class="token operator">:</span> state<span class="token punctuation">.</span>lines <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">)</span><span class="token punctuation">,</span>
+<span class="token punctuation">)</span></code></pre>
+<p><code>create</code> makes a <strong>store</strong>: state that lives <strong>outside React</strong>, in a module, plus a hook to read it. The function inside gets <code>set</code>, which updates the state (like a setter, it merges what you return). Here the store holds the lines and a <code>dispatch</code> that runs <strong>lesson 17&#39;s reducer</strong>. The rules of the basket did not change at all; only where the state lives.</p>
+<p><code>persist</code> is Zustand middleware that saves the store to <code>localStorage</code> and loads it on start, replacing lesson 18&#39;s <code>useBasketState</code>. <code>partialize</code> saves only the data; functions cannot be stored as JSON. (The odd <code>create&lt;BasketStore&gt;()(…)</code>, with an empty call first, is how Zustand gets TypeScript&#39;s inference right when middleware is involved.)</p>
+<h2 id="selectors">Selectors</h2>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">const</span> lines <span class="token operator">=</span> <span class="token function">useBasketStore</span><span class="token punctuation">(</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span> <span class="token operator">=></span> s<span class="token punctuation">.</span>lines<span class="token punctuation">)</span>
+<span class="token keyword">const</span> dispatch <span class="token operator">=</span> <span class="token function">useBasketStore</span><span class="token punctuation">(</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span> <span class="token operator">=></span> s<span class="token punctuation">.</span>dispatch<span class="token punctuation">)</span></code></pre>
+<p>The function you pass is a <strong>selector</strong>: it picks the part of the store this component needs. Zustand re-renders the component <strong>only when the selector&#39;s result changes</strong> (compared with <code>Object.is</code>). So:</p>
+<ul>
+<li><code>Shelf</code> selects <code>dispatch</code>, which never changes. Adding to the basket no longer re-renders the shelf.</li>
+<li><code>Header</code> selects the count:</li>
+</ul>
+<pre class="code" data-lang="ts"><code><span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">useBasketCount</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token function">useBasketStore</span><span class="token punctuation">(</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">countItems</span><span class="token punctuation">(</span>s<span class="token punctuation">.</span>lines<span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<p>The result is a number, so the header re-renders only when the count really changes.</p>
+<p>Select the <strong>smallest thing you need</strong>. Selecting the whole store, <code>useBasketStore((s) =&gt; s)</code>, re-renders on every change, like context. And never return a <strong>new</strong> object or array from a selector, like <code>(s) =&gt; ({ lines: s.lines })</code>: it is different on every call, so it always counts as changed, and in Zustand 5 that causes an endless render loop. Select values one at a time, or wrap the selector in Zustand&#39;s <code>useShallow</code>, which compares the object&#39;s fields instead.</p>
+<p>Derived values combining sources become small hooks:</p>
+<pre class="code" data-lang="ts"><code><span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">useBasketTotal</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> lines <span class="token operator">=</span> <span class="token function">useBasketStore</span><span class="token punctuation">(</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span> <span class="token operator">=></span> s<span class="token punctuation">.</span>lines<span class="token punctuation">)</span>
+  <span class="token keyword">const</span> <span class="token punctuation">{</span> data<span class="token operator">:</span> snacks <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">useQuery</span><span class="token punctuation">(</span>snacksQuery<span class="token punctuation">)</span>
+  <span class="token keyword">const</span> prices <span class="token operator">=</span> Object<span class="token punctuation">.</span><span class="token function">fromEntries</span><span class="token punctuation">(</span>snacks<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">[</span>s<span class="token punctuation">.</span>id<span class="token punctuation">,</span> s<span class="token punctuation">.</span>price<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> <span class="token function">basketTotal</span><span class="token punctuation">(</span>lines<span class="token punctuation">,</span> prices<span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<h2 id="no-provider">No provider</h2>
+<pre class="code" data-lang="tsx"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">QueryClientProvider</span></span> <span class="token attr-name">client</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>queryClient<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">HashRouter</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">LikesProvider</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">ToastProvider</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">App</span></span> <span class="token punctuation">/></span></span></code></pre>
+<p><code>BasketProvider</code> is gone. A store is a module, so any file can import it. That includes code <strong>outside components</strong>: <code>useBasketStore.getState()</code> reads it and <code>useBasketStore.setState(…)</code> writes it, from anywhere.</p>
+<p>Tests use that directly. Instead of wrapping the form in a fake context, a test puts a known basket in the store:</p>
+<pre class="code" data-lang="ts"><code><span class="token function">beforeEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  useBasketStore<span class="token punctuation">.</span><span class="token function">setState</span><span class="token punctuation">(</span><span class="token punctuation">{</span> lines<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span> id<span class="token operator">:</span> <span class="token string">'pocky'</span><span class="token punctuation">,</span> qty<span class="token operator">:</span> <span class="token number">2</span> <span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">,</span> dispatch <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span></code></pre>
+<p>The total also needs prices, so the test <strong>seeds the query cache</strong> instead of fetching:</p>
+<pre class="code" data-lang="ts"><code>client<span class="token punctuation">.</span><span class="token function">setQueryData</span><span class="token punctuation">(</span>snacksQuery<span class="token punctuation">.</span>queryKey<span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">{</span> id<span class="token operator">:</span> <span class="token string">'pocky'</span><span class="token punctuation">,</span> price<span class="token operator">:</span> <span class="token number">2.5</span><span class="token punctuation">,</span> … <span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">)</span></code></pre>
+<h2 id="which-tool-for-which-state">Which tool for which state</h2>
+<p>The shelf now uses all of them, each for what it is good at:</p>
+<div class="table-wrap"><table><thead><tr><th>state</th><th>tool</th><th>why</th></tr></thead><tbody><tr><td>search text, form fields, the ✓ flash</td><td><code>useState</code></td><td>only one component cares</td></tr>
+<tr><td>the snacks</td><td>TanStack Query</td><td>server state: caching, refetching (lesson 23)</td></tr>
+<tr><td>the search in the address bar</td><td>the URL</td><td>shareable, survives Back (lesson 21)</td></tr>
+<tr><td>the basket</td><td>a Zustand store</td><td>client state many components read, changes often</td></tr>
+<tr><td>likes, toasts</td><td>context</td><td>app-wide, but simple; context is fine here</td></tr></tbody></table></div>
+<p>Context is still a good choice for values that rarely change (the theme, the logged-in user, the language) or that belong to one part of the tree. Reach for a store when many components read state that changes often. Other libraries in the same space are <strong>Redux Toolkit</strong> (more structure, built-in devtools, common in large teams) and <strong>Jotai</strong> (many small atoms instead of one store).</p>
+<h2 id="check-yourself">Check yourself</h2>
+<details>
+<summary><span>Why did the shelf re-render on every add with context, and not with the store?</span></summary>
+
+<p>With context, every reader re-renders when the provider&#39;s value changes. With the store, the shelf&#39;s selector picks only <code>dispatch</code>, which never changes, so it is never re-rendered by basket changes.</p>
+</details>
+
+<details>
+<summary><span>What does a selector like <code>(s) =&gt; countItems(s.lines)</code> do?</span></summary>
+
+<p>It picks a derived value from the store. The component re-renders only when that value changes, so shuffling quantities that keep the same count does not re-render it.</p>
+</details>
+
+<details>
+<summary><span>Why is there no BasketProvider any more?</span></summary>
+
+<p>A Zustand store lives in a module, outside React, so components import its hook directly. There is no tree position to provide it from.</p>
+</details>
+
+<details>
+<summary><span>Why would <code>useBasketStore((s) =&gt; ({ lines: s.lines }))</code> be a bad selector?</span></summary>
+
+<p>It builds a new object on every call, which never equals the previous one. Zustand treats it as always changed, which in version 5 leads to an endless render loop. Select <code>s.lines</code> directly, or use <code>useShallow</code>.</p>
+</details>
+
+  </article>
+</main>
+<nav class="pager" aria-label="Lessons">
+  <a class="pager-prev" href="30-typescript-patterns.html"><span>Previous</span>TypeScript for components</a>
+  <a class="pager-next" href="32-server-components.html"><span>Next</span>Server Components and Next.js</a>
+</nav>
+<footer class="foot-small">
+  <p>Snack Shelf, a course in React and TypeScript. 33 lessons.</p>
+</footer>
+</body>
+</html>
