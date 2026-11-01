@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>useRef · Snack Shelf</title>
+<meta name="description" content="Press / anywhere to jump to the search box, and see a tick on the basket button after each add. Both need useRef, the box React keeps for values that should not cause a re-render, including real DOM elements.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head>
+<body class="lesson-page">
+<header class="bar">
+  <a class="wordmark" href="../index.html">Snack Shelf</a>
+  <nav aria-label="Site"><a href="../index.html#lessons">Lessons</a><a href="https://github.com/HaoKiet10/snack-shelf-course">GitHub</a></nav>
+</header>
+<main class="lesson">
+  <div class="lesson-head" data-reveal>
+    <h1>useRef</h1>
+    <p class="lead">Press / anywhere to jump to the search box, and see a tick on the basket button after each add. Both need useRef, the box React keeps for values that should not cause a re-render, including real DOM elements.</p>
+    <p class="meta">Lesson 20 of 33, about 15 minutes</p>
+  </div>
+  <aside class="demo" aria-label="Live demo">
+    <div class="demo-sticky">
+      <div class="demo-frame" data-ui>
+        <iframe src="../demos/20-use-ref/index.html" title="Live demo for useRef" loading="lazy"></iframe>
+      </div>
+      <p class="demo-links"><a href="../demos/20-use-ref/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a><a href="https://github.com/HaoKiet10/snack-shelf-course/tree/main/code/lessons/20-use-ref">Read this lesson's code</a></p>
+    </div>
+  </aside>
+  <article class="prose">
+<p>Press <kbd>/</kbd> anywhere on the page and the cursor jumps to the search box. After <strong>+ 🧺</strong>, the button shows <strong>✓</strong> for a second. Each feature needs something React normally keeps away from you.</p>
+<h2 id="a-box-that-does-not-re-render">A box that does not re-render</h2>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">const</span> ref <span class="token operator">=</span> <span class="token function">useRef</span><span class="token punctuation">(</span>initialValue<span class="token punctuation">)</span>
+ref<span class="token punctuation">.</span>current          <span class="token comment">// read it</span>
+ref<span class="token punctuation">.</span>current <span class="token operator">=</span> <span class="token number">5</span>      <span class="token comment">// change it</span></code></pre>
+<p><code>useRef</code> gives you an object with one property, <code>current</code>. React keeps the same object for the component&#39;s whole life, like state. But <strong>changing <code>ref.current</code> does not re-render</strong>. React does not even know you changed it.</p>
+<div class="table-wrap"><table><thead><tr><th></th><th>state</th><th>ref</th></tr></thead><tbody><tr><td>survives re-renders</td><td>yes</td><td>yes</td></tr>
+<tr><td>changing it re-renders</td><td>yes</td><td>no</td></tr>
+<tr><td>read during render to show it</td><td>yes</td><td>no, the screen will not update</td></tr>
+<tr><td>use for</td><td>anything shown on screen</td><td>DOM elements, timer ids, other &quot;behind the scenes&quot; values</td></tr></tbody></table></div>
+<p>The test: <strong>does the screen depend on it?</strong> If yes, state. If no, a ref is fine.</p>
+<h2 id="refs-to-dom-elements">Refs to DOM elements</h2>
+<p>React builds the DOM for you, so you rarely touch it. But some things only the real element can do: <code>focus()</code>, <code>scrollIntoView()</code>, measuring its size, playing a video. For those, put a ref on the element:</p>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">const</span> inputRef <span class="token operator">=</span> <span class="token generic-function"><span class="token function">useRef</span><span class="token generic class-name"><span class="token operator">&lt;</span>HTMLInputElement<span class="token operator">></span></span></span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">)</span>
+
+<span class="token operator">&lt;</span>input ref<span class="token operator">=</span><span class="token punctuation">{</span>inputRef<span class="token punctuation">}</span> … <span class="token operator">/</span><span class="token operator">></span></code></pre>
+<p>After rendering, React sets <code>inputRef.current</code> to the real <code>&lt;input&gt;</code> DOM node. Before that (during the first render) it is <code>null</code>, which is why the type is <code>HTMLInputElement | null</code> and you write <code>?.</code>:</p>
+<pre class="code" data-lang="tsx"><code>inputRef<span class="token punctuation">.</span>current<span class="token operator">?.</span><span class="token function">focus</span><span class="token punctuation">(</span><span class="token punctuation">)</span></code></pre>
+<h2 id="press-to-search">Press / to search</h2>
+<pre class="code" data-lang="tsx"><code><span class="token function">useEffect</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  <span class="token keyword">function</span> <span class="token function">onKey</span><span class="token punctuation">(</span>e<span class="token operator">:</span> globalThis<span class="token punctuation">.</span>KeyboardEvent<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> typing <span class="token operator">=</span> e<span class="token punctuation">.</span>target <span class="token keyword">instanceof</span> <span class="token class-name">HTMLInputElement</span> <span class="token operator">||</span> e<span class="token punctuation">.</span>target <span class="token keyword">instanceof</span> <span class="token class-name">HTMLTextAreaElement</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>e<span class="token punctuation">.</span>key <span class="token operator">===</span> <span class="token string">'/'</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>typing<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      e<span class="token punctuation">.</span><span class="token function">preventDefault</span><span class="token punctuation">(</span><span class="token punctuation">)</span>          <span class="token comment">// don't type the "/" itself</span>
+      inputRef<span class="token punctuation">.</span>current<span class="token operator">?.</span><span class="token function">focus</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+  window<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">'keydown'</span><span class="token punctuation">,</span> onKey<span class="token punctuation">)</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> window<span class="token punctuation">.</span><span class="token function">removeEventListener</span><span class="token punctuation">(</span><span class="token string">'keydown'</span><span class="token punctuation">,</span> onKey<span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span></code></pre>
+<p>A key press <strong>anywhere</strong> on the page means listening on <code>window</code>, which is outside React, so it is an effect (lesson 12) with a cleanup that removes the listener. Without the cleanup, every time SearchBar mounted it would add another listener and never remove the old ones.</p>
+<p><code>globalThis.KeyboardEvent</code> is the browser&#39;s own event type. The bare name <code>KeyboardEvent</code> in this file is React&#39;s (imported for <code>onKeyDown</code>), and the two are different types.</p>
+<p>The <code>typing</code> check stops the shortcut from stealing a <code>/</code> you are typing into a field. Escape got smarter too: the first press clears the search, a second press on an empty box calls <code>inputRef.current?.blur()</code> to leave it. And Clear puts the cursor back in the box with <code>focus()</code>, so you can type the next search straight away.</p>
+<h2 id="the-flash-a-ref-for-a-timer">The ✓ flash: a ref for a timer</h2>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">const</span> <span class="token punctuation">[</span>justAdded<span class="token punctuation">,</span> setJustAdded<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">useState</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span>
+<span class="token keyword">const</span> timerRef <span class="token operator">=</span> <span class="token generic-function"><span class="token function">useRef</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token builtin">number</span> <span class="token operator">|</span> <span class="token keyword">undefined</span><span class="token operator">></span></span></span><span class="token punctuation">(</span><span class="token keyword">undefined</span><span class="token punctuation">)</span>
+
+<span class="token keyword">function</span> <span class="token function">handleAdd</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token function">onAdd</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token function">setJustAdded</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span>
+  window<span class="token punctuation">.</span><span class="token function">clearTimeout</span><span class="token punctuation">(</span>timerRef<span class="token punctuation">.</span>current<span class="token punctuation">)</span>  <span class="token comment">// clicked again: restart the second</span>
+  timerRef<span class="token punctuation">.</span>current <span class="token operator">=</span> window<span class="token punctuation">.</span><span class="token function">setTimeout</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">setJustAdded</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token constant">ADDED_MS</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+<span class="token function">useEffect</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> window<span class="token punctuation">.</span><span class="token function">clearTimeout</span><span class="token punctuation">(</span>timerRef<span class="token punctuation">.</span>current<span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span></code></pre>
+<p><code>justAdded</code> is <strong>state</strong>: it changes what the button shows. The timer id is a <strong>ref</strong>: we need it later to cancel the timer, but it is never shown, and changing it should not re-render.</p>
+<p>Why not a plain <code>let timer</code> variable? Because the component function runs again on every render, and a plain variable starts fresh each time. The id from the previous render would be lost, and clicking twice quickly could not cancel the first timer. A ref survives re-renders.</p>
+<p>The effect with only a cleanup and <code>[]</code> means &quot;when this card goes away, cancel any timer&quot;. Search while the ✓ is showing and the card unmounts; without the cleanup, the timer would still fire a second later for a card that no longer exists.</p>
+<h2 id="do-not-read-refs-to-render">Do not read refs to render</h2>
+<pre class="code" data-lang="tsx"><code><span class="token comment">// ❌ the screen won't update when this changes</span>
+<span class="token keyword">const</span> clicks <span class="token operator">=</span> <span class="token function">useRef</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> clicks<span class="token punctuation">.</span>current<span class="token operator">++</span><span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">Clicked </span><span class="token punctuation">{</span>clicks<span class="token punctuation">.</span>current<span class="token punctuation">}</span><span class="token plain-text"> times</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span></code></pre>
+<p>The count does change, but nothing tells React to re-render, so the text stays stale until something else causes a render. If it is on the screen, it is state.</p>
+<p>Refs are an <strong>escape hatch</strong>, like effects: a way out of React&#39;s model for the few things that need it. Most components never use one. If you are reaching for refs to change what is displayed, you probably want state.</p>
+<h2 id="check-yourself">Check yourself</h2>
+<details>
+<summary><span>What is the difference between changing state and changing <code>ref.current</code>?</span></summary>
+
+<p>Both values survive re-renders, but setting state re-renders the component, and changing a ref does not.</p>
+</details>
+
+<details>
+<summary><span>Why is <code>inputRef.current</code> sometimes <code>null</code>?</span></summary>
+
+<p>React fills it in after the element is put in the DOM. During the first render, and after the element is removed, there is no element, so it is <code>null</code>.</p>
+</details>
+
+<details>
+<summary><span>Why is the timer id in a ref and not in a <code>let</code> variable?</span></summary>
+
+<p>The component function runs again on every render, so a local variable is recreated each time and the old id is lost. A ref keeps the same value across renders.</p>
+</details>
+
+<details>
+<summary><span>Why does the <code>/</code> shortcut need an effect with a cleanup?</span></summary>
+
+<p>It listens on <code>window</code>, outside React. The effect adds the listener after mounting, and the cleanup removes it on unmount, so listeners do not pile up.</p>
+</details>
+
+  </article>
+</main>
+<nav class="pager" aria-label="Lessons">
+  <a class="pager-prev" href="19-context.html"><span>Previous</span>Context</a>
+  <a class="pager-next" href="21-routing.html"><span>Next</span>Pages and routing</a>
+</nav>
+<footer class="foot-small">
+  <p>Snack Shelf, a course in React and TypeScript. 33 lessons.</p>
+</footer>
+</body>
+</html>

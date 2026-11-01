@@ -1,0 +1,29 @@
+.panel {
+  margin: 24px;
+  padding: 20px 24px;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius);
+}
+
+.panel-title {
+  margin: 0 0 8px;
+  font-size: 1.1rem;
+}
+
+.panel-body {
+  opacity: 0.85;
+}
+
+.panel-action {
+  margin-top: 12px;
+}
+
+.panel-action button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 8px;
+  background: var(--peach);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}

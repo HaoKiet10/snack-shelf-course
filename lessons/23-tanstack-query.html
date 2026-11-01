@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TanStack Query · Snack Shelf</title>
+<meta name="description" content="Replace the hand-written loading effect and the snacks context with TanStack Query. One fetch shared by every page, a cache, retries and background refreshing, from about ten lines.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head>
+<body class="lesson-page">
+<header class="bar">
+  <a class="wordmark" href="../index.html">Snack Shelf</a>
+  <nav aria-label="Site"><a href="../index.html#lessons">Lessons</a><a href="https://github.com/HaoKiet10/snack-shelf-course">GitHub</a></nav>
+</header>
+<main class="lesson">
+  <div class="lesson-head" data-reveal>
+    <h1>TanStack Query</h1>
+    <p class="lead">Replace the hand-written loading effect and the snacks context with TanStack Query. One fetch shared by every page, a cache, retries and background refreshing, from about ten lines.</p>
+    <p class="meta">Lesson 23 of 33, about 20 minutes</p>
+  </div>
+  <aside class="demo" aria-label="Live demo">
+    <div class="demo-sticky">
+      <div class="demo-frame" data-ui>
+        <iframe src="../demos/23-tanstack-query/index.html" title="Live demo for TanStack Query" loading="lazy"></iframe>
+      </div>
+      <p class="demo-links"><a href="../demos/23-tanstack-query/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a><a href="https://github.com/HaoKiet10/snack-shelf-course/tree/main/code/lessons/23-tanstack-query">Read this lesson's code</a></p>
+    </div>
+  </aside>
+  <article class="prose">
+<p>The app looks the same, but it fetches less. Open DevTools → Network, go from the shelf to a snack page to the basket and back: <code>snacks.json</code> is requested <strong>once</strong>.</p>
+<h2 id="server-state-is-different">Server state is different</h2>
+<p>Look at what the app stores:</p>
+<div class="table-wrap"><table><thead><tr><th></th><th>where it comes from</th><th>who can change it</th></tr></thead><tbody><tr><td>query, basket, likes</td><td>the user, in this browser</td><td>only this app</td></tr>
+<tr><td>the snacks</td><td>a server</td><td>the server, any time</td></tr></tbody></table></div>
+<p>The snacks are <strong>server state</strong>: a copy of data that lives somewhere else. A copy can be loading, can fail, can go <strong>stale</strong> when the server changes it, and might be needed by several components at once. Lesson 12&#39;s effect handled the first two. Lesson 19&#39;s context handled sharing. Neither knows when the copy is stale, and every app needs the same code again for every endpoint.</p>
+<p><strong>TanStack Query</strong> is a library for exactly this: you say what to fetch, and it manages the copy.</p>
+<pre class="code" data-lang="bash"><code><span class="token function">npm</span> <span class="token function">install</span> @tanstack/react-query</code></pre>
+<h2 id="one-client-for-the-whole-app">One client for the whole app</h2>
+<pre class="code" data-lang="tsx"><code><span class="token comment">// main.tsx</span>
+<span class="token keyword">const</span> queryClient <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">QueryClient</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  defaultOptions<span class="token operator">:</span> <span class="token punctuation">{</span>
+    queries<span class="token operator">:</span> <span class="token punctuation">{</span>
+      staleTime<span class="token operator">:</span> <span class="token number">60_000</span><span class="token punctuation">,</span>
+      retry<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">QueryClientProvider</span></span> <span class="token attr-name">client</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>queryClient<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">HashRouter</span></span><span class="token punctuation">></span></span><span class="token plain-text">…</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">HashRouter</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">QueryClientProvider</span></span><span class="token punctuation">></span></span></code></pre>
+<p>The <code>QueryClient</code> holds the <strong>cache</strong>: every result fetched, by key. <code>QueryClientProvider</code> is a context provider (lesson 19), so any component can reach it.</p>
+<h2 id="usequery">useQuery</h2>
+<pre class="code" data-lang="ts"><code><span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">useSnacks</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> query <span class="token operator">=</span> <span class="token function">useQuery</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    queryKey<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'snacks'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    queryFn<span class="token operator">:</span> loadSnacks<span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+  <span class="token keyword">let</span> status<span class="token operator">:</span> Status <span class="token operator">=</span> <span class="token string">'ready'</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>query<span class="token punctuation">.</span>isPending<span class="token punctuation">)</span> status <span class="token operator">=</span> <span class="token string">'loading'</span>
+  <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>query<span class="token punctuation">.</span>isError<span class="token punctuation">)</span> status <span class="token operator">=</span> <span class="token string">'error'</span>
+
+  <span class="token keyword">return</span> <span class="token punctuation">{</span>
+    snacks<span class="token operator">:</span> query<span class="token punctuation">.</span>data <span class="token operator">??</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    status<span class="token punctuation">,</span>
+    <span class="token function-variable function">retry</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token keyword">void</span> query<span class="token punctuation">.</span><span class="token function">refetch</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    isFetching<span class="token operator">:</span> query<span class="token punctuation">.</span>isFetching<span class="token punctuation">,</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<ul>
+<li><strong><code>queryKey</code></strong> names the data in the cache. Every <code>useQuery</code> with the key <code>[&#39;snacks&#39;]</code> shares one entry. Keys are arrays so they can hold parameters: one snack would be <code>[&#39;snack&#39;, id]</code>, a separate entry per id.</li>
+<li><strong><code>queryFn</code></strong> is how to get it: any function that returns a Promise. <code>loadSnacks</code> from lesson 12 works unchanged, including its <code>throw</code> on a bad response, which is how TanStack Query knows it failed.</li>
+</ul>
+<p>The hook keeps the shape the components already use (<code>snacks</code>, <code>status</code>, <code>retry</code>), so no page had to change beyond its import.</p>
+<p>What it replaced: the three <code>useState</code>s, the effect with its <code>ignore</code> flag and cleanup, the <code>attempt</code> counter, <strong>and</strong> <code>SnacksContext</code> with its provider. Both files are deleted.</p>
+<h2 id="why-the-context-could-go">Why the context could go</h2>
+<p>Lesson 18 said calling a hook twice means two separate states, which is why lesson 19 needed a context. <code>useQuery</code> is different: its state lives in the <strong>QueryClient&#39;s cache</strong>, not in the component. Ten components calling <code>useSnacks()</code> all read the same cache entry. The first one to mount starts the fetch; the others wait for the same request. So <code>useSnacks()</code> can be called directly anywhere, and the context has nothing left to do.</p>
+<h2 id="the-things-you-get-for-free">The things you get for free</h2>
+<p><strong>Caching.</strong> Leave the shelf and come back: the snacks are already in the cache, so there is no loading message at all.</p>
+<p><strong>Freshness.</strong> <code>staleTime: 60_000</code> says the data counts as fresh for a minute. After that it is <em>stale</em>: still shown immediately, but refetched in the background the next time a component needs it, or when you come back to the browser tab. You see old data instantly and new data a moment later, never a spinner over data you already had. The default <code>staleTime</code> is 0, which refetches very eagerly; a minute suits a snack list.</p>
+<p><strong>Retries.</strong> A failed request is retried before giving up. The default is three times with growing pauses, which means about seven seconds before an error shows. <code>retry: 1</code> makes it one retry here.</p>
+<p><strong>Status flags.</strong> <code>isPending</code> means there is no data yet. <code>isFetching</code> means a request is running, including background refreshes. The retry button uses it to show &quot;Trying again…&quot;.</p>
+<p><strong>Request deduplication</strong>, so StrictMode&#39;s double effects in development, two components mounting at once, or a quick double-click on retry still mean one request.</p>
+<h2 id="what-not-to-put-in-it">What not to put in it</h2>
+<p>TanStack Query is for <strong>server state</strong>. The basket and likes stay where they are: they are client state, owned by this app, and nothing else can change them. Putting them in a query cache would be like caching your own thoughts.</p>
+<p>Changing server data (like posting the order in lesson 22) is the other half, called <strong>mutations</strong>: <code>useMutation</code> handles pending and error state for the request, and you can tell the cache which queries to refetch afterwards. With a real server, that is the next step for the checkout.</p>
+<h2 id="check-yourself">Check yourself</h2>
+<details>
+<summary><span>What is server state, and how is it different from the basket?</span></summary>
+
+<p>A local copy of data that lives on a server and can change there at any time, so it can be loading, failed or stale. The basket is client state: only this app creates and changes it.</p>
+</details>
+
+<details>
+<summary><span>Why could <code>SnacksContext</code> be deleted?</span></summary>
+
+<p><code>useQuery</code> keeps its data in the shared QueryClient cache, not in the component. Every component using the same key reads the same entry, so a context to share it is no longer needed.</p>
+</details>
+
+<details>
+<summary><span>What does <code>staleTime</code> control?</span></summary>
+
+<p>How long fetched data counts as fresh. While fresh it is never refetched; once stale it is still shown, but refreshed in the background when needed.</p>
+</details>
+
+<details>
+<summary><span>How does <code>useQuery</code> know <code>loadSnacks</code> failed?</span></summary>
+
+<p>The promise rejects: <code>loadSnacks</code> throws when the response is not OK, and a failed <code>fetch</code> throws on its own.</p>
+</details>
+
+  </article>
+</main>
+<nav class="pager" aria-label="Lessons">
+  <a class="pager-prev" href="22-forms.html"><span>Previous</span>Forms</a>
+  <a class="pager-next" href="24-testing.html"><span>Next</span>Testing</a>
+</nav>
+<footer class="foot-small">
+  <p>Snack Shelf, a course in React and TypeScript. 33 lessons.</p>
+</footer>
+</body>
+</html>

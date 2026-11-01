@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>useReducer · Snack Shelf</title>
+<meta name="description" content="A real basket with quantities, plus and minus, remove and empty. When state can change in many ways, a reducer puts every way in one function that is easy to read and easy to test.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head>
+<body class="lesson-page">
+<header class="bar">
+  <a class="wordmark" href="../index.html">Snack Shelf</a>
+  <nav aria-label="Site"><a href="../index.html#lessons">Lessons</a><a href="https://github.com/HaoKiet10/snack-shelf-course">GitHub</a></nav>
+</header>
+<main class="lesson">
+  <div class="lesson-head" data-reveal>
+    <h1>useReducer</h1>
+    <p class="lead">A real basket with quantities, plus and minus, remove and empty. When state can change in many ways, a reducer puts every way in one function that is easy to read and easy to test.</p>
+    <p class="meta">Lesson 17 of 33, about 20 minutes</p>
+  </div>
+  <aside class="demo" aria-label="Live demo">
+    <div class="demo-sticky">
+      <div class="demo-frame" data-ui>
+        <iframe src="../demos/17-use-reducer/index.html" title="Live demo for useReducer" loading="lazy"></iframe>
+      </div>
+      <p class="demo-links"><a href="../demos/17-use-reducer/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a><a href="https://github.com/HaoKiet10/snack-shelf-course/tree/main/code/lessons/17-use-reducer">Read this lesson's code</a></p>
+    </div>
+  </aside>
+  <article class="prose">
+<p>The basket is a panel now. Pocky twice is one line with a quantity of 2. You can change quantities, remove a line or empty the basket.</p>
+<h2 id="the-problem-with-many-setters">The problem with many setters</h2>
+<p>With <code>useState</code>, each change is written where it happens. For this basket that would mean four handlers in App, each with its own copying logic (lesson 11), and soon more: a maximum quantity, a &quot;remove when it reaches 0&quot; rule. The rules of the basket would be spread across the component.</p>
+<p>A <strong>reducer</strong> gathers them in one place:</p>
+<pre class="diagram"><code>event handler                 reducer                          React
+dispatch({ type: 'added' })  → (lines, action) =&gt; new lines  → re-render with new lines
+&quot;what happened&quot;                &quot;what that means for the state&quot;</code></pre>
+<h2 id="actions-describe-what-happened">Actions describe what happened</h2>
+<pre class="code" data-lang="ts"><code><span class="token keyword">export</span> <span class="token keyword">type</span> <span class="token class-name">BasketAction</span> <span class="token operator">=</span>
+  <span class="token operator">|</span> <span class="token punctuation">{</span> type<span class="token operator">:</span> <span class="token string">'added'</span><span class="token punctuation">;</span> id<span class="token operator">:</span> <span class="token builtin">string</span> <span class="token punctuation">}</span>
+  <span class="token operator">|</span> <span class="token punctuation">{</span> type<span class="token operator">:</span> <span class="token string">'quantityChanged'</span><span class="token punctuation">;</span> id<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span> qty<span class="token operator">:</span> <span class="token builtin">number</span> <span class="token punctuation">}</span>
+  <span class="token operator">|</span> <span class="token punctuation">{</span> type<span class="token operator">:</span> <span class="token string">'removed'</span><span class="token punctuation">;</span> id<span class="token operator">:</span> <span class="token builtin">string</span> <span class="token punctuation">}</span>
+  <span class="token operator">|</span> <span class="token punctuation">{</span> type<span class="token operator">:</span> <span class="token string">'emptied'</span> <span class="token punctuation">}</span></code></pre>
+<p>An action is a plain object. <code>type</code> says which event it is, and the other fields carry what that event needs. The <code>|</code> makes this a <strong>discriminated union</strong>: TypeScript looks at <code>type</code> and knows which other fields exist. <code>{ type: &#39;emptied&#39;, id: &#39;x&#39; }</code> or <code>{ type: &#39;removed&#39; }</code> with no id are type errors.</p>
+<p>Name actions after <strong>what happened</strong> (<code>added</code>, <code>emptied</code>), not what to do (<code>setLines</code>). The component reports events; the reducer decides what they mean.</p>
+<h2 id="the-reducer">The reducer</h2>
+<pre class="code" data-lang="ts"><code><span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">basketReducer</span><span class="token punctuation">(</span>lines<span class="token operator">:</span> BasketLine<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> action<span class="token operator">:</span> BasketAction<span class="token punctuation">)</span><span class="token operator">:</span> BasketLine<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">{</span>
+  <span class="token keyword">switch</span> <span class="token punctuation">(</span>action<span class="token punctuation">.</span>type<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">case</span> <span class="token string">'added'</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token keyword">const</span> existing <span class="token operator">=</span> lines<span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span><span class="token punctuation">(</span>l<span class="token punctuation">)</span> <span class="token operator">=></span> l<span class="token punctuation">.</span>id <span class="token operator">===</span> action<span class="token punctuation">.</span>id<span class="token punctuation">)</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>existing<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token punctuation">[</span><span class="token operator">...</span>lines<span class="token punctuation">,</span> <span class="token punctuation">{</span> id<span class="token operator">:</span> action<span class="token punctuation">.</span>id<span class="token punctuation">,</span> qty<span class="token operator">:</span> <span class="token number">1</span> <span class="token punctuation">}</span><span class="token punctuation">]</span>
+      <span class="token punctuation">}</span>
+      <span class="token keyword">return</span> lines<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span>l<span class="token punctuation">)</span> <span class="token operator">=></span>
+        l<span class="token punctuation">.</span>id <span class="token operator">===</span> action<span class="token punctuation">.</span>id <span class="token operator">?</span> <span class="token punctuation">{</span> <span class="token operator">...</span>l<span class="token punctuation">,</span> qty<span class="token operator">:</span> Math<span class="token punctuation">.</span><span class="token function">min</span><span class="token punctuation">(</span>l<span class="token punctuation">.</span>qty <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token constant">MAX_QTY</span><span class="token punctuation">)</span> <span class="token punctuation">}</span> <span class="token operator">:</span> l<span class="token punctuation">,</span>
+      <span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">case</span> <span class="token string">'quantityChanged'</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>action<span class="token punctuation">.</span>qty <span class="token operator">&lt;=</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> lines<span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span><span class="token punctuation">(</span>l<span class="token punctuation">)</span> <span class="token operator">=></span> l<span class="token punctuation">.</span>id <span class="token operator">!==</span> action<span class="token punctuation">.</span>id<span class="token punctuation">)</span>
+      <span class="token punctuation">}</span>
+      <span class="token keyword">return</span> lines<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span>l<span class="token punctuation">)</span> <span class="token operator">=></span>
+        l<span class="token punctuation">.</span>id <span class="token operator">===</span> action<span class="token punctuation">.</span>id <span class="token operator">?</span> <span class="token punctuation">{</span> <span class="token operator">...</span>l<span class="token punctuation">,</span> qty<span class="token operator">:</span> Math<span class="token punctuation">.</span><span class="token function">min</span><span class="token punctuation">(</span>action<span class="token punctuation">.</span>qty<span class="token punctuation">,</span> <span class="token constant">MAX_QTY</span><span class="token punctuation">)</span> <span class="token punctuation">}</span> <span class="token operator">:</span> l<span class="token punctuation">,</span>
+      <span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">case</span> <span class="token string">'removed'</span><span class="token operator">:</span>
+      <span class="token keyword">return</span> lines<span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span><span class="token punctuation">(</span>l<span class="token punctuation">)</span> <span class="token operator">=></span> l<span class="token punctuation">.</span>id <span class="token operator">!==</span> action<span class="token punctuation">.</span>id<span class="token punctuation">)</span>
+    <span class="token keyword">case</span> <span class="token string">'emptied'</span><span class="token operator">:</span>
+      <span class="token keyword">return</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<p>Three things make it a reducer:</p>
+<ol>
+<li><strong>It takes the current state and an action, and returns the next state.</strong> That is the whole interface.</li>
+<li><strong>It is pure.</strong> Same inputs, same output. No fetching, no <code>localStorage</code>, no random numbers, no changing <code>lines</code> in place. It builds new arrays with <code>map</code>, <code>filter</code> and spread, exactly like lesson 11&#39;s table.</li>
+<li><strong>It has no React in it.</strong> It lives in its own file, <code>basket/basketReducer.ts</code>, and could run anywhere. Lesson 24 tests it with plain function calls.</li>
+</ol>
+<p>Inside <code>case &#39;added&#39;</code>, TypeScript knows <code>action</code> has an <code>id</code>, because it narrowed the union by <code>type</code>. And since every case returns, TypeScript checks you have handled them all.</p>
+<p>The lines are now <code>{ id, qty }</code> objects instead of lesson 11&#39;s list of ids. Two small helpers derive numbers from them:</p>
+<pre class="code" data-lang="ts"><code><span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">countItems</span><span class="token punctuation">(</span>lines<span class="token operator">:</span> BasketLine<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> lines<span class="token punctuation">.</span><span class="token function">reduce</span><span class="token punctuation">(</span><span class="token punctuation">(</span>sum<span class="token punctuation">,</span> l<span class="token punctuation">)</span> <span class="token operator">=></span> sum <span class="token operator">+</span> l<span class="token punctuation">.</span>qty<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<h2 id="using-it">Using it</h2>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">const</span> <span class="token punctuation">[</span>basket<span class="token punctuation">,</span> dispatch<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">useReducer</span><span class="token punctuation">(</span>basketReducer<span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span></code></pre>
+<p>Like <code>useState</code>, it returns a pair: the current state and a function to change it. The difference is the function. <code>dispatch</code> takes an <strong>action</strong>, and React runs it through your reducer to get the next state.</p>
+<pre class="code" data-lang="tsx"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">dispatch</span><span class="token punctuation">(</span><span class="token punctuation">{</span> type<span class="token operator">:</span> <span class="token string">'emptied'</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">Empty the basket</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">dispatch</span><span class="token punctuation">(</span><span class="token punctuation">{</span> type<span class="token operator">:</span> <span class="token string">'removed'</span><span class="token punctuation">,</span> id<span class="token operator">:</span> line<span class="token punctuation">.</span>id <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">✕</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span></code></pre>
+<p>The buttons say what happened, in one line each. All the &quot;how&quot; is in the reducer.</p>
+<h2 id="usestate-or-usereducer">useState or useReducer?</h2>
+<div class="table-wrap"><table><thead><tr><th></th><th>useState</th><th>useReducer</th></tr></thead><tbody><tr><td>good for</td><td>a value or two that change simply</td><td>state with several kinds of change, or rules</td></tr>
+<tr><td>the update logic lives</td><td>in each event handler</td><td>in one reducer function</td></tr>
+<tr><td>testing the logic</td><td>through the component</td><td>call the function directly</td></tr>
+<tr><td>code size</td><td>less</td><td>more, up front</td></tr></tbody></table></div>
+<p><code>query</code> stays <code>useState</code>: it only ever gets &quot;set to this text&quot;. The basket has four kinds of change and a rule (quantity between 1 and 9), so it gets a reducer. Neither is more &quot;advanced&quot;. They store state the same way; they only differ in where the update logic lives.</p>
+<h2 id="the-basket-panel">The basket panel</h2>
+<p><code>BasketPanel</code> receives <code>lines</code>, <code>snacks</code>, <code>total</code> and <code>dispatch</code> as props. <code>dispatch</code> is typed <code>ActionDispatch&lt;[BasketAction]&gt;</code>, which is React&#39;s type for &quot;a dispatch that accepts BasketAction&quot;. The <code>+</code> button is disabled at the maximum, and <code>−</code> at 1 sends <code>quantityChanged</code> with 0, which the reducer turns into a removal, so that rule only lives in one place.</p>
+<p>The panel also needs the snacks list, to show names and prices for the ids. App passes four props down to it. Keep an eye on that.</p>
+<h2 id="check-yourself">Check yourself</h2>
+<details>
+<summary><span>What does a reducer take, and what does it return?</span></summary>
+
+<p>The current state and an action; it returns the next state. It must be pure: no side effects and no changing the old state.</p>
+</details>
+
+<details>
+<summary><span>What does <code>dispatch</code> do?</span></summary>
+
+<p>It sends an action to React. React calls the reducer with the current state and that action, stores the result, and re-renders.</p>
+</details>
+
+<details>
+<summary><span>Why does the minus button send <code>quantityChanged</code> with 0 instead of its own <code>removed</code> logic?</span></summary>
+
+<p>So the rule &quot;quantity 0 means remove the line&quot; lives in one place, the reducer. The button only reports the new quantity.</p>
+</details>
+
+<details>
+<summary><span>Why is <code>query</code> still <code>useState</code>?</span></summary>
+
+<p>It only has one kind of change, &quot;set it to this text&quot;, so a reducer would add code without making anything clearer.</p>
+</details>
+
+  </article>
+</main>
+<nav class="pager" aria-label="Lessons">
+  <a class="pager-prev" href="16-composition.html"><span>Previous</span>Splitting components</a>
+  <a class="pager-next" href="18-custom-hooks.html"><span>Next</span>Custom hooks</a>
+</nav>
+<footer class="foot-small">
+  <p>Snack Shelf, a course in React and TypeScript. 33 lessons.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,34 @@
+/* Page-wide basics. Imported once in main.tsx, applies everywhere. */
+
+/* CSS VARIABLES (custom properties): name each colour once, use it
+   everywhere with var(--name). Change it here, the whole app follows. */
+:root {
+  --bg: #fff8ef;
+  --surface: #ffffff;
+  --ink: #3a2a1e;
+  --peach: #ffe2c4;
+  --lilac: #f3e8ff;
+  --line: #e0c9b0;
+  --accent: crimson;
+  --radius: 12px;
+}
+
+/* Dark mode for free: redefine the variables, nothing else changes. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1f1812;
+    --surface: #2c231b;
+    --ink: #f4e9dc;
+    --peach: #5a3d24;
+    --lilac: #3d2f4d;
+    --line: #5a4a3a;
+    --accent: #ff5c7a;
+  }
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+}

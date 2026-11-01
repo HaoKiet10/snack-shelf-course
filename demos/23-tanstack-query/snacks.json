@@ -1,0 +1,8 @@
+[
+  { "id": "pocky", "name": "Pocky", "price": 2.5, "emoji": "🍫", "about": "Thin biscuit sticks dipped in chocolate, with a bare end to hold so your fingers stay clean." },
+  { "id": "onigiri", "name": "Onigiri", "price": 1.8, "emoji": "🍙", "about": "A rice ball wrapped in nori, with a filling in the middle: salmon, tuna mayo or pickled plum." },
+  { "id": "melon-pan", "name": "Melon Pan", "price": 2.2, "emoji": "🍈", "about": "A soft sweet bun under a crisp cookie crust, scored to look like a melon. Usually no melon in it." },
+  { "id": "mochi", "name": "Mochi", "price": 3.0, "emoji": "🍡", "about": "Chewy pounded rice cake, often filled with sweet red bean paste." },
+  { "id": "taiyaki", "name": "Taiyaki", "price": 2.8, "emoji": "🐟", "about": "A fish-shaped waffle cake filled with red bean, custard or chocolate, best eaten warm." },
+  { "id": "ramune", "name": "Ramune", "price": 1.5, "emoji": "🥤", "about": "A fizzy lemonade sealed with a glass marble. Push the marble down to open it." }
+]

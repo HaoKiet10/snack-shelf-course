@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pages and routing · Snack Shelf</title>
+<meta name="description" content="Give every snack its own page and the basket its own address with React Router. Links that do not reload, a layout shared by every page, URL parameters, and a search that lives in the URL.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head>
+<body class="lesson-page">
+<header class="bar">
+  <a class="wordmark" href="../index.html">Snack Shelf</a>
+  <nav aria-label="Site"><a href="../index.html#lessons">Lessons</a><a href="https://github.com/HaoKiet10/snack-shelf-course">GitHub</a></nav>
+</header>
+<main class="lesson">
+  <div class="lesson-head" data-reveal>
+    <h1>Pages and routing</h1>
+    <p class="lead">Give every snack its own page and the basket its own address with React Router. Links that do not reload, a layout shared by every page, URL parameters, and a search that lives in the URL.</p>
+    <p class="meta">Lesson 21 of 33, about 25 minutes</p>
+  </div>
+  <aside class="demo" aria-label="Live demo">
+    <div class="demo-sticky">
+      <div class="demo-frame" data-ui>
+        <iframe src="../demos/21-routing/index.html" title="Live demo for Pages and routing" loading="lazy"></iframe>
+      </div>
+      <p class="demo-links"><a href="../demos/21-routing/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a><a href="https://github.com/HaoKiet10/snack-shelf-course/tree/main/code/lessons/21-routing">Read this lesson's code</a></p>
+    </div>
+  </aside>
+  <article class="prose">
+<p>Click a snack&#39;s name and it opens its own page, with a description and a <strong>Buy now</strong> button. The 🧺 in the header goes to a basket page. The browser&#39;s Back button works, and a search like &quot;mel&quot; is still there when you come back.</p>
+<h2 id="what-a-router-does">What a router does</h2>
+<p>The app is still <strong>one HTML page</strong>. A router watches the URL, and when it changes, renders a different component instead of asking the server for a new page. Clicking a link swaps the content instantly, the app&#39;s state (the basket, the loaded snacks) survives, and the URL still says where you are, so Back, Forward, bookmarks and shared links all work.</p>
+<p>React does not include a router. <strong>React Router</strong> is the most widely used one:</p>
+<pre class="code" data-lang="bash"><code><span class="token function">npm</span> <span class="token function">install</span> react-router</code></pre>
+<h2 id="routes-a-map-of-the-site">Routes: a map of the site</h2>
+<pre class="code" data-lang="tsx"><code><span class="token comment">// App.tsx</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">App</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Routes</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Route</span></span> <span class="token attr-name">element</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Layout</span></span> <span class="token punctuation">/></span></span><span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Route</span></span> <span class="token attr-name">index</span> <span class="token attr-name">element</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">ShelfPage</span></span> <span class="token punctuation">/></span></span><span class="token punctuation">}</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
+        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Route</span></span> <span class="token attr-name">path</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>snack/:id<span class="token punctuation">"</span></span> <span class="token attr-name">element</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">SnackPage</span></span> <span class="token punctuation">/></span></span><span class="token punctuation">}</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
+        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Route</span></span> <span class="token attr-name">path</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>basket<span class="token punctuation">"</span></span> <span class="token attr-name">element</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">BasketPage</span></span> <span class="token punctuation">/></span></span><span class="token punctuation">}</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
+        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Route</span></span> <span class="token attr-name">path</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>*<span class="token punctuation">"</span></span> <span class="token attr-name">element</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">NotFoundPage</span></span> <span class="token punctuation">/></span></span><span class="token punctuation">}</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Route</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Routes</span></span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<p><code>&lt;Routes&gt;</code> looks at the current URL and renders the <strong>one</strong> <code>&lt;Route&gt;</code> that matches best:</p>
+<div class="table-wrap"><table><thead><tr><th>URL</th><th>route</th><th>page</th></tr></thead><tbody><tr><td><code>/</code></td><td><code>index</code></td><td>ShelfPage</td></tr>
+<tr><td><code>/snack/pocky</code></td><td><code>snack/:id</code></td><td>SnackPage, with <code>id = &quot;pocky&quot;</code></td></tr>
+<tr><td><code>/basket</code></td><td><code>basket</code></td><td>BasketPage</td></tr>
+<tr><td><code>/anything/else</code></td><td><code>*</code></td><td>NotFoundPage</td></tr></tbody></table></div>
+<p>App has become a map of the site. Each page is an ordinary component in <code>src/pages/</code>; what used to be App&#39;s body is now <code>ShelfPage</code>.</p>
+<h2 id="a-layout-and-its-outlet">A layout and its Outlet</h2>
+<p>The outer <code>&lt;Route element={&lt;Layout /&gt;}&gt;</code> has no path. It wraps the others, so every page gets the same frame:</p>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">Layout</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Header</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Outlet</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span></span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<p><code>&lt;Outlet /&gt;</code> is the hole where the matching child page goes. It is <code>children</code>&#39;s idea (lesson 16), filled in by the router instead of by you.</p>
+<h2 id="link-instead-of-a">Link instead of a</h2>
+<pre class="code" data-lang="tsx"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Link</span></span> <span class="token attr-name">to</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">/snack/</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>id<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token punctuation">{</span>name<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Link</span></span><span class="token punctuation">></span></span></code></pre>
+<p>A plain <code>&lt;a href&gt;</code> makes the browser load the page from the server again, throwing away all of React&#39;s state. <code>&lt;Link&gt;</code> renders a real <code>&lt;a&gt;</code> (so right-click, &quot;open in new tab&quot; and screen readers still work), but catches normal clicks, updates the URL and lets the router re-render. <code>SnackCard</code> now gets an <code>id</code> prop so it can build its link.</p>
+<p><code>NavLink</code> is a Link that knows whether it points at the current page:</p>
+<pre class="code" data-lang="tsx"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">NavLink</span></span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>basket<span class="token punctuation">"</span></span> <span class="token attr-name">to</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/basket<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">🧺 </span><span class="token punctuation">{</span>count<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">NavLink</span></span><span class="token punctuation">></span></span></code></pre>
+<p>On the basket page it gets <code>class=&quot;active&quot;</code> and <code>aria-current=&quot;page&quot;</code>, which the CSS uses to highlight it.</p>
+<h2 id="url-parameters">URL parameters</h2>
+<p>One component serves every snack. The <code>:id</code> in <code>snack/:id</code> is a placeholder, and <code>useParams</code> reads it:</p>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">SnackPage</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> <span class="token punctuation">{</span> id <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">useParams</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">const</span> <span class="token punctuation">{</span> snacks<span class="token punctuation">,</span> status <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">useSnackData</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>status <span class="token operator">!==</span> <span class="token string">'ready'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">SnacksStatus</span></span> <span class="token punctuation">/></span></span>
+  <span class="token punctuation">}</span>
+
+  <span class="token keyword">const</span> snack <span class="token operator">=</span> snacks<span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span> <span class="token operator">=></span> s<span class="token punctuation">.</span>id <span class="token operator">===</span> id<span class="token punctuation">)</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>snack<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token operator">&lt;</span>Panel title<span class="token operator">=</span><span class="token string">"No such snack"</span> …<span class="token operator">></span>There's no snack called “<span class="token punctuation">{</span>id<span class="token punctuation">}</span>”<span class="token punctuation">.</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Panel</span></span><span class="token punctuation">></span></span>
+  <span class="token punctuation">}</span>
+  <span class="token comment">// … the page for this snack</span>
+<span class="token punctuation">}</span></code></pre>
+<p><code>id</code> is <code>string | undefined</code>, because TypeScript cannot know this component is only used on a route with <code>:id</code>. The URL is <strong>input from the outside</strong>: anyone can type <code>/snack/banana</code>, so the page must handle a snack that does not exist.</p>
+<p>The snacks gained an <code>about</code> field in <code>snacks.json</code> for the page&#39;s description.</p>
+<h2 id="navigating-from-code">Navigating from code</h2>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">const</span> navigate <span class="token operator">=</span> <span class="token function">useNavigate</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token keyword">function</span> <span class="token function">buyNow</span><span class="token punctuation">(</span>snackId<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token function">dispatch</span><span class="token punctuation">(</span><span class="token punctuation">{</span> type<span class="token operator">:</span> <span class="token string">'added'</span><span class="token punctuation">,</span> id<span class="token operator">:</span> snackId <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token function">navigate</span><span class="token punctuation">(</span><span class="token string">'/basket'</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<p>Use <code>&lt;Link&gt;</code> when the user clicks to go somewhere. Use <code>navigate()</code> when the app decides to move after doing something, like after adding to the basket, or after a form is submitted.</p>
+<h2 id="the-search-lives-in-the-url">The search lives in the URL</h2>
+<p>Before, the query was <code>useState</code> in App. Now ShelfPage is a page, and leaving it <strong>unmounts</strong> it (lesson 7), so a search would be lost on the way to a snack and back. The fix is to keep it in the URL instead:</p>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">const</span> <span class="token punctuation">[</span>searchParams<span class="token punctuation">,</span> setSearchParams<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">useSearchParams</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">const</span> query <span class="token operator">=</span> searchParams<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'q'</span><span class="token punctuation">)</span> <span class="token operator">??</span> <span class="token string">''</span>
+
+<span class="token keyword">function</span> <span class="token function">setQuery</span><span class="token punctuation">(</span>next<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token function">setSearchParams</span><span class="token punctuation">(</span>next <span class="token operator">===</span> <span class="token string">''</span> <span class="token operator">?</span> <span class="token punctuation">{</span><span class="token punctuation">}</span> <span class="token operator">:</span> <span class="token punctuation">{</span> q<span class="token operator">:</span> next <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> replace<span class="token operator">:</span> <span class="token boolean">true</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<p>Type &quot;mel&quot; and the address becomes <code>…#/?q=mel</code>. The URL <em>is</em> the state: it survives Back, a reload, and a shared link. <code>replace: true</code> updates the current history entry instead of adding one per keystroke, so Back does not step through every letter. SearchBar did not change at all; it still gets <code>query</code> and <code>onQueryChange</code>.</p>
+<p>Good things to keep in the URL: searches, filters, sort order, the current tab. Anything someone might want to bookmark or share.</p>
+<h2 id="likes-move-to-context">Likes move to context</h2>
+<p>The likes are needed on two pages now, the shelf and the snack page. They moved into a <code>LikesContext</code> with <code>useLikes()</code>, the same pattern as the basket (lesson 19). <code>Shelf</code> takes only <code>snacks</code> now.</p>
+<h2 id="hashrouter-and-static-hosting">HashRouter and static hosting</h2>
+<pre class="code" data-lang="tsx"><code><span class="token comment">// main.tsx</span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">HashRouter</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">SnacksProvider</span></span><span class="token punctuation">></span></span><span class="token plain-text">…</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">App</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">…</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">SnacksProvider</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">HashRouter</span></span><span class="token punctuation">></span></span></code></pre>
+<p>There are two ways to keep the path in the URL:</p>
+<div class="table-wrap"><table><thead><tr><th></th><th>BrowserRouter</th><th>HashRouter</th></tr></thead><tbody><tr><td>URL</td><td><code>/snack-shelf/snack/pocky</code></td><td><code>/snack-shelf/#/snack/pocky</code></td></tr>
+<tr><td>reload or open a link directly</td><td>the server must send <code>index.html</code> for every path</td><td>always works: the server only sees <code>/snack-shelf/</code></td></tr>
+<tr><td>needs</td><td>a server you can configure</td><td>nothing</td></tr></tbody></table></div>
+<p>GitHub Pages cannot be told &quot;send <code>index.html</code> for every path&quot;, so opening <code>/snack-shelf/snack/pocky</code> directly would be a 404. Everything after <code>#</code> never reaches the server, so with HashRouter it always works. On a host that supports a fallback (Netlify, Vercel, your own server), BrowserRouter gives cleaner URLs.</p>
+<h2 id="check-yourself">Check yourself</h2>
+<details>
+<summary><span>Why use <code>&lt;Link&gt;</code> instead of <code>&lt;a href&gt;</code>?</span></summary>
+
+<p>An <code>&lt;a&gt;</code> reloads the whole page from the server, losing React&#39;s state. <code>&lt;Link&gt;</code> renders an <code>&lt;a&gt;</code> but handles the click itself: it updates the URL and lets the router render the new page.</p>
+</details>
+
+<details>
+<summary><span>What does <code>&lt;Outlet /&gt;</code> do?</span></summary>
+
+<p>It marks where a layout route renders the child route that matches the current URL.</p>
+</details>
+
+<details>
+<summary><span>Why does SnackPage handle a missing snack?</span></summary>
+
+<p>The id comes from the URL, which anyone can type. <code>/snack/banana</code> matches the route, but there is no such snack.</p>
+</details>
+
+<details>
+<summary><span>Why does the search live in the URL instead of in state?</span></summary>
+
+<p>ShelfPage unmounts when you go to another page, which would throw its state away. The URL survives navigation, reloads and sharing.</p>
+</details>
+
+  </article>
+</main>
+<nav class="pager" aria-label="Lessons">
+  <a class="pager-prev" href="20-use-ref.html"><span>Previous</span>useRef</a>
+  <a class="pager-next" href="22-forms.html"><span>Next</span>Forms</a>
+</nav>
+<footer class="foot-small">
+  <p>Snack Shelf, a course in React and TypeScript. 33 lessons.</p>
+</footer>
+</body>
+</html>

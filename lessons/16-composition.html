@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Splitting components · Snack Shelf</title>
+<meta name="description" content="App has grown to a hundred lines that do everything. Split it into components with clear jobs, and meet children, the prop that lets a component wrap JSX it knows nothing about.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head>
+<body class="lesson-page">
+<header class="bar">
+  <a class="wordmark" href="../index.html">Snack Shelf</a>
+  <nav aria-label="Site"><a href="../index.html#lessons">Lessons</a><a href="https://github.com/HaoKiet10/snack-shelf-course">GitHub</a></nav>
+</header>
+<main class="lesson">
+  <div class="lesson-head" data-reveal>
+    <h1>Splitting components</h1>
+    <p class="lead">App has grown to a hundred lines that do everything. Split it into components with clear jobs, and meet children, the prop that lets a component wrap JSX it knows nothing about.</p>
+    <p class="meta">Lesson 16 of 33, about 15 minutes</p>
+  </div>
+  <aside class="demo" aria-label="Live demo">
+    <div class="demo-sticky">
+      <div class="demo-frame" data-ui>
+        <iframe src="../demos/16-composition/index.html" title="Live demo for Splitting components" loading="lazy"></iframe>
+      </div>
+      <p class="demo-links"><a href="../demos/16-composition/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a><a href="https://github.com/HaoKiet10/snack-shelf-course/tree/main/code/lessons/16-composition">Read this lesson's code</a></p>
+    </div>
+  </aside>
+  <article class="prose">
+<p>Part two starts by cleaning up. Nothing looks different, but <code>App.tsx</code> went from a long mix of state, effects, handlers and markup to a short file that <strong>reads like a summary</strong> of the app.</p>
+<h2 id="when-to-split">When to split</h2>
+<p>There is no rule like &quot;100 lines max&quot;. These are better signals:</p>
+<ul>
+<li><strong>One part has its own job</strong> you can name in two words: &quot;the search bar&quot;, &quot;the shelf&quot;. If you can name it, it can be a component.</li>
+<li><strong>The same markup appears twice</strong>, like lesson 15&#39;s three nearly identical <code>&lt;p className=&quot;status&quot;&gt;</code> / <code>&lt;p className=&quot;empty&quot;&gt;</code> boxes.</li>
+<li><strong>You scroll to understand it.</strong> If reading <code>App</code> means jumping between the top (state) and the bottom (JSX that uses it), pieces of it want to live together.</li>
+</ul>
+<p>And one reason <em>not</em> to split: making tiny components that each hold three lines and need six props. A component should make the code that uses it <strong>simpler</strong>.</p>
+<h2 id="the-new-pieces">The new pieces</h2>
+<pre class="diagram"><code>App                 state + what to show
+├─ Header
+├─ SearchBar        the input, Clear, Escape
+├─ Panel            a box for messages (loading, error, nothing found)
+└─ Shelf            the grid
+   └─ SnackCard × 6</code></pre>
+<p><strong>SearchBar</strong> takes the query and reports changes. Escape, the 20-character limit and the Clear button moved inside it, because they are about <em>typing</em>, not about the app:</p>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">type</span> <span class="token class-name">SearchBarProps</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+  query<span class="token operator">:</span> <span class="token builtin">string</span>
+  <span class="token function-variable function">onQueryChange</span><span class="token operator">:</span> <span class="token punctuation">(</span>query<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token keyword">void</span>
+<span class="token punctuation">}</span></code></pre>
+<p>The query itself stays in App. App needs it to filter, so App owns it, and SearchBar gets it as a prop (lesson 11&#39;s rule: state lives with the closest component that needs it).</p>
+<p><strong>Shelf</strong> gets the visible snacks and draws the grid. The <code>map</code> and the <code>key</code> (lesson 9) moved there.</p>
+<h2 id="children-a-component-with-a-hole-in-it">children: a component with a hole in it</h2>
+<p>The loading message, the error and &quot;nothing found&quot; were three slightly different boxes. They became one <strong>Panel</strong>:</p>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">type</span> <span class="token class-name">PanelProps</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+  title<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span>
+  action<span class="token operator">?</span><span class="token operator">:</span> ReactNode
+  children<span class="token operator">:</span> ReactNode
+<span class="token punctuation">}</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">Panel</span><span class="token punctuation">(</span><span class="token punctuation">{</span> title<span class="token punctuation">,</span> action<span class="token punctuation">,</span> children <span class="token punctuation">}</span><span class="token operator">:</span> PanelProps<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>section</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>panel<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token punctuation">{</span>title <span class="token operator">&amp;&amp;</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h2</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>panel-title<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token punctuation">{</span>title<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h2</span><span class="token punctuation">></span></span><span class="token punctuation">}</span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>panel-body<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token punctuation">{</span>children<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token punctuation">{</span>action <span class="token operator">&amp;&amp;</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>panel-action<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token punctuation">{</span>action<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span class="token punctuation">}</span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>section</span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<p><code>children</code> is a special prop: it is <strong>whatever you write between the opening and closing tags</strong>.</p>
+<pre class="code" data-lang="tsx"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Panel</span></span> <span class="token attr-name">title</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Nothing found<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+  No snacks match “</span><span class="token punctuation">{</span>query<span class="token punctuation">.</span><span class="token function">trim</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token plain-text">”. Try “pocky” or “mochi”.
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Panel</span></span><span class="token punctuation">></span></span></code></pre>
+<p>Here <code>children</code> is the sentence. Panel does not know or care what it is: text, a list, another component. It just puts it in the right place. That is <strong>composition</strong>: building bigger things by nesting pieces, instead of adding a prop for every possible variation.</p>
+<p><code>title?: string</code> with a <code>?</code> makes the prop optional. <code>ReactNode</code> is the type of anything React can render, which is what <code>children</code> usually is.</p>
+<h2 id="slots-more-than-one-hole">Slots: more than one hole</h2>
+<p><code>children</code> is one hole. For a second one, use an ordinary prop that takes JSX:</p>
+<pre class="code" data-lang="tsx"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Panel</span></span>
+  <span class="token attr-name">title</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Couldn't load the snacks<span class="token punctuation">"</span></span>
+  <span class="token attr-name">action</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>retry<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">Try again</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span><span class="token punctuation">}</span></span>
+<span class="token punctuation">></span></span><span class="token plain-text">
+  Check your connection, then try again.
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Panel</span></span><span class="token punctuation">></span></span></code></pre>
+<p><code>action</code> is a <strong>slot</strong>. JSX is just a value (lesson 4), so you can pass it as a prop like any number or string. Panel decides <em>where</em> the button goes; App decides <em>what</em> the button is.</p>
+<h2 id="app-now">App now</h2>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">let</span> content<span class="token operator">:</span> ReactNode
+<span class="token keyword">if</span> <span class="token punctuation">(</span>status <span class="token operator">===</span> <span class="token string">'loading'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  content <span class="token operator">=</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Panel</span></span><span class="token punctuation">></span></span><span class="token plain-text">Loading snacks…</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Panel</span></span><span class="token punctuation">></span></span>
+<span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>status <span class="token operator">===</span> <span class="token string">'error'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  content <span class="token operator">=</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Panel</span></span> <span class="token attr-name">title</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Couldn't load the snacks<span class="token punctuation">"</span></span> <span class="token attr-name">action</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>retry<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">Try again</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span><span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+      Check your connection, then try again.
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Panel</span></span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>visible<span class="token punctuation">.</span>length <span class="token operator">===</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  content <span class="token operator">=</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Panel</span></span> <span class="token attr-name">title</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Nothing found<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">No snacks match …</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Panel</span></span><span class="token punctuation">></span></span>
+<span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+  content <span class="token operator">=</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Shelf</span></span> <span class="token attr-name">snacks</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>visible<span class="token punctuation">}</span></span> <span class="token attr-name">likes</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>likes<span class="token punctuation">}</span></span> <span class="token attr-name">onLike</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>like<span class="token punctuation">}</span></span> <span class="token attr-name">onAdd</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>addToBasket<span class="token punctuation">}</span></span> <span class="token punctuation">/></span></span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">return</span> <span class="token punctuation">(</span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Header</span></span> <span class="token attr-name">count</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>basket<span class="token punctuation">.</span>length<span class="token punctuation">}</span></span> <span class="token attr-name">total</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>total<span class="token punctuation">}</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">SearchBar</span></span> <span class="token attr-name">query</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>query<span class="token punctuation">}</span></span> <span class="token attr-name">onQueryChange</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>setQuery<span class="token punctuation">}</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
+    </span><span class="token punctuation">{</span><span class="token comment">/* hint */</span><span class="token punctuation">}</span><span class="token plain-text">
+    </span><span class="token punctuation">{</span>content<span class="token punctuation">}</span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span></span><span class="token punctuation">></span></span>
+<span class="token punctuation">)</span></code></pre>
+<p>Each outcome is one short line, because each piece has a name that says what it is. The CSS moved too: each component&#39;s styles now sit next to it (<code>SearchBar.css</code>, <code>Shelf.css</code>, <code>Panel.css</code>).</p>
+<h2 id="notice-the-props">Notice the props</h2>
+<p><code>Shelf</code> gets <code>likes</code>, <code>onLike</code> and <code>onAdd</code> only so it can hand them on to each <code>SnackCard</code>. It does not use them itself. Passing props through a component that does not need them is called <strong>prop drilling</strong>. Two levels is fine. When the basket arrives in the next lesson and several distant components need it, this will start to hurt, and lesson 19 fixes it.</p>
+<h2 id="check-yourself">Check yourself</h2>
+<details>
+<summary><span>What is <code>children</code>?</span></summary>
+
+<p>The prop that holds whatever JSX is written between a component&#39;s opening and closing tags. The component decides where to render it.</p>
+</details>
+
+<details>
+<summary><span>Why does the query stay in App instead of moving into SearchBar?</span></summary>
+
+<p>App needs it to filter the snacks. State lives in the closest component that needs it, and props only flow down, so App owns it and passes it to SearchBar.</p>
+</details>
+
+<details>
+<summary><span>How do you give a component two places to put outside JSX?</span></summary>
+
+<p>Use <code>children</code> for one, and an ordinary prop typed <code>ReactNode</code> (a slot, like <code>action</code>) for the other.</p>
+</details>
+
+  </article>
+</main>
+<nav class="pager" aria-label="Lessons">
+  <a class="pager-prev" href="15-put-it-online.html"><span>Previous</span>Put it online</a>
+  <a class="pager-next" href="17-use-reducer.html"><span>Next</span>useReducer</a>
+</nav>
+<footer class="foot-small">
+  <p>Snack Shelf, a course in React and TypeScript. 33 lessons.</p>
+</footer>
+</body>
+</html>

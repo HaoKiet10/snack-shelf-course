@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Custom hooks · Snack Shelf</title>
+<meta name="description" content="Pull the loading logic and the saving logic out of App into your own hooks, useSnacks, useLocalStorage and useBasket. The basket now survives a reload, and App gets three lines shorter for each idea.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head>
+<body class="lesson-page">
+<header class="bar">
+  <a class="wordmark" href="../index.html">Snack Shelf</a>
+  <nav aria-label="Site"><a href="../index.html#lessons">Lessons</a><a href="https://github.com/HaoKiet10/snack-shelf-course">GitHub</a></nav>
+</header>
+<main class="lesson">
+  <div class="lesson-head" data-reveal>
+    <h1>Custom hooks</h1>
+    <p class="lead">Pull the loading logic and the saving logic out of App into your own hooks, useSnacks, useLocalStorage and useBasket. The basket now survives a reload, and App gets three lines shorter for each idea.</p>
+    <p class="meta">Lesson 18 of 33, about 18 minutes</p>
+  </div>
+  <aside class="demo" aria-label="Live demo">
+    <div class="demo-sticky">
+      <div class="demo-frame" data-ui>
+        <iframe src="../demos/18-custom-hooks/index.html" title="Live demo for Custom hooks" loading="lazy"></iframe>
+      </div>
+      <p class="demo-links"><a href="../demos/18-custom-hooks/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a><a href="https://github.com/HaoKiet10/snack-shelf-course/tree/main/code/lessons/18-custom-hooks">Read this lesson's code</a></p>
+    </div>
+  </aside>
+  <article class="prose">
+<p>Put something in the basket and reload: it is still there. That took a few lines, because the saving code was already written once, for the likes, and this lesson turns it into something reusable.</p>
+<h2 id="a-hook-is-just-a-function">A hook is just a function</h2>
+<p>A <strong>custom hook</strong> is a function whose name starts with <code>use</code> and that calls other hooks. That is the entire definition. There is no registration and no special API.</p>
+<pre class="code" data-lang="ts"><code><span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">useSnacks</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> <span class="token punctuation">[</span>snacks<span class="token punctuation">,</span> setSnacks<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token generic-function"><span class="token function">useState</span><span class="token generic class-name"><span class="token operator">&lt;</span>Snack<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+  <span class="token keyword">const</span> <span class="token punctuation">[</span>status<span class="token punctuation">,</span> setStatus<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token generic-function"><span class="token function">useState</span><span class="token generic class-name"><span class="token operator">&lt;</span>Status<span class="token operator">></span></span></span><span class="token punctuation">(</span><span class="token string">'loading'</span><span class="token punctuation">)</span>
+  <span class="token keyword">const</span> <span class="token punctuation">[</span>attempt<span class="token punctuation">,</span> setAttempt<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">useState</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
+
+  <span class="token function">useEffect</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+    <span class="token comment">// … lesson 12's loading effect, unchanged …</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">[</span>attempt<span class="token punctuation">]</span><span class="token punctuation">)</span>
+
+  <span class="token keyword">function</span> <span class="token function">retry</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">setStatus</span><span class="token punctuation">(</span><span class="token string">'loading'</span><span class="token punctuation">)</span>
+    <span class="token function">setAttempt</span><span class="token punctuation">(</span><span class="token punctuation">(</span>a<span class="token punctuation">)</span> <span class="token operator">=></span> a <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token keyword">return</span> <span class="token punctuation">{</span> snacks<span class="token punctuation">,</span> status<span class="token punctuation">,</span> retry <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<p>This is lesson 12&#39;s code, cut out of App and pasted into a function. In App, four state variables, an effect and a function became:</p>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">const</span> <span class="token punctuation">{</span> snacks<span class="token punctuation">,</span> status<span class="token punctuation">,</span> retry <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">useSnacks</span><span class="token punctuation">(</span><span class="token punctuation">)</span></code></pre>
+<p>The <code>use</code> prefix is not decoration. It tells you, the linter and React that the <strong>rules of hooks</strong> (lesson 6) apply: call it at the top level of a component or another hook, never in a condition or a loop. Inside, it can use any hook it likes.</p>
+<h2 id="hooks-share-logic-not-state">Hooks share logic, not state</h2>
+<p>This is the one thing to really get. <strong>Every component that calls <code>useSnacks()</code> gets its own, separate state.</strong> Calling a hook is like calling the code inside it in that component. Two components calling <code>useSnacks()</code> would fetch the snacks twice and hold two separate lists.</p>
+<p>So a custom hook is a way to <strong>reuse code</strong>, not a way to share data. Sharing data between components is lesson 19.</p>
+<h2 id="a-generic-hook-uselocalstorage">A generic hook: useLocalStorage</h2>
+<p>The likes were saved with a lazy <code>useState</code> plus an effect (lesson 12). The basket needs the same thing. Instead of writing it twice:</p>
+<pre class="code" data-lang="ts"><code><span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token generic-function"><span class="token function">useLocalStorage</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">></span></span></span><span class="token punctuation">(</span>key<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">,</span> initial<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> <span class="token punctuation">[</span>value<span class="token punctuation">,</span> setValue<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token generic-function"><span class="token function">useState</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+      <span class="token keyword">const</span> saved <span class="token operator">=</span> localStorage<span class="token punctuation">.</span><span class="token function">getItem</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span>
+      <span class="token keyword">return</span> saved <span class="token operator">===</span> <span class="token keyword">null</span> <span class="token operator">?</span> initial <span class="token operator">:</span> <span class="token punctuation">(</span><span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>saved<span class="token punctuation">)</span> <span class="token keyword">as</span> <span class="token constant">T</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">{</span>
+      <span class="token keyword">return</span> initial
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+  <span class="token function">useEffect</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+      localStorage<span class="token punctuation">.</span><span class="token function">setItem</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">{</span>
+      <span class="token comment">// storage full or blocked: keep working, just don't save</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">[</span>key<span class="token punctuation">,</span> value<span class="token punctuation">]</span><span class="token punctuation">)</span>
+
+  <span class="token keyword">return</span> <span class="token punctuation">[</span>value<span class="token punctuation">,</span> setValue<span class="token punctuation">]</span> <span class="token keyword">as</span> <span class="token keyword">const</span>
+<span class="token punctuation">}</span></code></pre>
+<p>It works exactly like <code>useState</code>, except the value is saved under <code>key</code>:</p>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">const</span> <span class="token punctuation">[</span>likes<span class="token punctuation">,</span> setLikes<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token generic-function"><span class="token function">useLocalStorage</span><span class="token generic class-name"><span class="token operator">&lt;</span>Record<span class="token operator">&lt;</span><span class="token builtin">string</span><span class="token punctuation">,</span> <span class="token builtin">number</span><span class="token operator">>></span></span></span><span class="token punctuation">(</span><span class="token string">'snack-shelf-likes'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span></code></pre>
+<p><code>&lt;T&gt;</code> makes the function <strong>generic</strong>: <code>T</code> stands for whatever type you use it with. Here <code>T</code> is <code>Record&lt;string, number&gt;</code>, so <code>likes</code> has that type and <code>setLikes</code> only accepts it. One hook, any type.</p>
+<p><code>as const</code> on the return value matters. Without it TypeScript sees <code>[value, setValue]</code> as &quot;an array where any item may be either type&quot;. With it, it is a fixed pair, <code>[T, setter]</code>, just like <code>useState</code>&#39;s.</p>
+<h2 id="usebasket-a-reducer-that-remembers">useBasket: a reducer that remembers</h2>
+<p>The basket uses <code>useReducer</code>, not <code>useState</code>, so it gets its own small hook:</p>
+<pre class="code" data-lang="ts"><code><span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">useBasket</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> <span class="token punctuation">[</span>lines<span class="token punctuation">,</span> dispatch<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">useReducer</span><span class="token punctuation">(</span>basketReducer<span class="token punctuation">,</span> <span class="token constant">BASKET_KEY</span><span class="token punctuation">,</span> readSavedBasket<span class="token punctuation">)</span>
+
+  <span class="token function">useEffect</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+      localStorage<span class="token punctuation">.</span><span class="token function">setItem</span><span class="token punctuation">(</span><span class="token constant">BASKET_KEY</span><span class="token punctuation">,</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span>lines<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">{</span>
+      <span class="token comment">// not saved, still works</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">[</span>lines<span class="token punctuation">]</span><span class="token punctuation">)</span>
+
+  <span class="token keyword">return</span> <span class="token punctuation">{</span> lines<span class="token punctuation">,</span> dispatch<span class="token punctuation">,</span> count<span class="token operator">:</span> <span class="token function">countItems</span><span class="token punctuation">(</span>lines<span class="token punctuation">)</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<p><code>useReducer</code>&#39;s optional <strong>third argument</strong> is an init function, like the function form of <code>useState</code>. React calls <code>readSavedBasket(BASKET_KEY)</code> once to get the first state, instead of reading storage on every render. (In lesson 19 this hook is renamed <code>useBasketState</code>, because the name <code>useBasket</code> is needed for something else.)</p>
+<p>A hook can return anything: a pair like <code>useState</code>, an object like this one, a single value. Return an object when there are several named things, so the caller can pick what it needs: <code>const { lines, count } = useBasket()</code>.</p>
+<h2 id="app-now">App, now</h2>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">App</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> <span class="token punctuation">[</span>query<span class="token punctuation">,</span> setQuery<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">useState</span><span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">)</span>
+  <span class="token keyword">const</span> <span class="token punctuation">[</span>likes<span class="token punctuation">,</span> setLikes<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token generic-function"><span class="token function">useLocalStorage</span><span class="token generic class-name"><span class="token operator">&lt;</span>Record<span class="token operator">&lt;</span><span class="token builtin">string</span><span class="token punctuation">,</span> <span class="token builtin">number</span><span class="token operator">>></span></span></span><span class="token punctuation">(</span><span class="token string">'snack-shelf-likes'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token keyword">const</span> <span class="token punctuation">{</span> snacks<span class="token punctuation">,</span> status<span class="token punctuation">,</span> retry <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">useSnacks</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">const</span> <span class="token punctuation">{</span> lines<span class="token operator">:</span> basket<span class="token punctuation">,</span> dispatch<span class="token punctuation">,</span> count <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">useBasket</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token comment">// …</span></code></pre>
+<p>The top of App reads like a list of what it needs. The details of <em>how</em> each piece works are one click away, in <code>src/hooks/</code>.</p>
+<h2 id="when-to-make-a-hook">When to make a hook</h2>
+<p>Make one when a group of state and effects belongs together and has a name: &quot;the snacks, loaded&quot;, &quot;a value saved in storage&quot;. Do not make one for a single <code>useState</code>; <code>useCounter</code> that wraps one <code>useState</code> adds a file and hides nothing.</p>
+<p>Good hooks hide <strong>effects</strong> most of all, because effects are where the tricky parts live (cleanup, dependencies). Once <code>useLocalStorage</code> is correct, nobody using it has to think about them again.</p>
+<h2 id="check-yourself">Check yourself</h2>
+<details>
+<summary><span>What makes a function a custom hook?</span></summary>
+
+<p>Its name starts with <code>use</code> and it calls other hooks. The rules of hooks then apply to it, just like to built-in ones.</p>
+</details>
+
+<details>
+<summary><span>Header and App both call <code>useSnacks()</code>. How many times are the snacks loaded?</span></summary>
+
+<p>Twice. Each call has its own state and its own effect. Custom hooks share code, not state.</p>
+</details>
+
+<details>
+<summary><span>Why does <code>useLocalStorage</code> return <code>[value, setValue] as const</code>?</span></summary>
+
+<p>So TypeScript treats it as a fixed pair, the value then the setter, instead of an array where any item could be either type.</p>
+</details>
+
+<details>
+<summary><span>What is the third argument of <code>useReducer</code> for?</span></summary>
+
+<p>An init function. React calls it once with the second argument to produce the first state, so expensive setup, like reading storage, only happens once.</p>
+</details>
+
+  </article>
+</main>
+<nav class="pager" aria-label="Lessons">
+  <a class="pager-prev" href="17-use-reducer.html"><span>Previous</span>useReducer</a>
+  <a class="pager-next" href="19-context.html"><span>Next</span>Context</a>
+</nav>
+<footer class="foot-small">
+  <p>Snack Shelf, a course in React and TypeScript. 33 lessons.</p>
+</footer>
+</body>
+</html>

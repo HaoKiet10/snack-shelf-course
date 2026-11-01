@@ -1,0 +1,8 @@
+[
+  { "id": "pocky", "name": "Pocky", "price": 2.5, "emoji": "🍫" },
+  { "id": "onigiri", "name": "Onigiri", "price": 1.8, "emoji": "🍙" },
+  { "id": "melon-pan", "name": "Melon Pan", "price": 2.2, "emoji": "🍈" },
+  { "id": "mochi", "name": "Mochi", "price": 3.0, "emoji": "🍡" },
+  { "id": "taiyaki", "name": "Taiyaki", "price": 2.8, "emoji": "🐟" },
+  { "id": "ramune", "name": "Ramune", "price": 1.5, "emoji": "🥤" }
+]

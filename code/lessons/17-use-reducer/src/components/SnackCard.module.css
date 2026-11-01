@@ -1,0 +1,84 @@
+/* A CSS MODULE: the file name ends in .module.css. Vite renames every class
+   to something unique (card -> _card_x7k2a), so .card here can never clash
+   with a .card somewhere else. Components get the real names from `styles`. */
+
+.card {
+  position: relative; /* so the badge can sit in the corner */
+  box-sizing: border-box;
+  width: 160px;
+  padding: 16px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+.emoji {
+  font-size: 2.5rem;
+}
+
+.name {
+  font-size: 1.1rem;
+  margin: 8px 0 4px;
+}
+
+.price {
+  margin: 0 0 8px;
+  opacity: 0.7;
+}
+
+/* The bar's WIDTH comes from an inline style in the component,
+   because it depends on likes. Everything else stays here. */
+.meter {
+  height: 4px;
+  margin: 0 8px 12px;
+  border-radius: 999px;
+  background: var(--lilac);
+  overflow: hidden;
+}
+
+.meter > div {
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.2s;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+
+.button {
+  border: none;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 1rem;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.like {
+  background: var(--lilac);
+}
+
+.liked {
+  color: var(--accent);
+  font-weight: bold;
+}
+
+.add {
+  background: var(--peach);
+}
+
+.badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: bold;
+}

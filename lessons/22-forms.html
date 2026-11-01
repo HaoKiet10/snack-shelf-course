@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Forms · Snack Shelf</title>
+<meta name="description" content="A checkout form on the basket page, with validation, error messages, a pending state and an order confirmation. Uncontrolled fields read with FormData, React 19 form actions with useActionState, and useFormStatus.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head>
+<body class="lesson-page">
+<header class="bar">
+  <a class="wordmark" href="../index.html">Snack Shelf</a>
+  <nav aria-label="Site"><a href="../index.html#lessons">Lessons</a><a href="https://github.com/HaoKiet10/snack-shelf-course">GitHub</a></nav>
+</header>
+<main class="lesson">
+  <div class="lesson-head" data-reveal>
+    <h1>Forms</h1>
+    <p class="lead">A checkout form on the basket page, with validation, error messages, a pending state and an order confirmation. Uncontrolled fields read with FormData, React 19 form actions with useActionState, and useFormStatus.</p>
+    <p class="meta">Lesson 22 of 33, about 25 minutes</p>
+  </div>
+  <aside class="demo" aria-label="Live demo">
+    <div class="demo-sticky">
+      <div class="demo-frame" data-ui>
+        <iframe src="../demos/22-forms/index.html" title="Live demo for Forms" loading="lazy"></iframe>
+      </div>
+      <p class="demo-links"><a href="../demos/22-forms/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a><a href="https://github.com/HaoKiet10/snack-shelf-course/tree/main/code/lessons/22-forms">Read this lesson's code</a></p>
+    </div>
+  </aside>
+  <article class="prose">
+<p>The basket page has a checkout form now. Leave a field empty and you get a message under it, with what you typed still there. Fill it in and the button says <strong>Placing order…</strong>, then you get an order number and the basket empties.</p>
+<h2 id="controlled-or-uncontrolled">Controlled or uncontrolled</h2>
+<p>Lesson 8&#39;s search box is <strong>controlled</strong>: React state holds the value, and every keystroke goes through <code>onChange</code>. That is the right choice when something must react to every keystroke, like filtering.</p>
+<p>A checkout form does not need that. Nothing happens until you press the button. Controlling all four fields would mean four pieces of state and four handlers for nothing. So most fields here are <strong>uncontrolled</strong>: the browser keeps their value, as plain HTML forms always have, and we read them all at once when the form is submitted.</p>
+<pre class="code" data-lang="tsx"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>name<span class="token punctuation">"</span></span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>name<span class="token punctuation">"</span></span> <span class="token attr-name">defaultValue</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>values<span class="token punctuation">.</span>name<span class="token punctuation">}</span></span> <span class="token punctuation">/></span></span></code></pre>
+<p><code>defaultValue</code> (not <code>value</code>) sets the <strong>starting</strong> value only; after that the browser owns it. <code>name</code> is the key the value will be read back by.</p>
+<p>The note <em>is</em> controlled, because its character counter needs every keystroke:</p>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">const</span> <span class="token punctuation">[</span>note<span class="token punctuation">,</span> setNote<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">useState</span><span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">)</span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>textarea</span> <span class="token attr-name">value</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>note<span class="token punctuation">}</span></span> <span class="token attr-name">onChange</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">setNote</span><span class="token punctuation">(</span>e<span class="token punctuation">.</span>target<span class="token punctuation">.</span>value<span class="token punctuation">.</span><span class="token function">slice</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token constant">NOTE_MAX</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">}</span></span> <span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>note-count<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token punctuation">{</span>note<span class="token punctuation">.</span>length<span class="token punctuation">}</span><span class="token plain-text"> / </span><span class="token punctuation">{</span><span class="token constant">NOTE_MAX</span><span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span></code></pre>
+<p>Mixing the two in one form is fine. Pick per field.</p>
+<h2 id="a-form-action">A form action</h2>
+<p>In React 19, a <code>&lt;form&gt;</code>&#39;s <code>action</code> can be a <strong>function</strong>:</p>
+<pre class="code" data-lang="tsx"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>form</span> <span class="token attr-name">action</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>formAction<span class="token punctuation">}</span></span><span class="token punctuation">></span></span></code></pre>
+<p>When the form is submitted, React calls it with a <code>FormData</code> object: all the fields, by <code>name</code>. No <code>e.preventDefault()</code>, no <code>onSubmit</code>. <code>useActionState</code> wraps the action and keeps what it returns as state:</p>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">const</span> <span class="token punctuation">[</span>state<span class="token punctuation">,</span> formAction<span class="token punctuation">,</span> isPending<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">useActionState</span><span class="token punctuation">(</span>placeOrder<span class="token punctuation">,</span> <span class="token punctuation">{</span> values<span class="token operator">:</span> <span class="token constant">EMPTY</span><span class="token punctuation">,</span> errors<span class="token operator">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span> <span class="token punctuation">}</span><span class="token punctuation">)</span></code></pre>
+<ul>
+<li><code>placeOrder</code> is your function. React calls it as <code>placeOrder(previousState, formData)</code>.</li>
+<li><code>state</code> is whatever it returned last time (or the initial value).</li>
+<li><code>formAction</code> goes on the form.</li>
+<li><code>isPending</code> is <code>true</code> while it runs.</li>
+</ul>
+<h2 id="the-action">The action</h2>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">placeOrder</span><span class="token punctuation">(</span>_prev<span class="token operator">:</span> CheckoutState<span class="token punctuation">,</span> formData<span class="token operator">:</span> FormData<span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span>CheckoutState<span class="token operator">></span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> values<span class="token operator">:</span> FormValues <span class="token operator">=</span> <span class="token punctuation">{</span>
+    name<span class="token operator">:</span> <span class="token function">String</span><span class="token punctuation">(</span>formData<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'name'</span><span class="token punctuation">)</span> <span class="token operator">??</span> <span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">trim</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    email<span class="token operator">:</span> <span class="token function">String</span><span class="token punctuation">(</span>formData<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'email'</span><span class="token punctuation">)</span> <span class="token operator">??</span> <span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">trim</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    pickup<span class="token operator">:</span> <span class="token function">String</span><span class="token punctuation">(</span>formData<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'pickup'</span><span class="token punctuation">)</span> <span class="token operator">??</span> <span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">const</span> errors <span class="token operator">=</span> <span class="token function">validate</span><span class="token punctuation">(</span>values<span class="token punctuation">)</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>Object<span class="token punctuation">.</span><span class="token function">keys</span><span class="token punctuation">(</span>errors<span class="token punctuation">)</span><span class="token punctuation">.</span>length <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token punctuation">{</span> values<span class="token punctuation">,</span> errors <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">const</span> orderNo <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token function">sendOrder</span><span class="token punctuation">(</span><span class="token punctuation">{</span> <span class="token operator">...</span>values<span class="token punctuation">,</span> note<span class="token punctuation">,</span> lines<span class="token punctuation">,</span> total <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token function">dispatch</span><span class="token punctuation">(</span><span class="token punctuation">{</span> type<span class="token operator">:</span> <span class="token string">'emptied'</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token function">setNote</span><span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> <span class="token punctuation">{</span> values<span class="token operator">:</span> <span class="token constant">EMPTY</span><span class="token punctuation">,</span> errors<span class="token operator">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span> orderNo<span class="token punctuation">,</span> customer<span class="token operator">:</span> values<span class="token punctuation">.</span>name <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<p>It reads the fields, validates them, and either returns the errors or sends the order and returns the order number. <code>formData.get</code> returns <code>FormDataEntryValue | null</code>, so <code>String(… ?? &#39;&#39;)</code> turns it into a plain string. <code>_prev</code> starts with an underscore to say &quot;not used here&quot;.</p>
+<p><code>sendOrder</code> in <code>data/orders.ts</code> stands in for a real request: it waits 800ms and makes up an order number.</p>
+<h2 id="validation-is-a-plain-function">Validation is a plain function</h2>
+<pre class="code" data-lang="ts"><code><span class="token keyword">function</span> <span class="token function">validate</span><span class="token punctuation">(</span>v<span class="token operator">:</span> FormValues<span class="token punctuation">)</span><span class="token operator">:</span> FieldErrors <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> errors<span class="token operator">:</span> FieldErrors <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>v<span class="token punctuation">.</span>name<span class="token punctuation">.</span>length <span class="token operator">&lt;</span> <span class="token number">2</span><span class="token punctuation">)</span> errors<span class="token punctuation">.</span>name <span class="token operator">=</span> <span class="token string">'Please enter your name.'</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token regex"><span class="token regex-delimiter">/</span><span class="token regex-source language-regex">^[^\s@]+@[^\s@]+\.[^\s@]+$</span><span class="token regex-delimiter">/</span></span><span class="token punctuation">.</span><span class="token function">test</span><span class="token punctuation">(</span>v<span class="token punctuation">.</span>email<span class="token punctuation">)</span><span class="token punctuation">)</span> errors<span class="token punctuation">.</span>email <span class="token operator">=</span> <span class="token string">'That email address looks incomplete.'</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token constant">PICKUP_TIMES</span><span class="token punctuation">.</span><span class="token function">includes</span><span class="token punctuation">(</span>v<span class="token punctuation">.</span>pickup<span class="token punctuation">)</span><span class="token punctuation">)</span> errors<span class="token punctuation">.</span>pickup <span class="token operator">=</span> <span class="token string">'Choose when to pick it up.'</span>
+  <span class="token keyword">return</span> errors
+<span class="token punctuation">}</span></code></pre>
+<p>Values in, errors out, no React. <code>Partial&lt;Record&lt;keyof FormValues, string&gt;&gt;</code> means &quot;an object that may have a message for any of the field names&quot;: <code>keyof FormValues</code> is <code>&#39;name&#39; | &#39;email&#39; | &#39;pickup&#39;</code>, and <code>Partial</code> makes every key optional.</p>
+<p>The form has <code>noValidate</code>, which turns off the browser&#39;s own popups so our messages are the only ones. Browser validation (<code>required</code>, <code>type=&quot;email&quot;</code>) is still a fine first line on simple forms; the server must always validate again anyway, because anyone can send it anything.</p>
+<h2 id="showing-errors-keeping-values">Showing errors, keeping values</h2>
+<pre class="code" data-lang="tsx"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span>
+  <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>email<span class="token punctuation">"</span></span>
+  <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>email<span class="token punctuation">"</span></span>
+  <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>email<span class="token punctuation">"</span></span>
+  <span class="token attr-name">defaultValue</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>values<span class="token punctuation">.</span>email<span class="token punctuation">}</span></span>
+  <span class="token attr-name">aria-invalid</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>errors<span class="token punctuation">.</span>email <span class="token operator">?</span> <span class="token boolean">true</span> <span class="token operator">:</span> <span class="token keyword">undefined</span><span class="token punctuation">}</span></span>
+  <span class="token attr-name">aria-describedby</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>errors<span class="token punctuation">.</span>email <span class="token operator">?</span> <span class="token string">'email-error'</span> <span class="token operator">:</span> <span class="token keyword">undefined</span><span class="token punctuation">}</span></span>
+<span class="token punctuation">/></span></span>
+<span class="token punctuation">{</span>errors<span class="token punctuation">.</span>email <span class="token operator">&amp;&amp;</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>field-error<span class="token punctuation">"</span></span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>email-error<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token punctuation">{</span>errors<span class="token punctuation">.</span>email<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span><span class="token punctuation">}</span></code></pre>
+<p>After an action runs, <strong>React resets the form</strong>, like a browser does after a classic submit. For uncontrolled fields that means going back to their <code>defaultValue</code>. So the action returns the submitted <code>values</code>, and each field uses them as its <code>defaultValue</code>: after a failed submit, the reset puts back what you typed. After a successful one, <code>values</code> is empty, so the form clears.</p>
+<p><code>aria-invalid</code> and <code>aria-describedby</code> tell screen readers the field has a problem and which text explains it. Every input also has a <code>&lt;label htmlFor&gt;</code>, which is what makes clicking the label focus the field, and what lets tests find fields by their label (lesson 24).</p>
+<h2 id="pending-state-useformstatus">Pending state: useFormStatus</h2>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">function</span> <span class="token function">SubmitButton</span><span class="token punctuation">(</span><span class="token punctuation">{</span> total <span class="token punctuation">}</span><span class="token operator">:</span> <span class="token punctuation">{</span> total<span class="token operator">:</span> <span class="token builtin">number</span> <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> <span class="token punctuation">{</span> pending <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">useFormStatus</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>submit<span class="token punctuation">"</span></span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>submit<span class="token punctuation">"</span></span> <span class="token attr-name">disabled</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>pending<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token punctuation">{</span>pending <span class="token operator">?</span> <span class="token string">'Placing order…'</span> <span class="token operator">:</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Place order · $</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>total<span class="token punctuation">.</span><span class="token function">toFixed</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">}</span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<p><code>useFormStatus</code> (from <code>react-dom</code>) reads the status of the form the component is <strong>inside</strong>, without any props. It only works in a component rendered within the <code>&lt;form&gt;</code>, not in the component that renders the form. Disabling the button while pending also stops double orders from impatient double-clicks.</p>
+<p><code>isPending</code> from <code>useActionState</code> gives the same information to the component that owns the form; here it shows the &quot;Sending your order…&quot; line.</p>
+<h2 id="after-the-order">After the order</h2>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">if</span> <span class="token punctuation">(</span>state<span class="token punctuation">.</span>orderNo<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Panel</span></span> <span class="token attr-name">title</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Order placed<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+      Thanks, </span><span class="token punctuation">{</span>state<span class="token punctuation">.</span>customer<span class="token punctuation">}</span><span class="token plain-text">! Your order number is </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>strong</span><span class="token punctuation">></span></span><span class="token punctuation">{</span>state<span class="token punctuation">.</span>orderNo<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>strong</span><span class="token punctuation">></span></span><span class="token plain-text">.
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Panel</span></span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>lines<span class="token punctuation">.</span>length <span class="token operator">===</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token keyword">null</span>
+<span class="token punctuation">}</span></code></pre>
+<p>The action emptied the basket with <code>dispatch</code>, a plain context call from lesson 19. The form disappears with an empty basket, except to show the confirmation.</p>
+<h2 id="check-yourself">Check yourself</h2>
+<details>
+<summary><span>When would you make a field controlled instead of uncontrolled?</span></summary>
+
+<p>When something has to react to every change while typing, like a live filter or a character counter. If the value only matters on submit, uncontrolled with <code>FormData</code> is simpler.</p>
+</details>
+
+<details>
+<summary><span>What does <code>useActionState</code> give back?</span></summary>
+
+<p>The latest state returned by the action, a wrapped action to put on the form, and whether the action is currently running.</p>
+</details>
+
+<details>
+<summary><span>After a failed submit, why does the form still show what you typed?</span></summary>
+
+<p>React resets the form after the action, which returns fields to their <code>defaultValue</code>. The action returned the submitted values, and they are used as the defaults.</p>
+</details>
+
+<details>
+<summary><span>Why is <code>SubmitButton</code> its own component?</span></summary>
+
+<p><code>useFormStatus</code> reads the form the component is rendered inside. It has to be called from a child of the <code>&lt;form&gt;</code>, not from the component that renders it.</p>
+</details>
+
+  </article>
+</main>
+<nav class="pager" aria-label="Lessons">
+  <a class="pager-prev" href="21-routing.html"><span>Previous</span>Pages and routing</a>
+  <a class="pager-next" href="23-tanstack-query.html"><span>Next</span>TanStack Query</a>
+</nav>
+<footer class="foot-small">
+  <p>Snack Shelf, a course in React and TypeScript. 33 lessons.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Context · Snack Shelf</title>
+<meta name="description" content="Stop passing the basket down through components that do not use it. A context makes a value available to every component inside a provider, so Header, Shelf and the basket panel each read it themselves.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head>
+<body class="lesson-page">
+<header class="bar">
+  <a class="wordmark" href="../index.html">Snack Shelf</a>
+  <nav aria-label="Site"><a href="../index.html#lessons">Lessons</a><a href="https://github.com/HaoKiet10/snack-shelf-course">GitHub</a></nav>
+</header>
+<main class="lesson">
+  <div class="lesson-head" data-reveal>
+    <h1>Context</h1>
+    <p class="lead">Stop passing the basket down through components that do not use it. A context makes a value available to every component inside a provider, so Header, Shelf and the basket panel each read it themselves.</p>
+    <p class="meta">Lesson 19 of 33, about 20 minutes</p>
+  </div>
+  <aside class="demo" aria-label="Live demo">
+    <div class="demo-sticky">
+      <div class="demo-frame" data-ui>
+        <iframe src="../demos/19-context/index.html" title="Live demo for Context" loading="lazy"></iframe>
+      </div>
+      <p class="demo-links"><a href="../demos/19-context/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a><a href="https://github.com/HaoKiet10/snack-shelf-course/tree/main/code/lessons/19-context">Read this lesson's code</a></p>
+    </div>
+  </aside>
+  <article class="prose">
+<p>Nothing changes on screen. What changes is that <strong>App no longer mentions the basket at all</strong>. The components that need it read it straight from a context.</p>
+<h2 id="the-problem-prop-drilling">The problem: prop drilling</h2>
+<p>After lesson 18, the basket travels like this:</p>
+<pre class="diagram"><code>App   owns basket, dispatch, total
+├─ Header        ← count, total
+├─ Shelf         ← onAdd (only to pass on)
+│  └─ SnackCard  ← onAdd
+└─ BasketPanel   ← lines, snacks, total, dispatch</code></pre>
+<p>App has to know what every descendant needs, and <code>Shelf</code> carries <code>onAdd</code> it never uses. In a real app this goes five or six levels deep, and every new feature means editing every component on the path. That is <strong>prop drilling</strong>.</p>
+<h2 id="context-a-value-that-skips-the-levels">Context: a value that skips the levels</h2>
+<p>A <strong>context</strong> lets a component high up offer a value, and any component below it read that value directly, however deep.</p>
+<pre class="diagram"><code>&lt;BasketProvider&gt;   offers { lines, count, total, dispatch }
+  App
+  ├─ Header        useBasket() → count, total
+  ├─ Shelf         useBasket() → dispatch
+  └─ BasketPanel   useBasket() → everything</code></pre>
+<p>It takes three pieces.</p>
+<h2 id="1-create-the-context">1. Create the context</h2>
+<pre class="code" data-lang="ts"><code><span class="token comment">// context/BasketContext.ts</span>
+<span class="token keyword">export</span> <span class="token keyword">type</span> <span class="token class-name">BasketValue</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+  lines<span class="token operator">:</span> BasketLine<span class="token punctuation">[</span><span class="token punctuation">]</span>
+  count<span class="token operator">:</span> <span class="token builtin">number</span>
+  total<span class="token operator">:</span> <span class="token builtin">number</span>
+  dispatch<span class="token operator">:</span> ActionDispatch<span class="token operator">&lt;</span><span class="token punctuation">[</span>BasketAction<span class="token punctuation">]</span><span class="token operator">></span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">export</span> <span class="token keyword">const</span> BasketContext <span class="token operator">=</span> <span class="token generic-function"><span class="token function">createContext</span><span class="token generic class-name"><span class="token operator">&lt;</span>BasketValue <span class="token operator">|</span> <span class="token keyword">null</span><span class="token operator">></span></span></span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">)</span></code></pre>
+<p><code>createContext(defaultValue)</code> makes the channel. The default is what a component gets <strong>if there is no provider above it</strong>. Here that would always be a bug, so the default is <code>null</code> and the next piece checks for it.</p>
+<h2 id="2-a-hook-to-read-it">2. A hook to read it</h2>
+<pre class="code" data-lang="ts"><code><span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">useBasket</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> BasketValue <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> value <span class="token operator">=</span> <span class="token function">useContext</span><span class="token punctuation">(</span>BasketContext<span class="token punctuation">)</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>value <span class="token operator">===</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">Error</span><span class="token punctuation">(</span><span class="token string">'useBasket() must be used inside &lt;BasketProvider>'</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">return</span> value
+<span class="token punctuation">}</span></code></pre>
+<p><code>useContext(BasketContext)</code> reads the value from the <strong>nearest provider above</strong> the component. Wrapping it in <code>useBasket()</code> gives components a short name, and turns a forgotten provider into a clear error instead of a confusing &quot;cannot read properties of null&quot; somewhere else. It also narrows the type from <code>BasketValue | null</code> to <code>BasketValue</code>, so callers never have to check.</p>
+<h2 id="3-a-provider-that-supplies-it">3. A provider that supplies it</h2>
+<pre class="code" data-lang="tsx"><code><span class="token comment">// context/BasketProvider.tsx</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">BasketProvider</span><span class="token punctuation">(</span><span class="token punctuation">{</span> children <span class="token punctuation">}</span><span class="token operator">:</span> <span class="token punctuation">{</span> children<span class="token operator">:</span> ReactNode <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> <span class="token punctuation">{</span> lines<span class="token punctuation">,</span> dispatch<span class="token punctuation">,</span> count <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">useBasketState</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">const</span> <span class="token punctuation">{</span> snacks <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">useSnackData</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+  <span class="token keyword">const</span> prices <span class="token operator">=</span> Object<span class="token punctuation">.</span><span class="token function">fromEntries</span><span class="token punctuation">(</span>snacks<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">[</span>s<span class="token punctuation">.</span>id<span class="token punctuation">,</span> s<span class="token punctuation">.</span>price<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token keyword">const</span> total <span class="token operator">=</span> <span class="token function">basketTotal</span><span class="token punctuation">(</span>lines<span class="token punctuation">,</span> prices<span class="token punctuation">)</span>
+
+  <span class="token keyword">return</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">BasketContext</span></span> <span class="token attr-name">value</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">{</span> lines<span class="token punctuation">,</span> count<span class="token punctuation">,</span> total<span class="token punctuation">,</span> dispatch <span class="token punctuation">}</span><span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token punctuation">{</span>children<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">BasketContext</span></span><span class="token punctuation">></span></span>
+<span class="token punctuation">}</span></code></pre>
+<p>The provider is an ordinary component. It <strong>owns</strong> the basket state (with lesson 18&#39;s hook) and puts it in the context with <code>&lt;BasketContext value={…}&gt;</code>. Everything in <code>children</code> can now read it. (Before React 19 you wrote <code>&lt;BasketContext.Provider value={…}&gt;</code>; you will see that in older code.)</p>
+<p>The context and hook live in a <code>.ts</code> file and the provider in a <code>.tsx</code> file. That keeps fast refresh happy: a file that exports a component should only export components.</p>
+<h2 id="wrap-the-app">Wrap the app</h2>
+<pre class="code" data-lang="tsx"><code><span class="token comment">// main.tsx</span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">StrictMode</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">SnacksProvider</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">BasketProvider</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">App</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">BasketProvider</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">SnacksProvider</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">StrictMode</span></span><span class="token punctuation">></span></span></code></pre>
+<p>The snacks got the same treatment, as <code>SnacksContext</code> with <code>useSnackData()</code>. Lesson 18 noted that each <code>useSnacks()</code> call loads separately. Now <code>useSnacks()</code> is called <strong>once</strong>, in <code>SnacksProvider</code>, and every component reads that one result through context. That is the difference between the two tools: <strong>a hook shares code; a context shares a value.</strong></p>
+<p>Order matters: <code>BasketProvider</code> reads the snacks to work out the total, so it must be <strong>inside</strong> <code>SnacksProvider</code>.</p>
+<h2 id="reading-it">Reading it</h2>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">Header</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> <span class="token punctuation">{</span> count<span class="token punctuation">,</span> total <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">useBasket</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token comment">// …</span>
+<span class="token punctuation">}</span></code></pre>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">Shelf</span><span class="token punctuation">(</span><span class="token punctuation">{</span> snacks<span class="token punctuation">,</span> likes<span class="token punctuation">,</span> onLike <span class="token punctuation">}</span><span class="token operator">:</span> ShelfProps<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> <span class="token punctuation">{</span> dispatch <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">useBasket</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token comment">// … onAdd={() => dispatch({ type: 'added', id: snack.id })}</span>
+<span class="token punctuation">}</span></code></pre>
+<p><code>Header</code> and <code>BasketPanel</code> take no props at all now. App renders <code>&lt;Header /&gt;</code> and <code>&lt;BasketPanel /&gt;</code> and does not know the basket exists.</p>
+<h2 id="what-context-costs">What context costs</h2>
+<p>When a provider&#39;s value changes, <strong>every component that reads that context re-renders</strong>. Here, adding to the basket re-renders Header, Shelf and BasketPanel, which is exactly the set that should update. In a large app, putting everything in one giant context makes unrelated parts re-render together. Split contexts by what changes together: snacks and basket are separate for that reason.</p>
+<p>Context also makes a component <strong>depend on where it sits</strong>: <code>Header</code> now only works inside a <code>BasketProvider</code>. That is a fair trade for app-wide data. For data only a parent and child share, a prop is still simpler and more obvious.</p>
+<div class="table-wrap"><table><thead><tr><th>use</th><th>for</th></tr></thead><tbody><tr><td>props</td><td>data a parent hands to its children</td></tr>
+<tr><td>context</td><td>data many components at different depths need: the basket, the logged-in user, the theme, the language</td></tr>
+<tr><td>neither</td><td>data that can be calculated from what you already have</td></tr></tbody></table></div>
+<h2 id="check-yourself">Check yourself</h2>
+<details>
+<summary><span>What is prop drilling, and where was it in this app?</span></summary>
+
+<p>Passing props through components that do not use them, just to reach one further down. <code>Shelf</code> received <code>onAdd</code> only to give it to <code>SnackCard</code>.</p>
+</details>
+
+<details>
+<summary><span>What does <code>useContext</code> return?</span></summary>
+
+<p>The value of the nearest provider for that context above the component. If there is none, it returns the default passed to <code>createContext</code>.</p>
+</details>
+
+<details>
+<summary><span>What is the difference between a custom hook and a context?</span></summary>
+
+<p>A custom hook shares code: each caller gets its own state. A context shares one value: every reader below the provider gets the same thing.</p>
+</details>
+
+<details>
+<summary><span>Why must <code>BasketProvider</code> be inside <code>SnacksProvider</code>?</span></summary>
+
+<p>It calls <code>useSnackData()</code> to get prices for the total, and a context can only be read below its provider.</p>
+</details>
+
+  </article>
+</main>
+<nav class="pager" aria-label="Lessons">
+  <a class="pager-prev" href="18-custom-hooks.html"><span>Previous</span>Custom hooks</a>
+  <a class="pager-next" href="20-use-ref.html"><span>Next</span>useRef</a>
+</nav>
+<footer class="foot-small">
+  <p>Snack Shelf, a course in React and TypeScript. 33 lessons.</p>
+</footer>
+</body>
+</html>

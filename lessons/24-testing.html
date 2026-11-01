@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Testing · Snack Shelf</title>
+<meta name="description" content="Write tests with Vitest and Testing Library. Test the basket reducer as a plain function, render components and click them like a user would, fake timers and modules, and run it all with npm test.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head>
+<body class="lesson-page">
+<header class="bar">
+  <a class="wordmark" href="../index.html">Snack Shelf</a>
+  <nav aria-label="Site"><a href="../index.html#lessons">Lessons</a><a href="https://github.com/HaoKiet10/snack-shelf-course">GitHub</a></nav>
+</header>
+<main class="lesson">
+  <div class="lesson-head" data-reveal>
+    <h1>Testing</h1>
+    <p class="lead">Write tests with Vitest and Testing Library. Test the basket reducer as a plain function, render components and click them like a user would, fake timers and modules, and run it all with npm test.</p>
+    <p class="meta">Lesson 24 of 33, about 25 minutes</p>
+  </div>
+  <aside class="demo" aria-label="Live demo">
+    <div class="demo-sticky">
+      <div class="demo-frame" data-ui>
+        <iframe src="../demos/24-testing/index.html" title="Live demo for Testing" loading="lazy"></iframe>
+      </div>
+      <p class="demo-links"><a href="../demos/24-testing/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a><a href="https://github.com/HaoKiet10/snack-shelf-course/tree/main/code/lessons/24-testing">Read this lesson's code</a></p>
+    </div>
+  </aside>
+  <article class="prose">
+<p>The app is the same; this lesson adds 14 tests that check it. Run <code>npm test</code>, and from then on, change something and the tests tell you within a second whether you broke the basket.</p>
+<h2 id="why-bother">Why bother</h2>
+<p>Every lesson so far ended with &quot;try this&quot;: like Pocky three times, search, clear. That is testing, by hand. It is slow, so you stop doing it, and then something breaks quietly. An automated test does the same clicking in a fraction of a second, every time you save.</p>
+<h2 id="setting-up">Setting up</h2>
+<pre class="code" data-lang="bash"><code><span class="token function">npm</span> <span class="token function">install</span> <span class="token parameter variable">-D</span> vitest jsdom @testing-library/react @testing-library/dom @testing-library/user-event @testing-library/jest-dom</code></pre>
+<ul>
+<li><strong>Vitest</strong> runs tests. It is built on Vite, so it uses the same config and understands TypeScript and JSX with no extra setup.</li>
+<li><strong>jsdom</strong> is a fake browser DOM for Node, so components can render without a real browser.</li>
+<li><strong>Testing Library</strong> renders components and finds things on the &quot;screen&quot; the way a user would.</li>
+</ul>
+<pre class="code" data-lang="ts"><code><span class="token comment">// vite.config.ts</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> defineConfig <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'vitest/config'</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">defineConfig</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  plugins<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token function">react</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  base<span class="token operator">:</span> <span class="token string">'./'</span><span class="token punctuation">,</span>
+  test<span class="token operator">:</span> <span class="token punctuation">{</span>
+    environment<span class="token operator">:</span> <span class="token string">'jsdom'</span><span class="token punctuation">,</span>
+    setupFiles<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'./src/test/setup.ts'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span></code></pre>
+<pre class="code" data-lang="ts"><code><span class="token comment">// src/test/setup.ts</span>
+<span class="token keyword">import</span> <span class="token string">'@testing-library/jest-dom/vitest'</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> cleanup <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'@testing-library/react'</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> afterEach <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'vitest'</span>
+
+<span class="token function">afterEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  <span class="token function">cleanup</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span></code></pre>
+<p>The setup file adds matchers like <code>toBeInTheDocument()</code>, and clears the page between tests. Add <code>&quot;test&quot;: &quot;vitest&quot;</code> to <code>package.json</code>&#39;s scripts. Any file named <code>*.test.ts</code> or <code>*.test.tsx</code> is a test file.</p>
+<h2 id="the-shape-of-a-test">The shape of a test</h2>
+<pre class="code" data-lang="ts"><code><span class="token function">describe</span><span class="token punctuation">(</span><span class="token string">'basketReducer'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  <span class="token function">it</span><span class="token punctuation">(</span><span class="token string">'adds a new snack with quantity 1'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> next <span class="token operator">=</span> <span class="token function">basketReducer</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> type<span class="token operator">:</span> <span class="token string">'added'</span><span class="token punctuation">,</span> id<span class="token operator">:</span> <span class="token string">'pocky'</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token function">expect</span><span class="token punctuation">(</span>next<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toEqual</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">{</span> id<span class="token operator">:</span> <span class="token string">'pocky'</span><span class="token punctuation">,</span> qty<span class="token operator">:</span> <span class="token number">1</span> <span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span></code></pre>
+<p><code>describe</code> groups tests, <code>it</code> is one test with a sentence saying what should be true, and <code>expect(actual).toEqual(expected)</code> checks it. <strong>Arrange, act, assert</strong>: set something up, do one thing, check the result.</p>
+<h2 id="pure-functions-are-the-easiest">Pure functions are the easiest</h2>
+<p>The reducer (lesson 17) has no React, no DOM, no network. Testing it is just calling it:</p>
+<pre class="code" data-lang="ts"><code><span class="token function">it</span><span class="token punctuation">(</span><span class="token string">'removes a line when its quantity drops to 0'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> lines<span class="token operator">:</span> BasketLine<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span> id<span class="token operator">:</span> <span class="token string">'pocky'</span><span class="token punctuation">,</span> qty<span class="token operator">:</span> <span class="token number">1</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span> id<span class="token operator">:</span> <span class="token string">'ramune'</span><span class="token punctuation">,</span> qty<span class="token operator">:</span> <span class="token number">2</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">]</span>
+  <span class="token keyword">const</span> next <span class="token operator">=</span> <span class="token function">basketReducer</span><span class="token punctuation">(</span>lines<span class="token punctuation">,</span> <span class="token punctuation">{</span> type<span class="token operator">:</span> <span class="token string">'quantityChanged'</span><span class="token punctuation">,</span> id<span class="token operator">:</span> <span class="token string">'pocky'</span><span class="token punctuation">,</span> qty<span class="token operator">:</span> <span class="token number">0</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token function">expect</span><span class="token punctuation">(</span>next<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toEqual</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">{</span> id<span class="token operator">:</span> <span class="token string">'ramune'</span><span class="token punctuation">,</span> qty<span class="token operator">:</span> <span class="token number">2</span> <span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+<span class="token function">it</span><span class="token punctuation">(</span><span class="token string">'never changes the old state'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> before<span class="token operator">:</span> BasketLine<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">{</span> id<span class="token operator">:</span> <span class="token string">'pocky'</span><span class="token punctuation">,</span> qty<span class="token operator">:</span> <span class="token number">1</span> <span class="token punctuation">}</span><span class="token punctuation">]</span>
+  <span class="token keyword">const</span> after <span class="token operator">=</span> <span class="token function">basketReducer</span><span class="token punctuation">(</span>before<span class="token punctuation">,</span> <span class="token punctuation">{</span> type<span class="token operator">:</span> <span class="token string">'added'</span><span class="token punctuation">,</span> id<span class="token operator">:</span> <span class="token string">'pocky'</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token function">expect</span><span class="token punctuation">(</span>before<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toEqual</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">{</span> id<span class="token operator">:</span> <span class="token string">'pocky'</span><span class="token punctuation">,</span> qty<span class="token operator">:</span> <span class="token number">1</span> <span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+  <span class="token function">expect</span><span class="token punctuation">(</span>after<span class="token punctuation">)</span><span class="token punctuation">.</span>not<span class="token punctuation">.</span><span class="token function">toBe</span><span class="token punctuation">(</span>before<span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span></code></pre>
+<p>The second test checks lesson 11&#39;s rule directly: <code>toBe</code> compares identity, so <code>not.toBe</code> proves the reducer made a new array. This is the payoff for keeping logic in plain functions: the most important rules of the app get the cheapest tests.</p>
+<h2 id="testing-a-component-like-a-user">Testing a component like a user</h2>
+<pre class="code" data-lang="tsx"><code><span class="token function">it</span><span class="token punctuation">(</span><span class="token string">'shows the name, price and a link to the snack page'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  <span class="token function">render</span><span class="token punctuation">(</span><span class="token function">card</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token function">expect</span><span class="token punctuation">(</span>screen<span class="token punctuation">.</span><span class="token function">getByRole</span><span class="token punctuation">(</span><span class="token string">'link'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> name<span class="token operator">:</span> <span class="token string">'Pocky'</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toHaveAttribute</span><span class="token punctuation">(</span><span class="token string">'href'</span><span class="token punctuation">,</span> <span class="token string">'/snack/pocky'</span><span class="token punctuation">)</span>
+  <span class="token function">expect</span><span class="token punctuation">(</span>screen<span class="token punctuation">.</span><span class="token function">getByText</span><span class="token punctuation">(</span><span class="token string">'$2.50'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toBeInTheDocument</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span></code></pre>
+<p><code>render</code> puts the component on the fake page, and <code>screen</code> searches it. Testing Library deliberately makes you search the way a <strong>user</strong> finds things: by role (&quot;the link called Pocky&quot;), label, or visible text, not by class name or component internals. That has two benefits. Tests keep passing when you restyle or restructure, and if a test cannot find a button by its name, a screen reader user probably cannot either.</p>
+<p><code>card()</code> wraps <code>SnackCard</code> in a <code>MemoryRouter</code>, because its <code>&lt;Link&gt;</code> needs a router, and a <code>MemoryRouter</code> keeps its URL in memory instead of the address bar.</p>
+<div class="table-wrap"><table><thead><tr><th>query</th><th>when nothing matches</th><th>use for</th></tr></thead><tbody><tr><td><code>getBy…</code></td><td>throws (test fails)</td><td>things that must be there</td></tr>
+<tr><td><code>queryBy…</code></td><td>returns <code>null</code></td><td>checking something is <strong>not</strong> there</td></tr>
+<tr><td><code>findBy…</code></td><td>waits up to 1s, then throws</td><td>things that appear after something async</td></tr></tbody></table></div>
+<h2 id="clicking-and-fake-functions">Clicking, and fake functions</h2>
+<pre class="code" data-lang="tsx"><code><span class="token function">it</span><span class="token punctuation">(</span><span class="token string">'reports a like when the heart is clicked'</span><span class="token punctuation">,</span> <span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> user <span class="token operator">=</span> userEvent<span class="token punctuation">.</span><span class="token function">setup</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">const</span> onLike <span class="token operator">=</span> vi<span class="token punctuation">.</span><span class="token function">fn</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token function">render</span><span class="token punctuation">(</span><span class="token function">card</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span> onLike<span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token keyword">await</span> user<span class="token punctuation">.</span><span class="token function">click</span><span class="token punctuation">(</span>screen<span class="token punctuation">.</span><span class="token function">getByRole</span><span class="token punctuation">(</span><span class="token string">'button'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> name<span class="token operator">:</span> <span class="token string">'❤ 2'</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token function">expect</span><span class="token punctuation">(</span>onLike<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toHaveBeenCalledTimes</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span></code></pre>
+<p><code>vi.fn()</code> is a <strong>mock function</strong>: it does nothing but remember how it was called. The card&#39;s job is to <em>report</em> a like (lesson 11), so the test checks exactly that. <code>userEvent</code> simulates a real user: pointer events, focus, then click.</p>
+<p><code>rerender</code> gives the same component new props, like a parent re-rendering:</p>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">const</span> <span class="token punctuation">{</span> rerender <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">render</span><span class="token punctuation">(</span><span class="token function">card</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token function">expect</span><span class="token punctuation">(</span>screen<span class="token punctuation">.</span><span class="token function">queryByText</span><span class="token punctuation">(</span><span class="token string">'Fan favourite'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span>not<span class="token punctuation">.</span><span class="token function">toBeInTheDocument</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token function">rerender</span><span class="token punctuation">(</span><span class="token function">card</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token function">expect</span><span class="token punctuation">(</span>screen<span class="token punctuation">.</span><span class="token function">getByText</span><span class="token punctuation">(</span><span class="token string">'Fan favourite'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toBeInTheDocument</span><span class="token punctuation">(</span><span class="token punctuation">)</span></code></pre>
+<h2 id="faking-time">Faking time</h2>
+<p>The ✓ flash lasts a second (lesson 20). Waiting a real second per test adds up, so take control of the clock:</p>
+<pre class="code" data-lang="tsx"><code><span class="token function">it</span><span class="token punctuation">(</span><span class="token string">'flashes ✓ for a second after adding'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  vi<span class="token punctuation">.</span><span class="token function">useFakeTimers</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token comment">// … render, find the button</span>
+  fireEvent<span class="token punctuation">.</span><span class="token function">click</span><span class="token punctuation">(</span>button<span class="token punctuation">)</span>
+  <span class="token function">expect</span><span class="token punctuation">(</span>button<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toHaveTextContent</span><span class="token punctuation">(</span><span class="token string">'✓'</span><span class="token punctuation">)</span>
+
+  <span class="token function">act</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+    vi<span class="token punctuation">.</span><span class="token function">advanceTimersByTime</span><span class="token punctuation">(</span><span class="token number">1000</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token function">expect</span><span class="token punctuation">(</span>button<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toHaveTextContent</span><span class="token punctuation">(</span><span class="token string">'+'</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span></code></pre>
+<p><code>vi.useFakeTimers()</code> freezes <code>setTimeout</code>, and <code>advanceTimersByTime</code> moves the clock forward instantly. <code>fireEvent.click</code> is used here instead of <code>userEvent</code>, because <code>userEvent</code> waits between its steps using timers, which do not move while they are faked. <code>act()</code> tells React &quot;this causes updates; apply them before the next line&quot;.</p>
+<h2 id="faking-a-module-providing-a-context">Faking a module, providing a context</h2>
+<p>The checkout form calls <code>sendOrder</code>, which waits 800ms, and reads the basket from context. A test should control both:</p>
+<pre class="code" data-lang="tsx"><code>vi<span class="token punctuation">.</span><span class="token function">mock</span><span class="token punctuation">(</span><span class="token string">'../data/orders.ts'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">(</span><span class="token punctuation">{</span>
+  sendOrder<span class="token operator">:</span> vi<span class="token punctuation">.</span><span class="token function">fn</span><span class="token punctuation">(</span><span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token string">'YS-TEST-2'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+<span class="token keyword">function</span> <span class="token function">renderWithBasket</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> dispatch <span class="token operator">=</span> vi<span class="token punctuation">.</span><span class="token function">fn</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">const</span> basket<span class="token operator">:</span> BasketValue <span class="token operator">=</span> <span class="token punctuation">{</span> lines<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span> id<span class="token operator">:</span> <span class="token string">'pocky'</span><span class="token punctuation">,</span> qty<span class="token operator">:</span> <span class="token number">2</span> <span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">,</span> count<span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">,</span> total<span class="token operator">:</span> <span class="token number">5</span><span class="token punctuation">,</span> dispatch <span class="token punctuation">}</span>
+  <span class="token function">render</span><span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">BasketContext</span></span> <span class="token attr-name">value</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>basket<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">CheckoutForm</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">BasketContext</span></span><span class="token punctuation">></span></span><span class="token punctuation">,</span>
+  <span class="token punctuation">)</span>
+  <span class="token keyword">return</span> <span class="token punctuation">{</span> dispatch <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<p><code>vi.mock</code> replaces the whole module for this test file, so the form gets an instant fake <code>sendOrder</code>. Instead of the real <code>BasketProvider</code> with storage and snacks, the test provides the context <strong>value</strong> directly. That is a nice side effect of lesson 19&#39;s design: a component that reads a context can be given any value you like.</p>
+<pre class="code" data-lang="tsx"><code><span class="token function">it</span><span class="token punctuation">(</span><span class="token string">'places the order and empties the basket'</span><span class="token punctuation">,</span> <span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> user <span class="token operator">=</span> userEvent<span class="token punctuation">.</span><span class="token function">setup</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">const</span> <span class="token punctuation">{</span> dispatch <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">renderWithBasket</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+  <span class="token keyword">await</span> user<span class="token punctuation">.</span><span class="token function">type</span><span class="token punctuation">(</span>screen<span class="token punctuation">.</span><span class="token function">getByLabelText</span><span class="token punctuation">(</span><span class="token string">'Name'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">'Yune'</span><span class="token punctuation">)</span>
+  <span class="token keyword">await</span> user<span class="token punctuation">.</span><span class="token function">type</span><span class="token punctuation">(</span>screen<span class="token punctuation">.</span><span class="token function">getByLabelText</span><span class="token punctuation">(</span><span class="token string">'Email'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">'yune@example.com'</span><span class="token punctuation">)</span>
+  <span class="token keyword">await</span> user<span class="token punctuation">.</span><span class="token function">selectOptions</span><span class="token punctuation">(</span>screen<span class="token punctuation">.</span><span class="token function">getByLabelText</span><span class="token punctuation">(</span><span class="token string">'Pick-up time'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">'Tomorrow, 10 am'</span><span class="token punctuation">)</span>
+  <span class="token keyword">await</span> user<span class="token punctuation">.</span><span class="token function">click</span><span class="token punctuation">(</span>screen<span class="token punctuation">.</span><span class="token function">getByRole</span><span class="token punctuation">(</span><span class="token string">'button'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> name<span class="token operator">:</span> <span class="token regex"><span class="token regex-delimiter">/</span><span class="token regex-source language-regex">place order</span><span class="token regex-delimiter">/</span><span class="token regex-flags">i</span></span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+  <span class="token function">expect</span><span class="token punctuation">(</span><span class="token keyword">await</span> screen<span class="token punctuation">.</span><span class="token function">findByText</span><span class="token punctuation">(</span><span class="token string">'YS-TEST-2'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toBeInTheDocument</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token function">expect</span><span class="token punctuation">(</span>dispatch<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toHaveBeenCalledWith</span><span class="token punctuation">(</span><span class="token punctuation">{</span> type<span class="token operator">:</span> <span class="token string">'emptied'</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span></code></pre>
+<p><code>getByLabelText</code> finds fields by their <code>&lt;label&gt;</code>, which only works because lesson 22 connected each label with <code>htmlFor</code>. <code>findByText</code> waits for the confirmation, since the action is async.</p>
+<h2 id="running-them">Running them</h2>
+<pre class="code" data-lang="bash"><code><span class="token function">npm</span> <span class="token builtin class-name">test</span></code></pre>
+<p>Vitest runs everything, then <strong>watches</strong>: save a file and the affected tests run again. <code>npx vitest run</code> runs once and exits, which is what CI uses. In this course&#39;s repository, <code>npm test</code> runs the tests of the latest lesson&#39;s code.</p>
+<p>This lesson&#39;s version of lesson 15&#39;s workflow has one more step, <code>- run: npx vitest run</code>, before the build. A failing test now stops a broken version from going live.</p>
+<h2 id="what-to-test">What to test</h2>
+<p>Test <strong>behaviour a user or another part of the app relies on</strong>: the reducer&#39;s rules, that a click reports the right thing, that errors appear, that an order goes through. Do not test implementation details, like a component&#39;s state variable names or which CSS class is set; those tests break on every refactor while the app works fine. The tests here would all survive rewriting <code>SnackCard</code> from scratch, as long as it still behaves the same.</p>
+<h2 id="check-yourself">Check yourself</h2>
+<details>
+<summary><span>Why is the reducer the easiest thing to test?</span></summary>
+
+<p>It is a pure function with no React, DOM or network: call it with a state and an action, and compare the result.</p>
+</details>
+
+<details>
+<summary><span>Why find a button by its role and name instead of its class?</span></summary>
+
+<p>That is how users find it, so the test survives restyling and refactoring, and it also checks that the button has an accessible name.</p>
+</details>
+
+<details>
+<summary><span>When do you use <code>queryBy…</code> instead of <code>getBy…</code>?</span></summary>
+
+<p>To check that something is not there. <code>getBy…</code> throws when nothing matches; <code>queryBy…</code> returns <code>null</code>, which you can assert on.</p>
+</details>
+
+<details>
+<summary><span>How does the checkout test avoid the real 800ms <code>sendOrder</code> and the real basket?</span></summary>
+
+<p><code>vi.mock</code> replaces the orders module with an instant fake, and the test renders the form inside a <code>BasketContext</code> with a value it made itself.</p>
+</details>
+
+  </article>
+</main>
+<nav class="pager" aria-label="Lessons">
+  <a class="pager-prev" href="23-tanstack-query.html"><span>Previous</span>TanStack Query</a>
+  <a class="pager-next" href="25-error-boundaries.html"><span>Next</span>Error boundaries</a>
+</nav>
+<footer class="foot-small">
+  <p>Snack Shelf, a course in React and TypeScript. 33 lessons.</p>
+</footer>
+</body>
+</html>

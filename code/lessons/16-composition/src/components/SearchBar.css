@@ -1,0 +1,31 @@
+.search {
+  display: flex;
+  gap: 8px;
+  padding: 24px 24px 0;
+}
+
+.search input {
+  flex: 1;
+  max-width: 320px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: inherit;
+  border-radius: 8px;
+  font: inherit;
+}
+
+.search button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  background: var(--peach);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.search button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
