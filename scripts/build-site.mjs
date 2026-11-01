@@ -129,7 +129,8 @@ async function buildLessons() {
     if (lesson.soon) continue
     const file = path.join(ROOT, 'content/lessons', lesson.slug + '.md')
     const { meta, body } = parseFrontMatter(await readFile(file, 'utf8'))
-    const html = marked.parse(body)
+    // wrap each question so the open/closed arrow and the text sit in two columns
+    const html = marked.parse(body).replace(/<summary>([\s\S]*?)<\/summary>/g, '<summary><span>$1</span></summary>')
     const prev = manifest[i - 1]
     const next = manifest[i + 1]
     const demo = meta.demo
@@ -156,10 +157,12 @@ ${bar('../')}
     <p class="meta">Lesson ${i + 1} of ${manifest.length}, about ${esc(meta.minutes)} minutes</p>
   </div>
   <aside class="demo" aria-label="Live demo">
-    <div class="demo-frame" data-ui>
-      <iframe src="../demos/${esc(demo)}/index.html" title="Live demo for ${esc(meta.title)}" loading="lazy"></iframe>
+    <div class="demo-sticky">
+      <div class="demo-frame" data-ui>
+        <iframe src="../demos/${esc(demo)}/index.html" title="Live demo for ${esc(meta.title)}" loading="lazy"></iframe>
+      </div>
+      <p class="demo-links"><a href="../demos/${esc(demo)}/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a>${codeLink}</p>
     </div>
-    <p class="demo-links"><a href="../demos/${esc(demo)}/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a>${codeLink}</p>
   </aside>
   <article class="prose">
 ${html}

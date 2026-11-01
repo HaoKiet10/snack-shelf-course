@@ -23,10 +23,12 @@
     <p class="meta">Lesson 3 of 15, about 15 minutes</p>
   </div>
   <aside class="demo" aria-label="Live demo">
-    <div class="demo-frame" data-ui>
-      <iframe src="../demos/03-first-react-app/index.html" title="Live demo for Your first React app" loading="lazy"></iframe>
+    <div class="demo-sticky">
+      <div class="demo-frame" data-ui>
+        <iframe src="../demos/03-first-react-app/index.html" title="Live demo for Your first React app" loading="lazy"></iframe>
+      </div>
+      <p class="demo-links"><a href="../demos/03-first-react-app/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a><a href="https://github.com/HaoKiet10/snack-shelf-course/tree/main/code/lessons/03-first-react-app">Read this lesson's code</a></p>
     </div>
-    <p class="demo-links"><a href="../demos/03-first-react-app/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a><a href="https://github.com/HaoKiet10/snack-shelf-course/tree/main/code/lessons/03-first-react-app">Read this lesson's code</a></p>
   </aside>
   <article class="prose">
 <h2 id="creating-the-project">Creating the project</h2>
@@ -117,19 +119,19 @@ btn<span class="token punctuation">.</span><span class="token function">addEvent
 <p>One thing to know early: <strong>Vite does not type-check while you develop.</strong> <code>npm run dev</code> strips the types and runs the code, which is why it is fast. Type errors show up as red squiggles in your editor, when you run <code>npx tsc -b</code>, and in <code>npm run build</code>, which refuses to build. A page can run in the browser and still have type errors, so watch the squiggles.</p>
 <h2 id="check-yourself">Check yourself</h2>
 <details>
-<summary><code>index.html</code> has an empty <code>&lt;div id="root"&gt;</code>. Where does the visible content come from?</summary>
+<summary><span><code>index.html</code> has an empty <code>&lt;div id="root"&gt;</code>. Where does the visible content come from?</span></summary>
 
 <p>From React. <code>main.tsx</code> calls <code>createRoot(...).render(&lt;App /&gt;)</code>, React calls <code>App()</code>, gets a description, and creates DOM nodes inside <code>#root</code> to match it.</p>
 </details>
 
 <details>
-<summary>Why can't the browser load <code>App.tsx</code> directly, without Vite?</summary>
+<summary><span>Why can't the browser load <code>App.tsx</code> directly, without Vite?</span></summary>
 
 <p>It contains JSX and TypeScript types, and neither is valid JavaScript. Vite translates them into plain JavaScript first.</p>
 </details>
 
 <details>
-<summary>What is wrong with <code>onClick={setCount(5)}</code>?</summary>
+<summary><span>What is wrong with <code>onClick={setCount(5)}</code>?</span></summary>
 
 <p><code>setCount(5)</code> runs immediately, during render, and <code>onClick</code> receives its return value (<code>undefined</code>) instead of a function. Setting state during render causes another render, which runs it again, in a loop. Write <code>onClick={() =&gt; setCount(5)}</code>.</p>
 </details>

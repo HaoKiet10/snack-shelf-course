@@ -23,10 +23,12 @@
     <p class="meta">Lesson 5 of 15, about 12 minutes</p>
   </div>
   <aside class="demo" aria-label="Live demo">
-    <div class="demo-frame" data-ui>
-      <iframe src="../demos/05-props/index.html" title="Live demo for Props" loading="lazy"></iframe>
+    <div class="demo-sticky">
+      <div class="demo-frame" data-ui>
+        <iframe src="../demos/05-props/index.html" title="Live demo for Props" loading="lazy"></iframe>
+      </div>
+      <p class="demo-links"><a href="../demos/05-props/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a><a href="https://github.com/HaoKiet10/snack-shelf-course/tree/main/code/lessons/05-props">Read this lesson's code</a></p>
     </div>
-    <p class="demo-links"><a href="../demos/05-props/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a><a href="https://github.com/HaoKiet10/snack-shelf-course/tree/main/code/lessons/05-props">Read this lesson's code</a></p>
   </aside>
   <article class="prose">
 <p>The shelf now shows three different snacks: Pocky, Onigiri and Melon Pan.</p>
@@ -92,19 +94,19 @@ price<span class="token operator">=</span><span class="token string">"1.8"</span
 <p>The like buttons still do nothing. The count cannot be a prop, because the card itself needs to change it and props are read-only. A normal variable like <code>let likes = 0</code> does not work either. A component needs its own <strong>memory</strong>: a value it owns, can change, and that redraws the card when it changes. That is <strong>state</strong>, the next lesson.</p>
 <h2 id="check-yourself">Check yourself</h2>
 <details>
-<summary>You write <code>&lt;SnackCard name="Pocky" price="2.5" emoji="🍫" /&gt;</code>. What happens?</summary>
+<summary><span>You write <code>&lt;SnackCard name="Pocky" price="2.5" emoji="🍫" /&gt;</code>. What happens?</span></summary>
 
 <p>TypeScript flags it: <code>&quot;2.5&quot;</code> is a string and <code>price</code> must be a number. In plain JavaScript it would get through and then crash at <code>price.toFixed(2)</code>, because strings have no <code>toFixed</code> method.</p>
 </details>
 
 <details>
-<summary>What object does <code>SnackCard</code> receive for <code>&lt;SnackCard name="Pocky" price={2.5} emoji="🍫" /&gt;</code>?</summary>
+<summary><span>What object does <code>SnackCard</code> receive for <code>&lt;SnackCard name="Pocky" price={2.5} emoji="🍫" /&gt;</code>?</span></summary>
 
 <p><code>{ name: &quot;Pocky&quot;, price: 2.5, emoji: &quot;🍫&quot; }</code></p>
 </details>
 
 <details>
-<summary>Why shouldn't the like count be a prop passed in from App?</summary>
+<summary><span>Why shouldn't the like count be a prop passed in from App?</span></summary>
 
 <p>The card needs to change it on a click, and props are read-only for the component that receives them. Something the component changes itself belongs in state.</p>
 </details>

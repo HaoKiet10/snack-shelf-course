@@ -23,10 +23,12 @@
     <p class="meta">Lesson 1 of 15, about 12 minutes</p>
   </div>
   <aside class="demo" aria-label="Live demo">
-    <div class="demo-frame" data-ui>
-      <iframe src="../demos/01-every-website-is-a-house/index.html" title="Live demo for Every website is a house" loading="lazy"></iframe>
+    <div class="demo-sticky">
+      <div class="demo-frame" data-ui>
+        <iframe src="../demos/01-every-website-is-a-house/index.html" title="Live demo for Every website is a house" loading="lazy"></iframe>
+      </div>
+      <p class="demo-links"><a href="../demos/01-every-website-is-a-house/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a><a href="https://github.com/HaoKiet10/snack-shelf-course/tree/main/code/lessons/01-every-website-is-a-house">Read this lesson's code</a></p>
     </div>
-    <p class="demo-links"><a href="../demos/01-every-website-is-a-house/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a><a href="https://github.com/HaoKiet10/snack-shelf-course/tree/main/code/lessons/01-every-website-is-a-house">Read this lesson's code</a></p>
   </aside>
   <article class="prose">
 <p>This lesson is a quick recap of plain HTML, CSS and JavaScript, built around the first version of the Snack Shelf: three snack cards and one working like button. It ends with the problem that the rest of the course solves.</p>
@@ -111,19 +113,19 @@ pockyButton<span class="token punctuation">.</span><span class="token function">
 <p>Nothing connects the two. Every time the data changes, you must remember to fix every place on screen that shows it. With one button that is easy. With a whole app it is where most bugs come from, and it is the reason React exists.</p>
 <h2 id="check-yourself">Check yourself</h2>
 <details>
-<summary>You delete <code>defer</code> from the script tag. What breaks, and why?</summary>
+<summary><span>You delete <code>defer</code> from the script tag. What breaks, and why?</span></summary>
 
 <p>The script now runs as soon as the browser reaches the <code>&lt;script&gt;</code> tag in <code>&lt;head&gt;</code>, before the <code>&lt;body&gt;</code> has been parsed. <code>document.querySelector(&quot;#like-pocky&quot;)</code> finds nothing and returns <code>null</code>, and <code>null.addEventListener(...)</code> throws an error, so the button never works.</p>
 </details>
 
 <details>
-<summary>What is the difference between <code>.like.liked</code> and <code>.like .liked</code>?</summary>
+<summary><span>What is the difference between <code>.like.liked</code> and <code>.like .liked</code>?</span></summary>
 
 <p>Without a space, both classes must be on the <strong>same</strong> element: a button that has <code>like</code> and <code>liked</code>. With a space, it means an element with class <code>liked</code> somewhere <strong>inside</strong> an element with class <code>like</code>.</p>
 </details>
 
 <details>
-<summary>In the console you run <code>pockyLikes = 100</code>. What does the button show?</summary>
+<summary><span>In the console you run <code>pockyLikes = 100</code>. What does the button show?</span></summary>
 
 <p>Still the old number. The variable really is 100 now, but changing a variable does not touch the DOM. Only a line like <code>pockyButton.textContent = ...</code> updates the screen, and that runs only on a click. Click once and the button jumps to 101. That gap between data and screen is the whole point of this lesson.</p>
 </details>

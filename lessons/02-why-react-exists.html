@@ -23,10 +23,12 @@
     <p class="meta">Lesson 2 of 15, about 10 minutes</p>
   </div>
   <aside class="demo" aria-label="Live demo">
-    <div class="demo-frame" data-ui>
-      <iframe src="../demos/02-why-react-exists/index.html" title="Live demo for Why React exists" loading="lazy"></iframe>
+    <div class="demo-sticky">
+      <div class="demo-frame" data-ui>
+        <iframe src="../demos/02-why-react-exists/index.html" title="Live demo for Why React exists" loading="lazy"></iframe>
+      </div>
+      <p class="demo-links"><a href="../demos/02-why-react-exists/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a><a href="https://github.com/HaoKiet10/snack-shelf-course/tree/main/code/lessons/02-why-react-exists">Read this lesson's code</a></p>
     </div>
-    <p class="demo-links"><a href="../demos/02-why-react-exists/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a><a href="https://github.com/HaoKiet10/snack-shelf-course/tree/main/code/lessons/02-why-react-exists">Read this lesson's code</a></p>
   </aside>
   <article class="prose">
 <p>In lesson 1 only one button worked. The demo for this lesson makes <strong>all three</strong> like buttons work and keeps the basket total right, in plain JavaScript. It works. Look at how.</p>
@@ -103,19 +105,19 @@ document<span class="token punctuation">.</span><span class="token function">que
 <p>Notice what is missing: no <code>querySelector</code>, no <code>textContent =</code>, no <code>classList.toggle</code>. You never touch the DOM. You say what the card looks like for a given snack, and React keeps the page matching.</p>
 <h2 id="check-yourself">Check yourself</h2>
 <details>
-<summary>In the imperative version you add an "unlike" button and forget to update the basket. What goes wrong?</summary>
+<summary><span>In the imperative version you add an "unlike" button and forget to update the basket. What goes wrong?</span></summary>
 
 <p>The heart count goes down but the basket total stays where it was. The data and the screen now disagree, and nothing will ever correct it: the basket only updates when your code updates it.</p>
 </details>
 
 <details>
-<summary>Why does the naive <code>render()</code> wipe out whatever someone typed into a search box?</summary>
+<summary><span>Why does the naive <code>render()</code> wipe out whatever someone typed into a search box?</span></summary>
 
 <p><code>innerHTML = ...</code> destroys every existing node inside the shelf and creates brand-new ones. A brand-new input element starts empty and unfocused. The old one, with the typed text, is gone.</p>
 </details>
 
 <details>
-<summary>What does React compare, and why is that faster than rebuilding everything?</summary>
+<summary><span>What does React compare, and why is that faster than rebuilding everything?</span></summary>
 
 <p>It compares the new description (plain JavaScript objects) with the previous description. Comparing objects is cheap. Touching the real DOM is the expensive part, and React only does it for the parts that actually differ.</p>
 </details>

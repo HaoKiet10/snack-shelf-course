@@ -23,10 +23,12 @@
     <p class="meta">Lesson 4 of 15, about 12 minutes</p>
   </div>
   <aside class="demo" aria-label="Live demo">
-    <div class="demo-frame" data-ui>
-      <iframe src="../demos/04-components/index.html" title="Live demo for Components" loading="lazy"></iframe>
+    <div class="demo-sticky">
+      <div class="demo-frame" data-ui>
+        <iframe src="../demos/04-components/index.html" title="Live demo for Components" loading="lazy"></iframe>
+      </div>
+      <p class="demo-links"><a href="../demos/04-components/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a><a href="https://github.com/HaoKiet10/snack-shelf-course/tree/main/code/lessons/04-components">Read this lesson's code</a></p>
     </div>
-    <p class="demo-links"><a href="../demos/04-components/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a><a href="https://github.com/HaoKiet10/snack-shelf-course/tree/main/code/lessons/04-components">Read this lesson's code</a></p>
   </aside>
   <article class="prose">
 <p>The demo shows a header and three cards, and <strong>all three cards are Pocky</strong>. That is on purpose: the next lesson fixes it.</p>
@@ -101,19 +103,19 @@
 <p>Those attributes are <strong>props</strong>. That is the next lesson.</p>
 <h2 id="check-yourself">Check yourself</h2>
 <details>
-<summary>You rename the function to <code>snackCard</code> and write <code>&lt;snackCard /&gt;</code>. What happens?</summary>
+<summary><span>You rename the function to <code>snackCard</code> and write <code>&lt;snackCard /&gt;</code>. What happens?</span></summary>
 
 <p>Lowercase tags are treated as built-in HTML elements, so React creates an unknown <code>&lt;snackCard&gt;</code> element instead of calling your function. Nothing from your component appears, and React warns in the console. TypeScript catches it even earlier: <code>snackCard</code> is not a known HTML element, so the line is marked as an error.</p>
 </details>
 
 <details>
-<summary>Why does App wrap its content in <code>&lt;&gt; &lt;/&gt;</code>?</summary>
+<summary><span>Why does App wrap its content in <code>&lt;&gt; &lt;/&gt;</code>?</span></summary>
 
 <p>A component must return a single root, and App wants to return two siblings (<code>&lt;Header /&gt;</code> and <code>&lt;main&gt;</code>). A Fragment groups them without adding an extra element to the DOM.</p>
 </details>
 
 <details>
-<summary><code>&lt;SnackCard /&gt;</code> appears three times in App. How many times does the <code>SnackCard</code> function run?</summary>
+<summary><span><code>&lt;SnackCard /&gt;</code> appears three times in App. How many times does the <code>SnackCard</code> function run?</span></summary>
 
 <p>Three times per render of App, once for each place it is used. (In development, StrictMode doubles that, as lesson 7 shows.)</p>
 </details>

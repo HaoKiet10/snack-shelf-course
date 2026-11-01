@@ -23,10 +23,12 @@
     <p class="meta">Lesson 9 of 15, about 18 minutes</p>
   </div>
   <aside class="demo" aria-label="Live demo">
-    <div class="demo-frame" data-ui>
-      <iframe src="../demos/09-lists-and-keys/index.html" title="Live demo for Lists and keys" loading="lazy"></iframe>
+    <div class="demo-sticky">
+      <div class="demo-frame" data-ui>
+        <iframe src="../demos/09-lists-and-keys/index.html" title="Live demo for Lists and keys" loading="lazy"></iframe>
+      </div>
+      <p class="demo-links"><a href="../demos/09-lists-and-keys/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a><a href="https://github.com/HaoKiet10/snack-shelf-course/tree/main/code/lessons/09-lists-and-keys">Read this lesson's code</a></p>
     </div>
-    <p class="demo-links"><a href="../demos/09-lists-and-keys/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a><a href="https://github.com/HaoKiet10/snack-shelf-course/tree/main/code/lessons/09-lists-and-keys">Read this lesson's code</a></p>
   </aside>
   <article class="prose">
 <p>The search box filters now: there are six snacks, and typing &quot;oni&quot; leaves only Onigiri.</p>
@@ -123,19 +125,19 @@ after:   key 0 = Onigiri                 &quot;key 0 still exists, keep its stat
 <p>The name is up to you: <code>s</code>, <code>snack</code> and <code>banana</code> all work. TypeScript knows <code>s</code> is a <code>Snack</code> because <code>SNACKS</code> is a <code>Snack[]</code>. And <code>map</code> and <code>filter</code> actually pass three arguments, <code>(item, index, array)</code>; you name the ones you need, which is where <code>index</code> came from in the key-bug test.</p>
 <h2 id="check-yourself">Check yourself</h2>
 <details>
-<summary>What does <code>.map</code> return, and why can JSX render it?</summary>
+<summary><span>What does <code>.map</code> return, and why can JSX render it?</span></summary>
 
 <p>A new array with one result per item; here, an array of <code>&lt;SnackCard&gt;</code> elements. JSX renders an array by rendering each element in order.</p>
 </details>
 
 <details>
-<summary>With <code>key={index}</code>, why does Onigiri show Pocky's 2 likes after searching "oni"?</summary>
+<summary><span>With <code>key={index}</code>, why does Onigiri show Pocky's 2 likes after searching "oni"?</span></summary>
 
 <p>Onigiri is now first in the list, so it gets key 0. Key 0 existed before (Pocky), so React keeps that card&#39;s state box, holding 2, and only changes its props.</p>
 </details>
 
 <details>
-<summary>Why is <code>visible</code> a plain <code>const</code> and not state?</summary>
+<summary><span>Why is <code>visible</code> a plain <code>const</code> and not state?</span></summary>
 
 <p>It can be computed from <code>SNACKS</code> and <code>query</code> on every render. Storing it as state would mean keeping it in sync by hand whenever either changes.</p>
 </details>

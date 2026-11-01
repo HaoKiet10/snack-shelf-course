@@ -23,10 +23,12 @@
     <p class="meta">Lesson 7 of 15, about 12 minutes</p>
   </div>
   <aside class="demo" aria-label="Live demo">
-    <div class="demo-frame" data-ui>
-      <iframe src="../demos/07-re-rendering/index.html" title="Live demo for Re-rendering" loading="lazy"></iframe>
+    <div class="demo-sticky">
+      <div class="demo-frame" data-ui>
+        <iframe src="../demos/07-re-rendering/index.html" title="Live demo for Re-rendering" loading="lazy"></iframe>
+      </div>
+      <p class="demo-links"><a href="../demos/07-re-rendering/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a><a href="https://github.com/HaoKiet10/snack-shelf-course/tree/main/code/lessons/07-re-rendering">Read this lesson's code</a></p>
     </div>
-    <p class="demo-links"><a href="../demos/07-re-rendering/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a><a href="https://github.com/HaoKiet10/snack-shelf-course/tree/main/code/lessons/07-re-rendering">Read this lesson's code</a></p>
   </aside>
   <article class="prose">
 <p>This lesson&#39;s demo has a <code>console.log</code> at the top of every component, so each <strong>render</strong> (each time React calls the function) shows up in the console. It also has a temporary &quot;Re-render App&quot; button. Open the demo in its own tab, press F12, open the Console, and click around.</p>
@@ -80,19 +82,19 @@ render SnackCard Melon Pan: likes=0</code></pre>
 <p>&quot;Every child re-renders&quot; sounds wasteful, but for most apps it is fine because renders are cheap. When it matters, React can <strong>skip</strong> children whose props have not changed (<code>memo</code>), and the <strong>React Compiler</strong> adds that skipping automatically at build time. This course&#39;s code does not use the compiler, so you see the raw behaviour. Do not optimise until something is actually slow.</p>
 <h2 id="check-yourself">Check yourself</h2>
 <details>
-<summary>You click the heart on Onigiri. Which components render?</summary>
+<summary><span>You click the heart on Onigiri. Which components render?</span></summary>
 
 <p>Only Onigiri&#39;s SnackCard (twice in development, because of StrictMode). App, Header and the other cards do not run.</p>
 </details>
 
 <details>
-<summary>App re-renders and Header's output is identical. Does React touch Header's DOM nodes?</summary>
+<summary><span>App re-renders and Header's output is identical. Does React touch Header's DOM nodes?</span></summary>
 
 <p>No. Header&#39;s function runs, but the comparison finds nothing different, so the commit step leaves its DOM alone.</p>
 </details>
 
 <details>
-<summary>Why does Pocky's like count survive when App re-renders?</summary>
+<summary><span>Why does Pocky's like count survive when App re-renders?</span></summary>
 
 <p>The count lives in React&#39;s box for that card, not in the function. The card stays in the same place in the tree, so React keeps its box and <code>useState</code> returns the stored value.</p>
 </details>

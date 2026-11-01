@@ -23,10 +23,12 @@
     <p class="meta">Lesson 8 of 15, about 15 minutes</p>
   </div>
   <aside class="demo" aria-label="Live demo">
-    <div class="demo-frame" data-ui>
-      <iframe src="../demos/08-clicks-and-typing/index.html" title="Live demo for Clicks and typing" loading="lazy"></iframe>
+    <div class="demo-sticky">
+      <div class="demo-frame" data-ui>
+        <iframe src="../demos/08-clicks-and-typing/index.html" title="Live demo for Clicks and typing" loading="lazy"></iframe>
+      </div>
+      <p class="demo-links"><a href="../demos/08-clicks-and-typing/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a><a href="https://github.com/HaoKiet10/snack-shelf-course/tree/main/code/lessons/08-clicks-and-typing">Read this lesson's code</a></p>
     </div>
-    <p class="demo-links"><a href="../demos/08-clicks-and-typing/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a><a href="https://github.com/HaoKiet10/snack-shelf-course/tree/main/code/lessons/08-clicks-and-typing">Read this lesson's code</a></p>
   </aside>
   <article class="prose">
 <p>The shelf gets a search box. Type in it, press Escape, try typing more than 20 characters. The cards do not filter yet; that needs lists, in the next lesson.</p>
@@ -150,19 +152,19 @@ keyup</code></pre>
 </ul>
 <h2 id="check-yourself">Check yourself</h2>
 <details>
-<summary>You delete <code>onChange={handleChange}</code> but keep <code>value={query}</code>. What happens?</summary>
+<summary><span>You delete <code>onChange={handleChange}</code> but keep <code>value={query}</code>. What happens?</span></summary>
 
 <p>The input freezes. It always displays <code>query</code>, and nothing updates <code>query</code> any more, so whatever you type is immediately replaced by the old value. React warns in the console.</p>
 </details>
 
 <details>
-<summary>Why is <code>onKeyDown={handleKeyDown}</code> written without <code>()</code>?</summary>
+<summary><span>Why is <code>onKeyDown={handleKeyDown}</code> written without <code>()</code>?</span></summary>
 
 <p><code>onKeyDown</code> needs a function to call later. <code>handleKeyDown()</code> would call it immediately during render and pass its result instead.</p>
 </details>
 
 <details>
-<summary>How does the 20-character limit work without a <code>maxLength</code> attribute?</summary>
+<summary><span>How does the 20-character limit work without a <code>maxLength</code> attribute?</span></summary>
 
 <p>The input only ever shows <code>query</code>, and <code>handleChange</code> stores at most 20 characters with <code>slice</code>. The 21st character arrives in the event, is cut off, and the input re-renders showing the same 20.</p>
 </details>
