@@ -62,6 +62,10 @@ window.addEventListener('DOMContentLoaded', () => {
       }
       setTimeout(() => (btn.textContent = 'Copy'), 1600)
     })
-    pre.appendChild(btn)
+    // wrap the <pre> so the button stays put while the code scrolls sideways
+    const wrap = document.createElement('div')
+    wrap.className = 'code-block'
+    pre.replaceWith(wrap)
+    wrap.append(pre, btn)
   })
 })

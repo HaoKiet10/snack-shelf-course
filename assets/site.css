@@ -347,14 +347,20 @@ h1, h2, h3 { font-weight: 300; letter-spacing: -0.035em; line-height: 0.98; marg
 .prose pre.diagram { background: var(--surface-2); }
 .prose pre.diagram code { font-size: 0.78em; }
 
+/* The copy button sits on a wrapper, not inside the <pre>: the <pre> scrolls
+   sideways, and a button inside it would scroll along and cover the code.
+   The code starts below the button's row, so they never overlap. */
+.code-block { position: relative; margin: 0 0 28px; }
+.prose .code-block > pre { margin: 0; padding-top: 44px; }
 .copy {
-  position: absolute; top: 8px; right: 8px;
+  position: absolute; top: 8px; right: 8px; z-index: 1;
   font: inherit; font-size: var(--step-small);
   background: var(--bg); color: var(--ink);
   border: 0; padding: 4px 10px; cursor: pointer;
   opacity: 0; transition: opacity 160ms var(--ease), background-color 160ms var(--ease);
 }
-.prose pre:hover .copy, .copy:focus-visible { opacity: 1; }
+.code-block:hover .copy, .copy:focus-visible { opacity: 1; }
+@media (hover: none) { .copy { opacity: 1; } }
 .copy:hover { background: #fff3dd; }
 
 /* code colours: one cobalt, told apart by weight and tone */
