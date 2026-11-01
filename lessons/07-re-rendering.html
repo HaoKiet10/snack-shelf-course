@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Re-rendering · Snack Shelf</title>
+<meta name="description" content="Log every render and watch exactly what React re-runs when state changes, and why a re-render is not a redraw.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head>
+<body class="lesson-page">
+<header class="bar">
+  <a class="wordmark" href="../index.html">Snack Shelf</a>
+  <nav aria-label="Site"><a href="../index.html#lessons">Lessons</a></nav>
+</header>
+<main class="lesson">
+  <div class="lesson-head" data-reveal>
+    <h1>Re-rendering</h1>
+    <p class="lead">Log every render and watch exactly what React re-runs when state changes, and why a re-render is not a redraw.</p>
+    <p class="meta">Lesson 7 of 15, about 12 minutes</p>
+  </div>
+  <aside class="demo" aria-label="Live demo">
+    <div class="demo-frame" data-ui>
+      <iframe src="../demos/07-re-rendering/index.html" title="Live demo for Re-rendering" loading="lazy"></iframe>
+    </div>
+    <p class="demo-links"><a href="../demos/07-re-rendering/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a></p>
+  </aside>
+  <article class="prose">
+<p>This lesson&#39;s demo has a <code>console.log</code> at the top of every component, so each <strong>render</strong> (each time React calls the function) shows up in the console. It also has a temporary &quot;Re-render App&quot; button. Open the demo in its own tab, press F12, open the Console, and click around.</p>
+<h2 id="what-you-will-see">What you will see</h2>
+<p><strong>Page load:</strong> every component renders, from the top down.</p>
+<pre class="diagram"><code>render App: demo=0
+render Header
+render SnackCard Pocky: likes=0
+render SnackCard Onigiri: likes=0
+render SnackCard Melon Pan: likes=0</code></pre>
+<p><strong>Like Pocky:</strong> only Pocky re-renders.</p>
+<pre class="diagram"><code>render SnackCard Pocky: likes=1</code></pre>
+<p><strong>Click &quot;Re-render App&quot;:</strong> App and everything inside it re-renders.</p>
+<pre class="diagram"><code>render App: demo=1
+render Header
+render SnackCard Pocky: likes=1     ← its likes survived
+render SnackCard Onigiri: likes=0
+render SnackCard Melon Pan: likes=0</code></pre>
+<p>Every line appears twice. That is StrictMode, explained below.</p>
+<h2 id="the-two-rules">The two rules</h2>
+<p><strong>A state change re-renders the component that owns the state.</strong> <code>setLikes</code> lives in Pocky&#39;s card, so React re-runs Pocky&#39;s card. Nothing above it is affected.</p>
+<p><strong>When a component re-renders, all of its children re-render too.</strong> App&#39;s state changed, so App ran again. Its JSX contains <code>&lt;Header /&gt;</code> and three <code>&lt;SnackCard /&gt;</code>s, so React calls all of them again, <strong>even though their props did not change</strong>. Header has no props at all and still re-ran.</p>
+<pre class="diagram"><code>state changes here ──▶ App ◀── re-renders
+                       ├─ Header        ◀── re-renders (child)
+                       └─ main
+                          ├─ SnackCard  ◀── re-renders (child)
+                          ├─ SnackCard  ◀── re-renders (child)
+                          └─ SnackCard  ◀── re-renders (child)</code></pre>
+<p>Re-renders flow <strong>down</strong> the tree. Never up, never sideways to siblings.</p>
+<h2 id="a-re-render-is-not-a-redraw">A re-render is not a redraw</h2>
+<p>A render is React <strong>calling your function</strong> to get a new description. It is not touching the DOM.</p>
+<pre class="diagram"><code>1. RENDER   React calls your components → new description
+2. COMPARE  React diffs it with the previous description
+3. COMMIT   React changes ONLY the DOM nodes that differ</code></pre>
+<p>When App re-rendered, Header and the cards ran again but produced <strong>identical</strong> output, so React changed nothing in the DOM for them. The only DOM change was the demo button&#39;s number. You can watch this in DevTools: in <strong>Elements</strong>, changed nodes flash; the cards do not.</p>
+<p>That is why re-renders are usually cheap: calling a few small functions and comparing objects. The expensive part, the DOM, only changes where something really changed.</p>
+<h2 id="state-survives-re-renders">State survives re-renders</h2>
+<p>After the App re-render, Pocky still has <code>likes=1</code>. Its card ran again, but <code>useState(0)</code> ignores the 0 after the first render and returns what is in the box. State is only lost when a component is <strong>removed</strong> from the tree, or when the tree changes shape at that spot. (You will meet that in lesson 9.)</p>
+<h2 id="why-every-log-appears-twice">Why every log appears twice</h2>
+<p><code>main.tsx</code> wraps App in <code>&lt;StrictMode&gt;</code>. In <strong>development only</strong>, it calls each component twice per render and throws the second result away. The purpose: catching <strong>impure</strong> components, ones that do something besides calculating their output, like changing an outside variable. Doing it twice exposes those bugs. The production build renders once.</p>
+<p>That is also why components must be <strong>pure</strong>: same props and state in, same JSX out, no side effects during render. A <code>console.log</code> is harmless; changing a global variable is not.</p>
+<h2 id="what-triggers-a-render">What triggers a render</h2>
+<ol>
+<li>The first mount: <code>createRoot(...).render(&lt;App /&gt;)</code>.</li>
+<li>The component&#39;s own state changes.</li>
+<li>Its parent re-renders.</li>
+<li>A context it reads changes (a later topic).</li>
+</ol>
+<p>Props changing is not a separate trigger: props only change because the parent re-rendered.</p>
+<h2 id="performance-briefly">Performance, briefly</h2>
+<p>&quot;Every child re-renders&quot; sounds wasteful, but for most apps it is fine because renders are cheap. When it matters, React can <strong>skip</strong> children whose props have not changed (<code>memo</code>), and the <strong>React Compiler</strong> adds that skipping automatically at build time. This course&#39;s code does not use the compiler, so you see the raw behaviour. Do not optimise until something is actually slow.</p>
+<h2 id="check-yourself">Check yourself</h2>
+<details>
+<summary>You click the heart on Onigiri. Which components render?</summary>
+
+<p>Only Onigiri&#39;s SnackCard (twice in development, because of StrictMode). App, Header and the other cards do not run.</p>
+</details>
+
+<details>
+<summary>App re-renders and Header's output is identical. Does React touch Header's DOM nodes?</summary>
+
+<p>No. Header&#39;s function runs, but the comparison finds nothing different, so the commit step leaves its DOM alone.</p>
+</details>
+
+<details>
+<summary>Why does Pocky's like count survive when App re-renders?</summary>
+
+<p>The count lives in React&#39;s box for that card, not in the function. The card stays in the same place in the tree, so React keeps its box and <code>useState</code> returns the stored value.</p>
+</details>
+
+  </article>
+</main>
+<nav class="pager" aria-label="Lessons">
+  <a class="pager-prev" href="06-state.html"><span>Previous</span>State</a>
+  <a class="pager-next" href="08-clicks-and-typing.html"><span>Next</span>Clicks and typing</a>
+</nav>
+<footer class="foot-small">
+  <p>Snack Shelf, a beginner course in React and TypeScript. 9 of 15 lessons written.</p>
+</footer>
+</body>
+</html>

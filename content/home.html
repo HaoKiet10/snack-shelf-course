@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+{{HEAD}}
+<body class="home">
+
+<header class="bar bar-home">
+  <a class="wordmark" href="index.html">Snack Shelf</a>
+  <nav aria-label="Site"><a href="#lessons">Lessons</a>{{GITHUB_LINK}}</nav>
+</header>
+
+<main>
+  <section class="hero" aria-labelledby="hero-title">
+    <h1 id="hero-title" class="hero-line">
+      <span class="hero-row">
+        <span class="hero-words">Learn React</span>
+        <span class="hero-strip shutter">
+          <img src="assets/img/konbini-aisle.jpg" width="1600" height="1200" alt="Bags of snacks hanging on a Japanese convenience-store shelf, each with a price tag">
+        </span>
+      </span>
+      <span class="hero-row hero-row-2">one snack at a time</span>
+    </h1>
+    <div class="hero-foot" data-reveal>
+      <p class="hero-sub">A free beginner course in React and TypeScript. You build one small web app, a snack shelf, adding one idea per lesson.</p>
+      <a class="button" href="lessons/01-every-website-is-a-house.html">Start the first lesson</a>
+    </div>
+  </section>
+
+  <section class="intro" aria-labelledby="intro-title">
+    <div class="intro-pin">
+      <div class="intro-text" data-reveal>
+        <h2 id="intro-title">One app, built a piece at a time</h2>
+        <p class="statement">Every lesson adds one real feature to the same small app.</p>
+      </div>
+    </div>
+    <div class="intro-photos">
+      <figure class="p1"><img src="assets/img/onigiri.jpg" width="1600" height="2409" loading="lazy" alt="Three rice balls wrapped in nori on a white dish"><figcaption>Onigiri</figcaption></figure>
+      <figure class="p2"><img src="assets/img/melon-pan.jpg" width="1600" height="1200" loading="lazy" alt="Two melon pan buns, one plain and one green tea, held in two hands"><figcaption>Melon pan</figcaption></figure>
+      <figure class="p3"><img src="assets/img/taiyaki.jpg" width="1600" height="1063" loading="lazy" alt="A fish-shaped taiyaki cake on a white background"><figcaption>Taiyaki</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="lessons" id="lessons" aria-labelledby="lessons-title">
+    <h2 id="lessons-title" data-reveal>Fifteen lessons, one small app</h2>
+    <div class="lessons-grid">
+      <figure class="lessons-photo" data-reveal>
+        <img src="assets/img/ramune.jpg" width="1200" height="1600" loading="lazy" alt="A glass ramune bottle with its marble stopper, on a wooden table">
+        <figcaption>Ramune, with the marble still in the neck</figcaption>
+      </figure>
+      <div class="lessons-list">
+        <p class="lessons-note" data-reveal>{{PUBLISHED}} of {{TOTAL}} written so far. New lessons arrive as they are finished.</p>
+        <ol class="lesson-rows" data-reveal>
+          {{LESSON_ROWS}}
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="grow" aria-labelledby="grow-title">
+    <div class="grow-text">
+      <h2 id="grow-title" aria-live="polite">The search filters the shelf</h2>
+      <p class="grow-sub">This is the real app from each lesson, running. Drag through the stages, then click the hearts and type in the search box.</p>
+    </div>
+    <div class="grow-app" data-ui>
+      <iframe id="grow-frame" src="demos/09-lists-and-keys/index.html" title="The Snack Shelf app at the current stage" loading="lazy"></iframe>
+    </div>
+    <div class="grow-control">
+      <label class="visually-hidden" for="grow-range">Stage of the app</label>
+      <input id="grow-range" type="range" min="0" max="4" step="1" value="4" list="grow-stops">
+      <ol class="grow-stops" id="grow-stops">
+        <li data-demo="04-components" data-clause="Three cards, every one of them Pocky">Components</li>
+        <li data-demo="05-props" data-clause="Each card gets its own snack">Props</li>
+        <li data-demo="06-state" data-clause="The heart starts counting">State</li>
+        <li data-demo="08-clicks-and-typing" data-clause="A search box starts listening">Events</li>
+        <li data-demo="09-lists-and-keys" data-clause="The search filters the shelf" class="on">Lists</li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="close" aria-labelledby="close-title">
+    <h2 id="close-title" data-reveal>Start with the walls</h2>
+    <div class="close-foot" data-reveal>
+      <p>Lesson one is a short recap of HTML, CSS and JavaScript, and the one idea everything after it builds on: the DOM.</p>
+      <a class="button button-inverse" href="lessons/01-every-website-is-a-house.html">Start lesson one</a>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="foot-top">
+    <p>A beginner course in React and TypeScript, written while learning both.</p>
+    <p>Every lesson comes with the app's real code at that point, and a live demo.</p>
+    <a href="#hero-title" class="to-top">Back to top</a>
+  </div>
+  <p class="foot-name"><a href="lessons/01-every-website-is-a-house.html">Snack Shelf</a></p>
+  <p class="credits">Pictures, via Wikimedia Commons: {{CREDITS}}.</p>
+</footer>
+
+</body>
+</html>

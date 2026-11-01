@@ -1,0 +1,17 @@
+[
+  { "slug": "01-every-website-is-a-house", "title": "Every website is a house", "idea": "HTML, CSS and JavaScript, and the DOM they all meet in" },
+  { "slug": "02-why-react-exists", "title": "Why React exists", "idea": "Keeping data and screen in sync by hand, and the idea that replaces it" },
+  { "slug": "03-first-react-app", "title": "Your first React app", "idea": "Vite, TypeScript, and how the page actually starts up" },
+  { "slug": "04-components", "title": "Components", "idea": "Functions that return UI, and the component tree" },
+  { "slug": "05-props", "title": "Props", "idea": "Passing data down, typed, read-only" },
+  { "slug": "06-state", "title": "State", "idea": "Giving a component memory with useState" },
+  { "slug": "07-re-rendering", "title": "Re-rendering", "idea": "When React calls your function again, and what it changes" },
+  { "slug": "08-clicks-and-typing", "title": "Clicks and typing", "idea": "Events, and inputs that React controls" },
+  { "slug": "09-lists-and-keys", "title": "Lists and keys", "idea": "Turning data into cards with map, and why keys matter" },
+  { "slug": "10-show-or-hide", "title": "Show or hide", "idea": "Conditional rendering: empty states and badges", "soon": true },
+  { "slug": "11-lifting-state-up", "title": "Lifting state up", "idea": "Sharing state between siblings: the basket count", "soon": true },
+  { "slug": "12-use-effect", "title": "useEffect", "idea": "Loading snacks from the network, and when not to use effects", "soon": true },
+  { "slug": "13-styling", "title": "Styling it", "idea": "className, CSS files, and utility classes", "soon": true },
+  { "slug": "14-building", "title": "Building for production", "idea": "What npm run build makes, and why", "soon": true },
+  { "slug": "15-put-it-online", "title": "Put it online", "idea": "Deploying the shelf to a real address", "soon": true }
+]

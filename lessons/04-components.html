@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Components · Snack Shelf</title>
+<meta name="description" content="A component is a function that returns a description of some UI. Split the shelf into a Header and a SnackCard, and meet the component tree.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head>
+<body class="lesson-page">
+<header class="bar">
+  <a class="wordmark" href="../index.html">Snack Shelf</a>
+  <nav aria-label="Site"><a href="../index.html#lessons">Lessons</a></nav>
+</header>
+<main class="lesson">
+  <div class="lesson-head" data-reveal>
+    <h1>Components</h1>
+    <p class="lead">A component is a function that returns a description of some UI. Split the shelf into a Header and a SnackCard, and meet the component tree.</p>
+    <p class="meta">Lesson 4 of 15, about 12 minutes</p>
+  </div>
+  <aside class="demo" aria-label="Live demo">
+    <div class="demo-frame" data-ui>
+      <iframe src="../demos/04-components/index.html" title="Live demo for Components" loading="lazy"></iframe>
+    </div>
+    <p class="demo-links"><a href="../demos/04-components/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a></p>
+  </aside>
+  <article class="prose">
+<p>The demo shows a header and three cards, and <strong>all three cards are Pocky</strong>. That is on purpose: the next lesson fixes it.</p>
+<h2 id="what-a-component-is">What a component is</h2>
+<p>A component is a JavaScript function that returns a description of some UI. That is the whole definition.</p>
+<pre class="code" data-lang="tsx"><code><span class="token comment">// src/components/SnackCard.tsx</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">SnackCard</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>card<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>emoji<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">🍫</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h2</span><span class="token punctuation">></span></span><span class="token plain-text">Pocky</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h2</span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>price<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">$2.50</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>like<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">❤ 0</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<p>Once defined, you use it like a new HTML tag:</p>
+<pre class="code" data-lang="tsx"><code><span class="token comment">// src/App.tsx</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">App</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Header</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>main</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>shelf<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">SnackCard</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
+        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">SnackCard</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
+        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">SnackCard</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>main</span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span></span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<p><code>&lt;SnackCard /&gt;</code> means &quot;call the <code>SnackCard</code> function and put whatever it returns here&quot;.</p>
+<h2 id="three-rules-you-can-see-in-the-code">Three rules you can see in the code</h2>
+<p><strong>Names start with a capital letter.</strong> That is how React tells the two kinds of tag apart. <code>&lt;header&gt;</code> (lowercase) is a built-in HTML element: React creates a real DOM node. <code>&lt;Header&gt;</code> (capitalised) is your component: React calls your function. Name it <code>header</code> and React makes an empty HTML <code>&lt;header&gt;</code> instead.</p>
+<p><strong>Return one root element.</strong> A function returns one thing, so the JSX needs a single outer wrapper. App returns <code>&lt;Header /&gt;</code> and <code>&lt;main&gt;</code>, so they are wrapped in <code>&lt;&gt; &lt;/&gt;</code>, a <strong>Fragment</strong>: a wrapper that groups things without adding an element to the DOM.</p>
+<p><strong><code>className</code> instead of <code>class</code>.</strong> JSX is JavaScript, and <code>class</code> is a reserved word there. React uses <code>className</code>, which is also the DOM property name (<code>el.className</code>).</p>
+<h2 id="files-import-and-export">Files, import and export</h2>
+<pre class="diagram"><code>src/
+├─ main.tsx           unchanged: renders &lt;App /&gt; into #root
+├─ App.tsx / App.css  arranges the page
+├─ index.css          page-wide basics
+└─ components/
+   ├─ Header.tsx / Header.css
+   └─ SnackCard.tsx / SnackCard.css</code></pre>
+<p>Each component lives in its own file, with its CSS next to it, so everything about a card is in one place. The CSS is still global, though: <code>.card</code> would style any element with that class anywhere on the page.</p>
+<h2 id="the-component-tree">The component tree</h2>
+<p>Lesson 1 had a tree of DOM elements. Now there is a <strong>tree of components</strong> above it:</p>
+<pre class="diagram"><code>App
+├─ Header        → &lt;header&gt;&lt;h1/&gt;&lt;span/&gt;&lt;/header&gt;
+└─ main.shelf
+   ├─ SnackCard  → &lt;div.card&gt;...&lt;/div&gt;
+   ├─ SnackCard  → &lt;div.card&gt;...&lt;/div&gt;
+   └─ SnackCard  → &lt;div.card&gt;...&lt;/div&gt;</code></pre>
+<p>React calls <code>App()</code>. The result contains <code>&lt;Header /&gt;</code> and <code>&lt;SnackCard /&gt;</code>, so React calls those too, and so on down until only plain HTML elements are left, and builds the DOM from them. Open DevTools and look at <strong>Elements</strong>: you only find <code>div</code>, <code>h2</code> and <code>button</code>. The components themselves never appear in the DOM.</p>
+<p>Why bother? <strong>Reuse</strong>: write the card once, use it anywhere. <strong>Focus</strong>: each file is small and about one thing. <strong>Composition</strong>: a real app is a deep tree of small components like these.</p>
+<h2 id="side-note-what-is-export-default">Side note: what is <code>export default</code>?</h2>
+<p>A file (a module) can share things in two ways.</p>
+<pre class="code" data-lang="tsx"><code><span class="token comment">// Default export: one main thing per file</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">SnackCard</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token operator">...</span> <span class="token punctuation">}</span>
+<span class="token keyword">import</span> SnackCard <span class="token keyword">from</span> <span class="token string">'./components/SnackCard.tsx'</span>   <span class="token comment">// no braces</span>
+<span class="token keyword">import</span> Card <span class="token keyword">from</span> <span class="token string">'./components/SnackCard.tsx'</span>        <span class="token comment">// also works: you pick the name</span>
+
+<span class="token comment">// Named exports: as many as you like</span>
+<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">formatPrice</span><span class="token punctuation">(</span>n<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token operator">...</span> <span class="token punctuation">}</span>
+<span class="token keyword">export</span> <span class="token keyword">const</span> <span class="token constant">TAX</span> <span class="token operator">=</span> <span class="token number">0.1</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> formatPrice<span class="token punctuation">,</span> <span class="token constant">TAX</span> <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./prices.ts'</span>       <span class="token comment">// braces, exact names</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> formatPrice <span class="token keyword">as</span> fmt <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./prices.ts'</span>     <span class="token comment">// rename with "as"</span></code></pre>
+<p>A file can have at most one default export, and you choose any name when importing it. Named exports must match exactly, so a typo fails at build time. You can mix both: <code>import React, { useState } from &#39;react&#39;</code>. That is why <code>useState</code> sits in braces: it is a named export of React.</p>
+<p>Which to use is a style choice. React&#39;s docs and Vite use <code>export default</code> for one component per file, as this course does. Many teams prefer named exports everywhere, because names stay consistent and editors rename them more reliably. Pick one and be consistent.</p>
+<h2 id="the-problem-you-can-see">The problem you can see</h2>
+<p><code>&lt;SnackCard /&gt;</code> always says Pocky because the function has no input. It is like a function <code>add()</code> that always returns 2 + 2. Functions become flexible when they take <strong>arguments</strong>, and components do too:</p>
+<pre class="code" data-lang="tsx"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">SnackCard</span></span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Onigiri<span class="token punctuation">"</span></span> <span class="token attr-name">price</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token number">1.8</span><span class="token punctuation">}</span></span> <span class="token attr-name">emoji</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>🍙<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span></code></pre>
+<p>Those attributes are <strong>props</strong>. That is the next lesson.</p>
+<h2 id="check-yourself">Check yourself</h2>
+<details>
+<summary>You rename the function to <code>snackCard</code> and write <code>&lt;snackCard /&gt;</code>. What happens?</summary>
+
+<p>Lowercase tags are treated as built-in HTML elements, so React creates an unknown <code>&lt;snackCard&gt;</code> element instead of calling your function. Nothing from your component appears, and React warns in the console. TypeScript catches it even earlier: <code>snackCard</code> is not a known HTML element, so the line is marked as an error.</p>
+</details>
+
+<details>
+<summary>Why does App wrap its content in <code>&lt;&gt; &lt;/&gt;</code>?</summary>
+
+<p>A component must return a single root, and App wants to return two siblings (<code>&lt;Header /&gt;</code> and <code>&lt;main&gt;</code>). A Fragment groups them without adding an extra element to the DOM.</p>
+</details>
+
+<details>
+<summary><code>&lt;SnackCard /&gt;</code> appears three times in App. How many times does the <code>SnackCard</code> function run?</summary>
+
+<p>Three times per render of App, once for each place it is used. (In development, StrictMode doubles that, as lesson 7 shows.)</p>
+</details>
+
+  </article>
+</main>
+<nav class="pager" aria-label="Lessons">
+  <a class="pager-prev" href="03-first-react-app.html"><span>Previous</span>Your first React app</a>
+  <a class="pager-next" href="05-props.html"><span>Next</span>Props</a>
+</nav>
+<footer class="foot-small">
+  <p>Snack Shelf, a beginner course in React and TypeScript. 9 of 15 lessons written.</p>
+</footer>
+</body>
+</html>

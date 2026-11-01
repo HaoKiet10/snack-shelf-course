@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lists and keys · Snack Shelf</title>
+<meta name="description" content="Move the snacks into typed data, turn them into cards with map, filter them with the search box, and see the bug that keys prevent.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head>
+<body class="lesson-page">
+<header class="bar">
+  <a class="wordmark" href="../index.html">Snack Shelf</a>
+  <nav aria-label="Site"><a href="../index.html#lessons">Lessons</a></nav>
+</header>
+<main class="lesson">
+  <div class="lesson-head" data-reveal>
+    <h1>Lists and keys</h1>
+    <p class="lead">Move the snacks into typed data, turn them into cards with map, filter them with the search box, and see the bug that keys prevent.</p>
+    <p class="meta">Lesson 9 of 15, about 18 minutes</p>
+  </div>
+  <aside class="demo" aria-label="Live demo">
+    <div class="demo-frame" data-ui>
+      <iframe src="../demos/09-lists-and-keys/index.html" title="Live demo for Lists and keys" loading="lazy"></iframe>
+    </div>
+    <p class="demo-links"><a href="../demos/09-lists-and-keys/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a></p>
+  </aside>
+  <article class="prose">
+<p>The search box filters now: there are six snacks, and typing &quot;oni&quot; leaves only Onigiri.</p>
+<h2 id="data-separate-from-the-ui">Data separate from the UI</h2>
+<pre class="code" data-lang="ts"><code><span class="token comment">// src/data/snacks.ts</span>
+<span class="token keyword">export</span> <span class="token keyword">type</span> <span class="token class-name">Snack</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+  id<span class="token operator">:</span> <span class="token builtin">string</span>
+  name<span class="token operator">:</span> <span class="token builtin">string</span>
+  price<span class="token operator">:</span> <span class="token builtin">number</span>
+  emoji<span class="token operator">:</span> <span class="token builtin">string</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">export</span> <span class="token keyword">const</span> <span class="token constant">SNACKS</span><span class="token operator">:</span> Snack<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span>
+  <span class="token punctuation">{</span> id<span class="token operator">:</span> <span class="token string">'pocky'</span><span class="token punctuation">,</span> name<span class="token operator">:</span> <span class="token string">'Pocky'</span><span class="token punctuation">,</span> price<span class="token operator">:</span> <span class="token number">2.5</span><span class="token punctuation">,</span> emoji<span class="token operator">:</span> <span class="token string">'🍫'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span> id<span class="token operator">:</span> <span class="token string">'onigiri'</span><span class="token punctuation">,</span> name<span class="token operator">:</span> <span class="token string">'Onigiri'</span><span class="token punctuation">,</span> price<span class="token operator">:</span> <span class="token number">1.8</span><span class="token punctuation">,</span> emoji<span class="token operator">:</span> <span class="token string">'🍙'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token comment">// ...four more</span>
+<span class="token punctuation">]</span></code></pre>
+<p>The snacks are plain <strong>data</strong> now, not JSX. <code>Snack[]</code> means &quot;an array of Snack objects&quot;, and TypeScript checks that every entry has all four fields with the right types. Adding a snack is one line of data.</p>
+<h2 id="map-turns-data-into-jsx">map turns data into JSX</h2>
+<pre class="code" data-lang="tsx"><code><span class="token punctuation">{</span>visible<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span>snack<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">(</span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">SnackCard</span></span>
+    <span class="token attr-name">key</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>snack<span class="token punctuation">.</span>id<span class="token punctuation">}</span></span>
+    <span class="token attr-name">name</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>snack<span class="token punctuation">.</span>name<span class="token punctuation">}</span></span>
+    <span class="token attr-name">price</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>snack<span class="token punctuation">.</span>price<span class="token punctuation">}</span></span>
+    <span class="token attr-name">emoji</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>snack<span class="token punctuation">.</span>emoji<span class="token punctuation">}</span></span>
+  <span class="token punctuation">/></span></span>
+<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">}</span></code></pre>
+<p><code>.map</code> is plain JavaScript: it runs a function on each item and returns a new array of the results.</p>
+<pre class="code" data-lang="js"><code><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token parameter">n</span> <span class="token operator">=></span> n <span class="token operator">*</span> <span class="token number">2</span><span class="token punctuation">)</span>                <span class="token comment">// [2, 4, 6]</span>
+<span class="token constant">SNACKS</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token parameter">s</span> <span class="token operator">=></span> <span class="token operator">&lt;</span>SnackCard <span class="token operator">...</span> <span class="token operator">/</span><span class="token operator">></span><span class="token punctuation">)</span>        <span class="token comment">// [&lt;SnackCard/>, &lt;SnackCard/>, ...]</span></code></pre>
+<p><strong>JSX can render an array</strong>: put an array of elements inside <code>{ }</code> and React renders each one in order. That is all a list is in React.</p>
+<h2 id="filtering-is-derived-data">Filtering is derived data</h2>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">const</span> q <span class="token operator">=</span> query<span class="token punctuation">.</span><span class="token function">trim</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toLowerCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">const</span> visible <span class="token operator">=</span> <span class="token constant">SNACKS</span><span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span> <span class="token operator">=></span> s<span class="token punctuation">.</span>name<span class="token punctuation">.</span><span class="token function">toLowerCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">includes</span><span class="token punctuation">(</span>q<span class="token punctuation">)</span><span class="token punctuation">)</span></code></pre>
+<p><code>visible</code> is <strong>not state</strong>. It is recalculated on every render from <code>SNACKS</code> and <code>query</code>. Each keystroke changes <code>query</code>, App re-renders, <code>visible</code> is recalculated, and the map produces fewer cards. Lowercasing both sides makes it case-insensitive, and an empty query matches everything, because every string includes <code>&#39;&#39;</code>.</p>
+<h2 id="why-key-exists">Why key exists</h2>
+<p>When the list changes, React compares the old cards with the new ones. The question is: <strong>which old card is which new card?</strong> Without help, React matches by <strong>position</strong>: first card before, first card after. That breaks as soon as items are removed, added or reordered.</p>
+<p><strong><code>key</code> gives each item a permanent identity</strong>, so React matches by key instead of position.</p>
+<p>Here is the bug, tested for real. With <code>key={index}</code>, like Pocky twice, then search for &quot;oni&quot;:</p>
+<pre class="diagram"><code>index keys:  Onigiri ❤ 2    ← wrong: those are Pocky's likes
+id keys:     Onigiri ❤ 0    ← correct</code></pre>
+<p>What happened with index keys:</p>
+<pre class="diagram"><code>before:  key 0 = Pocky (likes box: 2)    key 1 = Onigiri (likes box: 0) ...
+after:   key 0 = Onigiri                 &quot;key 0 still exists, keep its state&quot;</code></pre>
+<p>React saw that key <code>0</code> still existed and kept its state box, the one holding 2, and just gave it new props. <strong>State follows the key, not the data.</strong> With <code>key={snack.id}</code>, Onigiri is always <code>&quot;onigiri&quot;</code> and keeps its own box.</p>
+<h2 id="the-rules-for-keys">The rules for keys</h2>
+<ol>
+<li>Every item in a mapped list needs one. Without it, React warns and falls back to the index.</li>
+<li>Unique among its siblings (not across the whole app).</li>
+<li><strong>Stable</strong>: the same item gets the same key on every render. That is why the data has an <code>id</code>.</li>
+<li>Not the index, if the list can be filtered, sorted, inserted into or deleted from. For a list that never changes, the index is harmless.</li>
+<li>Not <code>Math.random()</code>: a new key every render means a new item every render, and all state is thrown away.</li>
+<li>The key goes on the outermost element inside <code>map</code> (<code>&lt;SnackCard&gt;</code> here). It is not a prop: <code>SnackCard</code> cannot read <code>key</code>.</li>
+</ol>
+<h2 id="the-catch">The catch</h2>
+<p>Like Pocky, search for &quot;oni&quot;, then clear the search. <strong>Pocky&#39;s likes are back to 0.</strong></p>
+<p>When the filter hides Pocky, its card is <strong>removed</strong> from the tree and React throws its state box away (lesson 7). When Pocky comes back, it is a brand-new card starting at 0. That is not a key problem; it is a <strong>where does the state live</strong> problem. The likes should not live inside a card that can disappear. They belong somewhere that stays, App, which is <strong>lifting state up</strong>, coming in lesson 11.</p>
+<h2 id="side-note-map-or-a-for-loop">Side note: map or a for loop?</h2>
+<p>They can do the same job. The real difference is that <strong>map is an expression that produces a new array</strong>, and <strong>a for loop is a statement that just runs code</strong>.</p>
+<pre class="code" data-lang="ts"><code><span class="token keyword">const</span> prices <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">2.5</span><span class="token punctuation">,</span> <span class="token number">1.8</span><span class="token punctuation">,</span> <span class="token number">2.2</span><span class="token punctuation">]</span>
+
+<span class="token comment">// for loop: start empty, push step by step (how)</span>
+<span class="token keyword">const</span> labels<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">const</span> p <span class="token keyword">of</span> prices<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  labels<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token string">'$'</span> <span class="token operator">+</span> p<span class="token punctuation">.</span><span class="token function">toFixed</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// map: describe how ONE item transforms (what)</span>
+<span class="token keyword">const</span> labels <span class="token operator">=</span> prices<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span>p<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token string">'$'</span> <span class="token operator">+</span> p<span class="token punctuation">.</span><span class="token function">toFixed</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">)</span></code></pre>
+<p>Inside JSX&#39;s braces you can only put an <strong>expression</strong>, something that produces a value. <code>map</code> produces an array, so it fits. A <code>for</code> loop produces nothing, so it is a syntax error there (the same reason <code>{if (x) ...}</code> does not work). You can still use a loop <strong>before</strong> the <code>return</code> and put the resulting array in the JSX; <code>map</code> is just shorter.</p>
+<div class="table-wrap"><table><thead><tr><th></th><th>map</th><th>for loop</th></tr></thead><tbody><tr><td>result</td><td>a new array of the same length</td><td>nothing, unless you build it</td></tr>
+<tr><td>original array</td><td>untouched</td><td>whatever your code does</td></tr>
+<tr><td>stop early</td><td>no</td><td><code>break</code>, <code>continue</code></td></tr>
+<tr><td><code>await</code> one item at a time</td><td>awkward</td><td>natural</td></tr>
+<tr><td>inside JSX</td><td>yes</td><td>no</td></tr></tbody></table></div>
+<p>Transform each item: <code>map</code>. Keep some: <code>filter</code>. Combine into one value: <code>reduce</code>. Stop early, or step through async work: <code>for</code>.</p>
+<h2 id="side-note-where-does-s-come-from">Side note: where does <code>s</code> come from?</h2>
+<pre class="code" data-lang="ts"><code><span class="token constant">SNACKS</span><span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span> <span class="token operator">=></span> s<span class="token punctuation">.</span>price <span class="token operator">&lt;</span> <span class="token number">2.5</span><span class="token punctuation">)</span></code></pre>
+<p><code>s</code> is not defined anywhere special. It is the <strong>parameter name of the function you wrote</strong>, and <code>filter</code> fills it in each time it calls that function. The arrow function is the same as:</p>
+<pre class="code" data-lang="ts"><code><span class="token keyword">function</span> <span class="token function">isCheap</span><span class="token punctuation">(</span>s<span class="token operator">:</span> Snack<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> s<span class="token punctuation">.</span>price <span class="token operator">&lt;</span> <span class="token number">2.5</span>
+<span class="token punctuation">}</span>
+<span class="token constant">SNACKS</span><span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span>isCheap<span class="token punctuation">)</span>   <span class="token comment">// identical</span></code></pre>
+<p><code>filter</code> calls it once per item. Written by hand, <code>filter</code> is just:</p>
+<pre class="code" data-lang="ts"><code><span class="token keyword">function</span> <span class="token generic-function"><span class="token function">myFilter</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">></span></span></span><span class="token punctuation">(</span>array<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token function-variable function">test</span><span class="token operator">:</span> <span class="token punctuation">(</span>item<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token builtin">boolean</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> result<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">const</span> item <span class="token keyword">of</span> array<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">test</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>        <span class="token comment">// calls YOUR function, passing the item in</span>
+      result<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">return</span> result
+<span class="token punctuation">}</span></code></pre>
+<p>The name is up to you: <code>s</code>, <code>snack</code> and <code>banana</code> all work. TypeScript knows <code>s</code> is a <code>Snack</code> because <code>SNACKS</code> is a <code>Snack[]</code>. And <code>map</code> and <code>filter</code> actually pass three arguments, <code>(item, index, array)</code>; you name the ones you need, which is where <code>index</code> came from in the key-bug test.</p>
+<h2 id="check-yourself">Check yourself</h2>
+<details>
+<summary>What does <code>.map</code> return, and why can JSX render it?</summary>
+
+<p>A new array with one result per item; here, an array of <code>&lt;SnackCard&gt;</code> elements. JSX renders an array by rendering each element in order.</p>
+</details>
+
+<details>
+<summary>With <code>key={index}</code>, why does Onigiri show Pocky's 2 likes after searching "oni"?</summary>
+
+<p>Onigiri is now first in the list, so it gets key 0. Key 0 existed before (Pocky), so React keeps that card&#39;s state box, holding 2, and only changes its props.</p>
+</details>
+
+<details>
+<summary>Why is <code>visible</code> a plain <code>const</code> and not state?</summary>
+
+<p>It can be computed from <code>SNACKS</code> and <code>query</code> on every render. Storing it as state would mean keeping it in sync by hand whenever either changes.</p>
+</details>
+
+  </article>
+</main>
+<nav class="pager" aria-label="Lessons">
+  <a class="pager-prev" href="08-clicks-and-typing.html"><span>Previous</span>Clicks and typing</a>
+  <p class="pager-next"><span>Coming next</span>Show or hide</p>
+</nav>
+<footer class="foot-small">
+  <p>Snack Shelf, a beginner course in React and TypeScript. 9 of 15 lessons written.</p>
+</footer>
+</body>
+</html>

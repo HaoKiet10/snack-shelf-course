@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>State · Snack Shelf</title>
+<meta name="description" content="Why a normal variable can't make the like count go up, what useState really does, and the rules that keep state working.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head>
+<body class="lesson-page">
+<header class="bar">
+  <a class="wordmark" href="../index.html">Snack Shelf</a>
+  <nav aria-label="Site"><a href="../index.html#lessons">Lessons</a></nav>
+</header>
+<main class="lesson">
+  <div class="lesson-head" data-reveal>
+    <h1>State</h1>
+    <p class="lead">Why a normal variable can't make the like count go up, what useState really does, and the rules that keep state working.</p>
+    <p class="meta">Lesson 6 of 15, about 15 minutes</p>
+  </div>
+  <aside class="demo" aria-label="Live demo">
+    <div class="demo-frame" data-ui>
+      <iframe src="../demos/06-state/index.html" title="Live demo for State" loading="lazy"></iframe>
+    </div>
+    <p class="demo-links"><a href="../demos/06-state/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a></p>
+  </aside>
+  <article class="prose">
+<p>The like buttons work now. Each card keeps its own count and turns red once it is liked. Try it in the demo.</p>
+<h2 id="the-code">The code</h2>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">import</span> <span class="token punctuation">{</span> useState <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'react'</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">SnackCard</span><span class="token punctuation">(</span><span class="token punctuation">{</span> name<span class="token punctuation">,</span> price<span class="token punctuation">,</span> emoji <span class="token punctuation">}</span><span class="token operator">:</span> SnackCardProps<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> <span class="token punctuation">[</span>likes<span class="token punctuation">,</span> setLikes<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">useState</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
+  <span class="token keyword">const</span> liked <span class="token operator">=</span> likes <span class="token operator">></span> <span class="token number">0</span>
+
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>card<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+      ...
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span>
+        <span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>liked <span class="token operator">?</span> <span class="token string">'like liked'</span> <span class="token operator">:</span> <span class="token string">'like'</span><span class="token punctuation">}</span></span>
+        <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">setLikes</span><span class="token punctuation">(</span><span class="token punctuation">(</span>l<span class="token punctuation">)</span> <span class="token operator">=></span> l <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">}</span></span>
+      <span class="token punctuation">></span></span><span class="token plain-text">
+        ❤ </span><span class="token punctuation">{</span>likes<span class="token punctuation">}</span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<p>No <code>querySelector</code>, no <code>textContent =</code>. Compare it with lesson 1.</p>
+<h2 id="why-a-normal-variable-can-39-t-work">Why a normal variable can&#39;t work</h2>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">function</span> <span class="token function">SnackCard</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">let</span> likes <span class="token operator">=</span> <span class="token number">0</span>
+  <span class="token keyword">return</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span> likes <span class="token operator">=</span> likes <span class="token operator">+</span> <span class="token number">1</span> <span class="token punctuation">}</span><span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">❤ </span><span class="token punctuation">{</span>likes<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
+<span class="token punctuation">}</span></code></pre>
+<p>Click it and nothing changes on screen, for two separate reasons:</p>
+<ol>
+<li><strong>Nothing tells React to redraw.</strong> <code>likes</code> does become 1, but React does not watch normal variables. It never calls <code>SnackCard()</code> again, so the screen keeps the old description.</li>
+<li><strong>Even if it redrew, the value would reset.</strong> A component is a function, and every render is a fresh call. The first line runs again: <code>let likes = 0</code>. Local variables do not survive between calls, in any JavaScript function.</li>
+</ol>
+<p>So a component needs a value that <strong>survives between renders</strong> and <strong>triggers a re-render when it changes</strong>. That is exactly what <code>useState</code> gives you.</p>
+<h2 id="what-usestate-actually-does">What useState actually does</h2>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">const</span> <span class="token punctuation">[</span>likes<span class="token punctuation">,</span> setLikes<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">useState</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span></code></pre>
+<ul>
+<li><strong>The value lives in React, not in your function.</strong> React keeps a small storage box for each card on the page; your function reads from it on each call.</li>
+<li><strong><code>useState(0)</code>:</strong> on the first render React creates the box with 0 in it. On every later render the <code>0</code> is ignored and React returns whatever is in the box.</li>
+<li><strong>It returns a pair</strong>, <code>[current value, setter]</code>, unpacked with array destructuring. <code>[thing, setThing]</code> is the naming convention.</li>
+<li><strong>TypeScript</strong> infers <code>likes: number</code> from the <code>0</code>. No annotation needed.</li>
+</ul>
+<h2 id="a-click-step-by-step">A click, step by step</h2>
+<pre class="diagram"><code>click
+  │
+  ▼
+setLikes(l =&gt; l + 1)       &quot;React, change the box 0 → 1 and re-render&quot;
+  │
+  ▼
+React calls SnackCard() again
+  │   useState(0) → returns 1 this time (from the box)
+  │   liked = 1 &gt; 0 → true
+  │   returns &lt;button className=&quot;like liked&quot;&gt;❤ 1&lt;/button&gt;
+  ▼
+React compares with the previous description
+  │   className changed, text changed
+  ▼
+updates just those two things in the DOM</code></pre>
+<p>That is UI = f(data), for real. You change the data; React re-runs the function and fixes the DOM.</p>
+<h2 id="each-card-has-its-own-state">Each card has its own state</h2>
+<p>Three <code>&lt;SnackCard /&gt;</code>s means <strong>three separate boxes</strong>. React tracks state <strong>by position in the component tree</strong>: the first SnackCard inside <code>main</code>, the second, and so on. That is why liking Pocky does not touch Onigiri. One function, separate memory for each place it is used.</p>
+<h2 id="derive-don-39-t-store">Derive, don&#39;t store</h2>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">const</span> liked <span class="token operator">=</span> likes <span class="token operator">></span> <span class="token number">0</span></code></pre>
+<p>It is tempting to make <code>liked</code> its own state:</p>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">const</span> <span class="token punctuation">[</span>liked<span class="token punctuation">,</span> setLiked<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">useState</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span>   <span class="token comment">// ❌ unnecessary</span></code></pre>
+<p>That gives you two pieces of state you must keep in sync by hand, which is lesson 2&#39;s problem all over again. If a value can be <strong>calculated</strong> from existing state or props, calculate it during render. <strong>Keep state minimal; compute everything else.</strong></p>
+<h2 id="state-is-a-snapshot">State is a snapshot</h2>
+<p>Inside one render, <code>likes</code> is a fixed number. Calling <code>setLikes</code> does not change that variable; it schedules a new render where <code>likes</code> has the new value.</p>
+<pre class="code" data-lang="tsx"><code>onClick<span class="token operator">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  <span class="token function">setLikes</span><span class="token punctuation">(</span>likes <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span>
+  <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>likes<span class="token punctuation">)</span>   <span class="token comment">// still the OLD value: this render's snapshot</span>
+<span class="token punctuation">}</span><span class="token punctuation">}</span></code></pre>
+<p>That is why the updater form <code>l =&gt; l + 1</code> exists: it reads the box&#39;s latest value, not this render&#39;s snapshot.</p>
+<h2 id="the-rules-of-hooks">The rules of hooks</h2>
+<p><code>useState</code> is a <strong>hook</strong>: a function starting with <code>use</code> that plugs into React&#39;s machinery. React matches each hook to its box <strong>by call order</strong>, so:</p>
+<ul>
+<li>call hooks at the <strong>top level</strong> of the component;</li>
+<li><strong>never</strong> inside <code>if</code>, loops or nested functions.</li>
+</ul>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">if</span> <span class="token punctuation">(</span>isSpecial<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> <span class="token punctuation">[</span>x<span class="token punctuation">,</span> setX<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">useState</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>   <span class="token comment">// ❌ skipped on some renders,</span>
+<span class="token punctuation">}</span>                                  <span class="token comment">//    so every later hook gets the wrong box</span></code></pre>
+<h2 id="still-broken">Still broken</h2>
+<p>Like three snacks: the basket in the header still says 0. Each card&#39;s likes live inside that card, and the Header cannot see them: props only flow down, and the cards are siblings of the Header, not its parents. The fix, <strong>lifting state up</strong>, comes a few lessons later.</p>
+<h2 id="check-yourself">Check yourself</h2>
+<details>
+<summary>Why does <code>let likes = 0</code> inside the component reset on every render?</summary>
+
+<p>Each render is a new call of the function, so its first lines run again and create a fresh local variable set to 0. Nothing carries the old value over between calls.</p>
+</details>
+
+<details>
+<summary>What is wrong with storing <code>liked</code> in its own <code>useState</code>?</summary>
+
+<p>It can be computed from <code>likes</code>. Storing it separately means two values that must always be updated together, and the day one update is forgotten, the screen shows a liked card with 0 likes.</p>
+</details>
+
+<details>
+<summary>Why can't you call <code>useState</code> inside an <code>if</code>?</summary>
+
+<p>React finds each hook&#39;s box by the order the hooks are called. If a hook is skipped on some renders, every hook after it shifts by one and reads someone else&#39;s box.</p>
+</details>
+
+  </article>
+</main>
+<nav class="pager" aria-label="Lessons">
+  <a class="pager-prev" href="05-props.html"><span>Previous</span>Props</a>
+  <a class="pager-next" href="07-re-rendering.html"><span>Next</span>Re-rendering</a>
+</nav>
+<footer class="foot-small">
+  <p>Snack Shelf, a beginner course in React and TypeScript. 9 of 15 lessons written.</p>
+</footer>
+</body>
+</html>

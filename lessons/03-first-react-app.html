@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your first React app · Snack Shelf</title>
+<meta name="description" content="Create a real React and TypeScript project with Vite, follow how the page starts up, and take apart one dense line of React.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head>
+<body class="lesson-page">
+<header class="bar">
+  <a class="wordmark" href="../index.html">Snack Shelf</a>
+  <nav aria-label="Site"><a href="../index.html#lessons">Lessons</a></nav>
+</header>
+<main class="lesson">
+  <div class="lesson-head" data-reveal>
+    <h1>Your first React app</h1>
+    <p class="lead">Create a real React and TypeScript project with Vite, follow how the page starts up, and take apart one dense line of React.</p>
+    <p class="meta">Lesson 3 of 15, about 15 minutes</p>
+  </div>
+  <aside class="demo" aria-label="Live demo">
+    <div class="demo-frame" data-ui>
+      <iframe src="../demos/03-first-react-app/index.html" title="Live demo for Your first React app" loading="lazy"></iframe>
+    </div>
+    <p class="demo-links"><a href="../demos/03-first-react-app/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a></p>
+  </aside>
+  <article class="prose">
+<h2 id="creating-the-project">Creating the project</h2>
+<pre class="code" data-lang="bash"><code><span class="token function">npm</span> create vite@latest snack-shelf -- <span class="token parameter variable">--template</span> react-ts
+<span class="token builtin class-name">cd</span> snack-shelf
+<span class="token function">npm</span> <span class="token function">install</span>
+<span class="token function">npm</span> run dev</code></pre>
+<ol>
+<li><strong><code>npm create vite</code></strong> downloads Vite&#39;s project generator and copies a starter React + TypeScript project into <code>snack-shelf/</code>.</li>
+<li><strong><code>npm install</code></strong> reads <code>package.json</code> and downloads React, Vite, TypeScript and the rest into <code>node_modules/</code>.</li>
+<li><strong><code>npm run dev</code></strong> starts Vite&#39;s <strong>dev server</strong>: a small local web server that serves your app and watches your files.</li>
+</ol>
+<p><strong>Why you need a tool like Vite at all.</strong> Browsers cannot run React code as you write it. JSX (<code>&lt;App /&gt;</code> inside a script) is not valid JavaScript, and neither are TypeScript&#39;s types. Vite <strong>translates</strong> both into plain JavaScript every time you save. Create React App used to do this job; it was deprecated in 2025, and Vite is the common choice now.</p>
+<h2 id="the-files-that-matter">The files that matter</h2>
+<pre class="diagram"><code>snack-shelf/
+├─ package.json       project ID card: name, scripts, dependencies
+├─ index.html         the ONLY html page
+├─ vite.config.ts     tells Vite &quot;this is a React project&quot;
+├─ tsconfig*.json     TypeScript's rules
+├─ node_modules/      downloaded packages (never edit, never share)
+├─ public/            files served as-is (favicon)
+└─ src/               YOUR code
+   ├─ main.tsx        entry point: connects React to the page
+   ├─ App.tsx         the top component: what you see
+   └─ index.css</code></pre>
+<p><code>.tsx</code> means &quot;TypeScript that contains JSX&quot;. A file without JSX would be <code>.ts</code>.</p>
+<h2 id="how-the-page-starts-up">How the page starts up</h2>
+<p><strong>1. <code>index.html</code></strong> has an almost empty body:</p>
+<pre class="code" data-lang="html"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>body</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>root<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>module<span class="token punctuation">"</span></span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/src/main.tsx<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>body</span><span class="token punctuation">></span></span></code></pre>
+<p>An empty <code>div</code> and a script. You will not write HTML here any more: React fills <code>#root</code>.</p>
+<p><strong>2. <code>main.tsx</code></strong> is the bridge between React and the DOM:</p>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">import</span> <span class="token punctuation">{</span> StrictMode <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'react'</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> createRoot <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'react-dom/client'</span>
+<span class="token keyword">import</span> App <span class="token keyword">from</span> <span class="token string">'./App.tsx'</span>
+
+<span class="token function">createRoot</span><span class="token punctuation">(</span>document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">'root'</span><span class="token punctuation">)</span><span class="token operator">!</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">render</span><span class="token punctuation">(</span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">StrictMode</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">App</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">StrictMode</span></span><span class="token punctuation">></span></span><span class="token punctuation">,</span>
+<span class="token punctuation">)</span></code></pre>
+<p><code>document.getElementById(&#39;root&#39;)</code> grabs the empty div (the DOM from lesson 1). <code>createRoot</code> says &quot;React, this node is yours now&quot;. <code>.render(&lt;App /&gt;)</code> says &quot;draw the App component in there&quot;. After this line, React manages everything inside <code>#root</code>.</p>
+<p>The <code>!</code> is TypeScript: <code>getElementById</code> might find nothing, so its type is &quot;an element or <code>null</code>&quot;, and <code>createRoot</code> refuses <code>null</code>. The <code>!</code> says &quot;trust me, it is not null&quot;. That is safe here because <code>index.html</code> always has <code>#root</code>. Use it sparingly: if you are wrong, it crashes at runtime like plain JavaScript would.</p>
+<p><code>StrictMode</code> is a development-only helper that deliberately runs some things twice to expose bugs. It does nothing in the final site.</p>
+<p><strong>3. <code>App.tsx</code></strong> is your first component. The core of it:</p>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">App</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> <span class="token punctuation">[</span>count<span class="token punctuation">,</span> setCount<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">useState</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
+
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">setCount</span><span class="token punctuation">(</span><span class="token punctuation">(</span>count<span class="token punctuation">)</span> <span class="token operator">=></span> count <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+      Count is </span><span class="token punctuation">{</span>count<span class="token punctuation">}</span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<p>It is the like button from lesson 1, React style. <code>useState(0)</code> gives a remembered number and a function to change it. <code>onClick</code> is the event listener. <code>{count}</code> puts the number in the text. There is <strong>no <code>textContent =</code> line anywhere</strong>: you call <code>setCount</code>, React calls <code>App()</code> again, gets the new description, and updates that one text node. Lesson 2, running for real.</p>
+<pre class="diagram"><code>index.html  ─loads─▶  main.tsx  ─renders─▶  &lt;App /&gt;  ─returns─▶  description
+   #root  ◀───────────── React updates the DOM here ◀───────────────┘</code></pre>
+<h2 id="hot-module-replacement">Hot Module Replacement</h2>
+<p>With the dev server running, save a file and Vite pushes <strong>only that change</strong> to the browser. The page updates in about a second without a full reload, and even the count keeps its value. Try it: change the text in <code>App.tsx</code> and save while you watch the browser.</p>
+<h2 id="taking-apart-one-dense-line">Taking apart one dense line</h2>
+<pre class="code" data-lang="tsx"><code>onClick<span class="token operator">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">setCount</span><span class="token punctuation">(</span><span class="token punctuation">(</span>count<span class="token punctuation">)</span> <span class="token operator">=></span> count <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">}</span></code></pre>
+<p>Three ideas, from the outside in.</p>
+<p><strong><code>onClick={ ... }</code> hands React a function to call later.</strong> The braces mean &quot;this is JavaScript&quot;. The value must be a <strong>function</strong>; React stores it and calls it when a click happens, just like <code>addEventListener(&quot;click&quot;, fn)</code>.</p>
+<p><strong><code>() =&gt; ...</code> is an arrow function</strong>, a short way to write <code>function () { return ... }</code>. Why wrap the call in a function at all? Compare:</p>
+<pre class="code" data-lang="tsx"><code>onClick<span class="token operator">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">setCount</span><span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">}</span>   <span class="token comment">// ✅ "here's a function; call it on click"</span>
+onClick<span class="token operator">=</span><span class="token punctuation">{</span><span class="token function">setCount</span><span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">}</span>         <span class="token comment">// ❌ calls setCount RIGHT NOW, while rendering</span></code></pre>
+<p>The name <code>onClick</code> does not delay anything. JSX becomes an ordinary function call, roughly <code>jsx(&quot;button&quot;, { onClick: setCount(5) })</code>, and to build that object JavaScript evaluates <code>setCount(5)</code> immediately. The parentheses mean &quot;run it now&quot;, wherever they appear. Setting state during render triggers another render, which calls it again, and React stops with &quot;Too many re-renders&quot;. The arrow function <strong>creates</strong> a function without running its body, so nothing happens until the click.</p>
+<pre class="code" data-lang="js"><code>btn<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">"click"</span><span class="token punctuation">,</span> <span class="token function">sayHi</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>          <span class="token comment">// ❌ sayHi runs NOW</span>
+btn<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">"click"</span><span class="token punctuation">,</span> sayHi<span class="token punctuation">)</span><span class="token punctuation">;</span>            <span class="token comment">// ✅ hands over the function</span>
+btn<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">"click"</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">sayHi</span><span class="token punctuation">(</span><span class="token string">"Yune"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// ✅ wraps it to pass arguments</span></code></pre>
+<p><strong><code>setCount((count) =&gt; count + 1)</code> is the updater form.</strong> There are two ways to call a setter:</p>
+<pre class="code" data-lang="tsx"><code><span class="token function">setCount</span><span class="token punctuation">(</span>count <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span>              <span class="token comment">// A: "set it to this value"</span>
+<span class="token function">setCount</span><span class="token punctuation">(</span><span class="token punctuation">(</span>count<span class="token punctuation">)</span> <span class="token operator">=></span> count <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span>   <span class="token comment">// B: "compute the new value from the latest one"</span></code></pre>
+<p>Inside one render, <code>count</code> is a fixed <strong>snapshot</strong>. Calling the setter does not change it; it asks React to render again later. So:</p>
+<pre class="code" data-lang="tsx"><code><span class="token comment">// count is 0</span>
+<span class="token function">setCount</span><span class="token punctuation">(</span>count <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span>  <span class="token comment">// 0 + 1</span>
+<span class="token function">setCount</span><span class="token punctuation">(</span>count <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span>  <span class="token comment">// 0 + 1 again: count is still 0 in this render</span>
+<span class="token function">setCount</span><span class="token punctuation">(</span>count <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span>  <span class="token comment">// result: 1</span>
+
+<span class="token function">setCount</span><span class="token punctuation">(</span>c <span class="token operator">=></span> c <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token comment">// React queues 0 → 1</span>
+<span class="token function">setCount</span><span class="token punctuation">(</span>c <span class="token operator">=></span> c <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token comment">// 1 → 2, it gets the previous result</span>
+<span class="token function">setCount</span><span class="token punctuation">(</span>c <span class="token operator">=></span> c <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token comment">// result: 3</span></code></pre>
+<p>Use B when the new value depends on the old one (counters, toggles like <code>on =&gt; !on</code>). Use A when it does not (<code>setName(&quot;Pocky&quot;)</code>, <code>setCount(0)</code>).</p>
+<h2 id="what-typescript-adds">What TypeScript adds</h2>
+<p>TypeScript is JavaScript plus <strong>types</strong>: you label what kind of value each thing is, and the editor checks it before the code runs. Most professional React code is written in it, and this course uses it from here on. Everything React-specific stays the same; TypeScript is a layer on top that disappears at build time.</p>
+<p>One thing to know early: <strong>Vite does not type-check while you develop.</strong> <code>npm run dev</code> strips the types and runs the code, which is why it is fast. Type errors show up as red squiggles in your editor, when you run <code>npx tsc -b</code>, and in <code>npm run build</code>, which refuses to build. A page can run in the browser and still have type errors, so watch the squiggles.</p>
+<h2 id="check-yourself">Check yourself</h2>
+<details>
+<summary><code>index.html</code> has an empty <code>&lt;div id="root"&gt;</code>. Where does the visible content come from?</summary>
+
+<p>From React. <code>main.tsx</code> calls <code>createRoot(...).render(&lt;App /&gt;)</code>, React calls <code>App()</code>, gets a description, and creates DOM nodes inside <code>#root</code> to match it.</p>
+</details>
+
+<details>
+<summary>Why can't the browser load <code>App.tsx</code> directly, without Vite?</summary>
+
+<p>It contains JSX and TypeScript types, and neither is valid JavaScript. Vite translates them into plain JavaScript first.</p>
+</details>
+
+<details>
+<summary>What is wrong with <code>onClick={setCount(5)}</code>?</summary>
+
+<p><code>setCount(5)</code> runs immediately, during render, and <code>onClick</code> receives its return value (<code>undefined</code>) instead of a function. Setting state during render causes another render, which runs it again, in a loop. Write <code>onClick={() =&gt; setCount(5)}</code>.</p>
+</details>
+
+  </article>
+</main>
+<nav class="pager" aria-label="Lessons">
+  <a class="pager-prev" href="02-why-react-exists.html"><span>Previous</span>Why React exists</a>
+  <a class="pager-next" href="04-components.html"><span>Next</span>Components</a>
+</nav>
+<footer class="foot-small">
+  <p>Snack Shelf, a beginner course in React and TypeScript. 9 of 15 lessons written.</p>
+</footer>
+</body>
+</html>

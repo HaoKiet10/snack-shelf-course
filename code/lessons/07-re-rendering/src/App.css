@@ -1,0 +1,17 @@
+.shelf {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 24px;
+}
+
+/* Lesson 7 demo button */
+.demo {
+  margin: 0 24px;
+  padding: 8px 14px;
+  border: 1px dashed #c9a27e;
+  border-radius: 8px;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}

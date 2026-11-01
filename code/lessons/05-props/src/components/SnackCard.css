@@ -1,0 +1,38 @@
+.card {
+  box-sizing: border-box;
+  width: 160px;
+  padding: 16px;
+  border-radius: 12px;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+.card .emoji {
+  font-size: 2.5rem;
+}
+
+.card h2 {
+  font-size: 1.1rem;
+  margin: 8px 0 4px;
+}
+
+.card .price {
+  margin: 0 0 12px;
+  opacity: 0.7;
+}
+
+.like {
+  border: none;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 1rem;
+  background: #f3e8ff;
+  color: #3a2a1e;
+  cursor: pointer;
+}
+
+.like.liked {
+  color: crimson;
+  font-weight: bold;
+}

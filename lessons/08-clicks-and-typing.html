@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clicks and typing · Snack Shelf</title>
+<meta name="description" content="Events in React, typing the event object, and the controlled input: a search box whose text lives in state.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head>
+<body class="lesson-page">
+<header class="bar">
+  <a class="wordmark" href="../index.html">Snack Shelf</a>
+  <nav aria-label="Site"><a href="../index.html#lessons">Lessons</a></nav>
+</header>
+<main class="lesson">
+  <div class="lesson-head" data-reveal>
+    <h1>Clicks and typing</h1>
+    <p class="lead">Events in React, typing the event object, and the controlled input: a search box whose text lives in state.</p>
+    <p class="meta">Lesson 8 of 15, about 15 minutes</p>
+  </div>
+  <aside class="demo" aria-label="Live demo">
+    <div class="demo-frame" data-ui>
+      <iframe src="../demos/08-clicks-and-typing/index.html" title="Live demo for Clicks and typing" loading="lazy"></iframe>
+    </div>
+    <p class="demo-links"><a href="../demos/08-clicks-and-typing/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a></p>
+  </aside>
+  <article class="prose">
+<p>The shelf gets a search box. Type in it, press Escape, try typing more than 20 characters. The cards do not filter yet; that needs lists, in the next lesson.</p>
+<h2 id="events-in-react">Events in React</h2>
+<pre class="code" data-lang="tsx"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">setQuery</span><span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">Clear</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">onChange</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>handleChange<span class="token punctuation">}</span></span> <span class="token attr-name">onKeyDown</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>handleKeyDown<span class="token punctuation">}</span></span> <span class="token punctuation">/></span></span></code></pre>
+<ul>
+<li>Prop names are <strong>camelCase</strong>: <code>onClick</code>, <code>onChange</code>, <code>onKeyDown</code>, <code>onSubmit</code>, <code>onMouseEnter</code>.</li>
+<li>You pass a <strong>function</strong>, and React calls it with an <strong>event object</strong>.</li>
+<li>Same idea as <code>addEventListener</code>, but you never attach or remove listeners yourself.</li>
+</ul>
+<p>Two ways to write a handler. Inline, for one-liners:</p>
+<pre class="code" data-lang="tsx"><code>onClick<span class="token operator">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">setQuery</span><span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">}</span></code></pre>
+<p>Or a named function, when there is logic or you need the event:</p>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">function</span> <span class="token function">handleKeyDown</span><span class="token punctuation">(</span>e<span class="token operator">:</span> KeyboardEvent<span class="token operator">&lt;</span>HTMLInputElement<span class="token operator">></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>e<span class="token punctuation">.</span>key <span class="token operator">===</span> <span class="token string">'Escape'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">setQuery</span><span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span class="token operator">...</span>
+onKeyDown<span class="token operator">=</span><span class="token punctuation">{</span>handleKeyDown<span class="token punctuation">}</span>       <span class="token comment">// no () here</span></code></pre>
+<p>The convention: <code>on...</code> is the prop, <code>handle...</code> is your function.</p>
+<h2 id="the-event-object-typed">The event object, typed</h2>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">import</span> <span class="token keyword">type</span> <span class="token punctuation">{</span> ChangeEvent<span class="token punctuation">,</span> KeyboardEvent <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'react'</span>
+
+<span class="token keyword">function</span> <span class="token function">handleChange</span><span class="token punctuation">(</span>e<span class="token operator">:</span> ChangeEvent<span class="token operator">&lt;</span>HTMLInputElement<span class="token operator">></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  e<span class="token punctuation">.</span>target<span class="token punctuation">.</span>value   <span class="token comment">// TypeScript knows: string</span>
+<span class="token punctuation">}</span></code></pre>
+<p><code>ChangeEvent&lt;HTMLInputElement&gt;</code> reads as &quot;a change event that came from an <code>&lt;input&gt;</code>&quot;, so TypeScript knows <code>e.target</code> has a <code>.value</code>. Inline handlers need no annotation, because TypeScript infers the type from where the function is used:</p>
+<pre class="code" data-lang="tsx"><code>onChange<span class="token operator">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">setQuery</span><span class="token punctuation">(</span>e<span class="token punctuation">.</span>target<span class="token punctuation">.</span>value<span class="token punctuation">)</span><span class="token punctuation">}</span>   <span class="token comment">// e is typed automatically</span></code></pre>
+<p><code>import type</code> imports something used only for types; it disappears completely from the JavaScript output.</p>
+<h2 id="controlled-inputs">Controlled inputs</h2>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">const</span> <span class="token punctuation">[</span>query<span class="token punctuation">,</span> setQuery<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">useState</span><span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">)</span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span>
+  <span class="token attr-name">value</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>query<span class="token punctuation">}</span></span>            <span class="token comment">// state → input</span>
+  <span class="token attr-name">onChange</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>handleChange<span class="token punctuation">}</span></span>  <span class="token comment">// input → state</span>
+<span class="token punctuation">/></span></span></code></pre>
+<p>That is a loop:</p>
+<pre class="diagram"><code>you press &quot;p&quot;
+   │
+   ▼
+onChange fires with e.target.value = &quot;p&quot;
+   │
+   ▼
+setQuery(&quot;p&quot;)          → React re-renders App
+   │
+   ▼
+&lt;input value=&quot;p&quot;&gt;      → React makes the input show &quot;p&quot;</code></pre>
+<p><strong>React state is the single source of truth.</strong> The input does not own its text; it displays <code>query</code>. This is a <strong>controlled input</strong>.</p>
+<p>What it buys you is control. Every keystroke passes through your code before it reaches the screen:</p>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">function</span> <span class="token function">handleChange</span><span class="token punctuation">(</span>e<span class="token operator">:</span> ChangeEvent<span class="token operator">&lt;</span>HTMLInputElement<span class="token operator">></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token function">setQuery</span><span class="token punctuation">(</span>e<span class="token punctuation">.</span>target<span class="token punctuation">.</span>value<span class="token punctuation">.</span><span class="token function">slice</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token constant">MAX_QUERY</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<p>Type a 21st character and <code>slice</code> cuts it off: state stays at 20, so the input shows 20. You could force uppercase or strip digits the same way. And because the text lives in state, anything else can use it: the hint line, the Clear button&#39;s <code>disabled={query === &#39;&#39;}</code>, and next lesson the filter.</p>
+<p><strong>The classic bug</strong> is <code>value</code> without <code>onChange</code>:</p>
+<pre class="code" data-lang="tsx"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">value</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>query<span class="token punctuation">}</span></span> <span class="token punctuation">/></span></span>   <span class="token comment">// ❌ frozen: you type, nothing appears</span></code></pre>
+<p>The input shows <code>query</code>, but nothing ever updates <code>query</code>. React warns about it. If you only want a starting value and do not care afterwards, use <code>defaultValue</code>, an <em>uncontrolled</em> input.</p>
+<p><code>query</code> lives in App, not in a separate SearchBar component, because the cards will need it to filter, and App is the parent of both.</p>
+<h2 id="onchange-or-onkeydown">onChange or onKeyDown?</h2>
+<p>They answer different questions. <strong>onChange</strong>: did the value change? It gives you the new text. <strong>onKeyDown</strong>: which key was pressed? It fires whether or not the text changed.</p>
+<div class="table-wrap"><table><thead><tr><th>Action</th><th>onKeyDown</th><th>onChange</th></tr></thead><tbody><tr><td>type &quot;a&quot;</td><td>yes, <code>e.key = &quot;a&quot;</code></td><td>yes, value now ends in &quot;a&quot;</td></tr>
+<tr><td>Escape, Enter, arrows, Shift</td><td>yes</td><td>no: the text did not change</td></tr>
+<tr><td>paste with the mouse</td><td>no: no key pressed</td><td>yes</td></tr>
+<tr><td>autofill, phone suggestions, voice typing</td><td>often no</td><td>yes</td></tr></tbody></table></div>
+<p>So the search box uses each for what it is good at: <code>onChange</code> for the text, because it catches every way the value can change, and <code>onKeyDown</code> for Escape, which does not change the text.</p>
+<p>The order of events for one key press:</p>
+<pre class="diagram"><code>keydown   ← onKeyDown: e.key = &quot;p&quot;, value is still the OLD text
+   ▼
+(browser inserts &quot;p&quot;)
+   ▼
+input     ← onChange: value is the NEW text
+   ▼
+keyup</code></pre>
+<p>That is why <code>onKeyDown</code> is the wrong place to read the text, and why it can block a key before anything happens with <code>e.preventDefault()</code>.</p>
+<p>One quirk: in plain DOM, the <code>change</code> event fires only when you leave the field. React&#39;s <code>onChange</code> is wired to the DOM <code>input</code> event, so it fires on every change. In plain-JavaScript tutorials, <code>&quot;change&quot;</code> means something different.</p>
+<h3 id="try-it-an-event-log">Try it: an event log</h3>
+<p>Drop this component into the app to watch both events:</p>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">import</span> <span class="token punctuation">{</span> useState <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'react'</span>
+<span class="token keyword">import</span> <span class="token keyword">type</span> <span class="token punctuation">{</span> ChangeEvent<span class="token punctuation">,</span> KeyboardEvent <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'react'</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">EventLog</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> <span class="token punctuation">[</span>text<span class="token punctuation">,</span> setText<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">useState</span><span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">)</span>
+  <span class="token keyword">const</span> <span class="token punctuation">[</span>log<span class="token punctuation">,</span> setLog<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token generic-function"><span class="token function">useState</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+
+  <span class="token keyword">function</span> <span class="token function">add</span><span class="token punctuation">(</span>line<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">setLog</span><span class="token punctuation">(</span><span class="token punctuation">(</span>prev<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">[</span>line<span class="token punctuation">,</span> <span class="token operator">...</span>prev<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">slice</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">15</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token keyword">function</span> <span class="token function">handleKeyDown</span><span class="token punctuation">(</span>e<span class="token operator">:</span> KeyboardEvent<span class="token operator">&lt;</span>HTMLInputElement<span class="token operator">></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// the OLD text: the key hasn't been applied yet</span>
+    <span class="token function">add</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">keyDown  key="</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>e<span class="token punctuation">.</span>key<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">"  value="</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>e<span class="token punctuation">.</span>currentTarget<span class="token punctuation">.</span>value<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">"</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>e<span class="token punctuation">.</span>key <span class="token operator">===</span> <span class="token string">'Escape'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token function">setText</span><span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token regex"><span class="token regex-delimiter">/</span><span class="token regex-source language-regex">^[0-9]$</span><span class="token regex-delimiter">/</span></span><span class="token punctuation">.</span><span class="token function">test</span><span class="token punctuation">(</span>e<span class="token punctuation">.</span>key<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      e<span class="token punctuation">.</span><span class="token function">preventDefault</span><span class="token punctuation">(</span><span class="token punctuation">)</span>   <span class="token comment">// block digits before they reach the input</span>
+      <span class="token function">add</span><span class="token punctuation">(</span><span class="token string">'         ↳ digit blocked, onChange will NOT fire'</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token keyword">function</span> <span class="token function">handleChange</span><span class="token punctuation">(</span>e<span class="token operator">:</span> ChangeEvent<span class="token operator">&lt;</span>HTMLInputElement<span class="token operator">></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">add</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">change   value="</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>e<span class="token punctuation">.</span>target<span class="token punctuation">.</span>value<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">"</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+    <span class="token function">setText</span><span class="token punctuation">(</span>e<span class="token punctuation">.</span>target<span class="token punctuation">.</span>value<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">style</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">{</span> padding<span class="token operator">:</span> <span class="token number">24</span> <span class="token punctuation">}</span><span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">value</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>text<span class="token punctuation">}</span></span> <span class="token attr-name">onChange</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>handleChange<span class="token punctuation">}</span></span> <span class="token attr-name">onKeyDown</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>handleKeyDown<span class="token punctuation">}</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>pre</span><span class="token punctuation">></span></span><span class="token punctuation">{</span>log<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token string">'\n'</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>pre</span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<p>Two details: with an empty array, TypeScript cannot guess what goes inside, so <code>useState&lt;string[]&gt;([])</code> says so. And for keyboard events React types <code>e.target</code> loosely (events bubble, so it could be any element), while <code>e.currentTarget</code> is always the element the handler is on, so TypeScript knows it is an input.</p>
+<p>Note that pasting &quot;123&quot; with the mouse still gets digits in, because it skips <code>keydown</code> entirely. To truly forbid something, filter in <code>onChange</code>, like the 20-character limit.</p>
+<h2 id="two-more-event-behaviours">Two more event behaviours</h2>
+<ul>
+<li><code>e.preventDefault()</code> stops the browser&#39;s default action. You need it in <code>&lt;form onSubmit&gt;</code>, which otherwise reloads the page.</li>
+<li>Events <strong>bubble</strong>: a click on a button also fires <code>onClick</code> on every ancestor. <code>e.stopPropagation()</code> stops that.</li>
+</ul>
+<h2 id="check-yourself">Check yourself</h2>
+<details>
+<summary>You delete <code>onChange={handleChange}</code> but keep <code>value={query}</code>. What happens?</summary>
+
+<p>The input freezes. It always displays <code>query</code>, and nothing updates <code>query</code> any more, so whatever you type is immediately replaced by the old value. React warns in the console.</p>
+</details>
+
+<details>
+<summary>Why is <code>onKeyDown={handleKeyDown}</code> written without <code>()</code>?</summary>
+
+<p><code>onKeyDown</code> needs a function to call later. <code>handleKeyDown()</code> would call it immediately during render and pass its result instead.</p>
+</details>
+
+<details>
+<summary>How does the 20-character limit work without a <code>maxLength</code> attribute?</summary>
+
+<p>The input only ever shows <code>query</code>, and <code>handleChange</code> stores at most 20 characters with <code>slice</code>. The 21st character arrives in the event, is cut off, and the input re-renders showing the same 20.</p>
+</details>
+
+  </article>
+</main>
+<nav class="pager" aria-label="Lessons">
+  <a class="pager-prev" href="07-re-rendering.html"><span>Previous</span>Re-rendering</a>
+  <a class="pager-next" href="09-lists-and-keys.html"><span>Next</span>Lists and keys</a>
+</nav>
+<footer class="foot-small">
+  <p>Snack Shelf, a beginner course in React and TypeScript. 9 of 15 lessons written.</p>
+</footer>
+</body>
+</html>

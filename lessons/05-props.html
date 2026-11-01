@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Props · Snack Shelf</title>
+<meta name="description" content="Props are a component's arguments. Give each card its own snack, type the props with TypeScript, and learn the two rules props live by.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head>
+<body class="lesson-page">
+<header class="bar">
+  <a class="wordmark" href="../index.html">Snack Shelf</a>
+  <nav aria-label="Site"><a href="../index.html#lessons">Lessons</a></nav>
+</header>
+<main class="lesson">
+  <div class="lesson-head" data-reveal>
+    <h1>Props</h1>
+    <p class="lead">Props are a component's arguments. Give each card its own snack, type the props with TypeScript, and learn the two rules props live by.</p>
+    <p class="meta">Lesson 5 of 15, about 12 minutes</p>
+  </div>
+  <aside class="demo" aria-label="Live demo">
+    <div class="demo-frame" data-ui>
+      <iframe src="../demos/05-props/index.html" title="Live demo for Props" loading="lazy"></iframe>
+    </div>
+    <p class="demo-links"><a href="../demos/05-props/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a></p>
+  </aside>
+  <article class="prose">
+<p>The shelf now shows three different snacks: Pocky, Onigiri and Melon Pan.</p>
+<h2 id="props-are-a-component-39-s-arguments">Props are a component&#39;s arguments</h2>
+<p>The parent passes data like HTML attributes:</p>
+<pre class="code" data-lang="tsx"><code><span class="token comment">// App.tsx</span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">SnackCard</span></span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Onigiri<span class="token punctuation">"</span></span> <span class="token attr-name">price</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token number">1.8</span><span class="token punctuation">}</span></span> <span class="token attr-name">emoji</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>🍙<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span></code></pre>
+<p>The child receives them as <strong>one object</strong>:</p>
+<pre class="code" data-lang="tsx"><code><span class="token comment">// SnackCard.tsx</span>
+<span class="token keyword">type</span> <span class="token class-name">SnackCardProps</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+  name<span class="token operator">:</span> <span class="token builtin">string</span>
+  price<span class="token operator">:</span> <span class="token builtin">number</span>
+  emoji<span class="token operator">:</span> <span class="token builtin">string</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">SnackCard</span><span class="token punctuation">(</span><span class="token punctuation">{</span> name<span class="token punctuation">,</span> price<span class="token punctuation">,</span> emoji <span class="token punctuation">}</span><span class="token operator">:</span> SnackCardProps<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>card<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>emoji<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token punctuation">{</span>emoji<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h2</span><span class="token punctuation">></span></span><span class="token punctuation">{</span>name<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h2</span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>price<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">$</span><span class="token punctuation">{</span>price<span class="token punctuation">.</span><span class="token function">toFixed</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>like<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">❤ 0</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<p>JSX becomes a function call, so <code>&lt;SnackCard name=&quot;Onigiri&quot; price={1.8} emoji=&quot;🍙&quot; /&gt;</code> turns into React calling</p>
+<pre class="code" data-lang="js"><code><span class="token function">SnackCard</span><span class="token punctuation">(</span><span class="token punctuation">{</span> <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">"Onigiri"</span><span class="token punctuation">,</span> <span class="token literal-property property">price</span><span class="token operator">:</span> <span class="token number">1.8</span><span class="token punctuation">,</span> <span class="token literal-property property">emoji</span><span class="token operator">:</span> <span class="token string">"🍙"</span> <span class="token punctuation">}</span><span class="token punctuation">)</span></code></pre>
+<p>Props are just function arguments, packed into one object.</p>
+<h2 id="typing-the-props">Typing the props</h2>
+<p><code>type SnackCardProps = { ... }</code> describes the <strong>shape</strong> of that object, and <code>: SnackCardProps</code> says &quot;this function&#39;s argument has this shape&quot;. TypeScript then checks every place the component is used:</p>
+<pre class="code" data-lang="tsx"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">SnackCard</span></span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Pocky<span class="token punctuation">"</span></span> <span class="token attr-name">price</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>2.5<span class="token punctuation">"</span></span> <span class="token attr-name">emoji</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>🍫<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+<span class="token comment">//                      ~~~~~ Type 'string' is not assignable to type 'number'</span></code></pre>
+<p>In plain JavaScript that mistake only shows up when the page crashes on <code>toFixed</code>. With types, it is a red squiggle as you type, and you get autocomplete: type <code>&lt;SnackCard </code> and the editor lists exactly which props exist.</p>
+<h2 id="destructuring">Destructuring</h2>
+<p>These two are the same:</p>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">function</span> <span class="token function">SnackCard</span><span class="token punctuation">(</span>props<span class="token operator">:</span> SnackCardProps<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h2</span><span class="token punctuation">></span></span><span class="token punctuation">{</span>props<span class="token punctuation">.</span>name<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h2</span><span class="token punctuation">></span></span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">function</span> <span class="token function">SnackCard</span><span class="token punctuation">(</span><span class="token punctuation">{</span> name<span class="token punctuation">,</span> price<span class="token punctuation">,</span> emoji <span class="token punctuation">}</span><span class="token operator">:</span> SnackCardProps<span class="token punctuation">)</span> <span class="token punctuation">{</span>   <span class="token comment">// unpack right away</span>
+  <span class="token keyword">return</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h2</span><span class="token punctuation">></span></span><span class="token punctuation">{</span>name<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h2</span><span class="token punctuation">></span></span>
+<span class="token punctuation">}</span></code></pre>
+<p>The second is plain JavaScript <strong>destructuring</strong>: take the object and pull these keys out as variables. Most React code uses it.</p>
+<h2 id="quotes-or-braces">Quotes or braces?</h2>
+<pre class="code" data-lang="tsx"><code>name<span class="token operator">=</span><span class="token string">"Onigiri"</span>     <span class="token comment">// quotes: a string, exactly as written</span>
+price<span class="token operator">=</span><span class="token punctuation">{</span><span class="token number">1.8</span><span class="token punctuation">}</span>        <span class="token comment">// braces: any JS value, here the number 1.8</span>
+price<span class="token operator">=</span><span class="token string">"1.8"</span>        <span class="token comment">// the STRING "1.8": price.toFixed() would crash</span></code></pre>
+<p>Inside braces you can pass anything: numbers, booleans, arrays, objects, variables, even functions. Passing functions will matter soon.</p>
+<p>Inside JSX, <code>{ }</code> means &quot;insert a JavaScript value here&quot;. In <code>${price.toFixed(2)}</code> the <code>$</code> is just a dollar sign in the text and <code>{...}</code> is the JavaScript part.</p>
+<h2 id="the-two-rules-of-props">The two rules of props</h2>
+<p><strong>Data flows down.</strong> Props go from parent to child, never the other way. App knows all the snacks and hands each card one. A card cannot reach up and change what App gave it.</p>
+<pre class="diagram"><code>      App   (owns the data)
+     ╱  │  ╲
+ props props props   ↓ one way
+   ╱    │    ╲
+ Card  Card  Card</code></pre>
+<p><strong>Props are read-only.</strong> A component must never change its own props:</p>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">function</span> <span class="token function">SnackCard</span><span class="token punctuation">(</span><span class="token punctuation">{</span> name <span class="token punctuation">}</span><span class="token operator">:</span> SnackCardProps<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  name <span class="token operator">=</span> <span class="token string">"Hacked"</span>   <span class="token comment">// ❌ don't: the parent owns this value</span>
+<span class="token punctuation">}</span></code></pre>
+<p>React relies on this: given the same props, a component should always produce the same output. That is UI = f(data) again.</p>
+<h2 id="what-is-still-missing">What is still missing</h2>
+<p>The like buttons still do nothing. The count cannot be a prop, because the card itself needs to change it and props are read-only. A normal variable like <code>let likes = 0</code> does not work either. A component needs its own <strong>memory</strong>: a value it owns, can change, and that redraws the card when it changes. That is <strong>state</strong>, the next lesson.</p>
+<h2 id="check-yourself">Check yourself</h2>
+<details>
+<summary>You write <code>&lt;SnackCard name="Pocky" price="2.5" emoji="🍫" /&gt;</code>. What happens?</summary>
+
+<p>TypeScript flags it: <code>&quot;2.5&quot;</code> is a string and <code>price</code> must be a number. In plain JavaScript it would get through and then crash at <code>price.toFixed(2)</code>, because strings have no <code>toFixed</code> method.</p>
+</details>
+
+<details>
+<summary>What object does <code>SnackCard</code> receive for <code>&lt;SnackCard name="Pocky" price={2.5} emoji="🍫" /&gt;</code>?</summary>
+
+<p><code>{ name: &quot;Pocky&quot;, price: 2.5, emoji: &quot;🍫&quot; }</code></p>
+</details>
+
+<details>
+<summary>Why shouldn't the like count be a prop passed in from App?</summary>
+
+<p>The card needs to change it on a click, and props are read-only for the component that receives them. Something the component changes itself belongs in state.</p>
+</details>
+
+  </article>
+</main>
+<nav class="pager" aria-label="Lessons">
+  <a class="pager-prev" href="04-components.html"><span>Previous</span>Components</a>
+  <a class="pager-next" href="06-state.html"><span>Next</span>State</a>
+</nav>
+<footer class="foot-small">
+  <p>Snack Shelf, a beginner course in React and TypeScript. 9 of 15 lessons written.</p>
+</footer>
+</body>
+</html>

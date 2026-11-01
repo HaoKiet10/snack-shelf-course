@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<!--
+  STRUCTURE (the walls and rooms).
+  The browser reads this text top to bottom and builds a TREE of objects in
+  memory called the DOM (Document Object Model). What you see on screen is
+  drawn from that tree, not from this file. JS changes the tree, not the file.
+
+  The tree for this page looks like:
+    html
+    ├─ head  (title, links: not drawn on the page)
+    └─ body
+       ├─ header
+       │  ├─ h1
+       │  └─ span#basket
+       └─ main.shelf
+          ├─ div.card  (Pocky)
+          ├─ div.card  (Onigiri)
+          └─ div.card  (Melon Pan)
+-->
+<html lang="en">
+<head>
+  <!-- Tell the browser how to read the bytes; without it the emoji can break. -->
+  <meta charset="UTF-8">
+  <!-- Phones: use the real screen width instead of pretending to be a desktop. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Yune's Snack Shelf</title>
+
+  <!-- CSS is loaded first, so the page never flashes unstyled. -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- defer = download now, but RUN only after the whole DOM tree is built.
+       Without it, script.js would run here, before the buttons exist,
+       and querySelector would find nothing (null). -->
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <header>
+    <h1>Yune's Snack Shelf</h1>
+    <!-- id = a unique name, so JS can grab exactly this element. -->
+    <span id="basket">🧺 0</span>
+  </header>
+
+  <!-- class = a label shared by many elements, so CSS can style them all. -->
+  <main class="shelf">
+    <div class="card">
+      <span class="emoji">🍫</span>
+      <h2>Pocky</h2>
+      <p class="price">$2.50</p>
+      <button id="like-pocky" class="like">❤ 0</button>
+    </div>
+
+    <div class="card">
+      <span class="emoji">🍙</span>
+      <h2>Onigiri</h2>
+      <p class="price">$1.80</p>
+      <!-- Not wired up in lesson 1 on purpose. Lesson 2 wires every button
+           by hand and shows why that gets painful. -->
+      <button class="like">❤ 0</button>
+    </div>
+
+    <div class="card">
+      <span class="emoji">🍈</span>
+      <h2>Melon Pan</h2>
+      <p class="price">$2.20</p>
+      <button class="like">❤ 0</button>
+    </div>
+  </main>
+</body>
+</html>
