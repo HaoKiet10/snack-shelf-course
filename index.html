@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Snack Shelf: learn React one snack at a time</title>
-<meta name="description" content="A free beginner course in React and TypeScript. Build a small snack-shelf web app, one idea per lesson.">
+<meta name="description" content="A free course in React and TypeScript, from the basics to Suspense, Server Components and accessibility. Build a small snack-shelf web app, one idea per lesson.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
@@ -30,7 +30,7 @@
       <span class="hero-row hero-row-2">one snack at a time</span>
     </h1>
     <div class="hero-foot" data-reveal>
-      <p class="hero-sub">A free beginner course in React and TypeScript. You build one small web app, a snack shelf, adding one idea per lesson.</p>
+      <p class="hero-sub">A free course in React and TypeScript, from the first component to Suspense, Server Components and accessibility. You build one small web app, a snack shelf, adding one idea per lesson.</p>
       <a class="button" href="lessons/01-every-website-is-a-house.html">Start the first lesson</a>
     </div>
   </section>
@@ -50,14 +50,14 @@
   </section>
 
   <section class="lessons" id="lessons" aria-labelledby="lessons-title">
-    <h2 id="lessons-title" data-reveal>Fifteen lessons, one small app</h2>
+    <h2 id="lessons-title" data-reveal>Three parts, one small app</h2>
     <div class="lessons-grid">
       <figure class="lessons-photo" data-reveal>
         <img src="assets/img/ramune.jpg" width="1200" height="1600" loading="lazy" alt="A glass ramune bottle with its marble stopper, on a wooden table">
         <figcaption>Ramune, with the marble still in the neck</figcaption>
       </figure>
       <div class="lessons-list">
-        <p class="lessons-note" data-reveal>All 15 lessons are written, each with its code and a live demo.</p>
+        <p class="lessons-note" data-reveal>All 33 lessons are written, each with its code, and a live demo wherever the app can run in the page.</p>
         <ol class="lesson-rows" data-reveal>
           <li><span class="t"><a href="lessons/01-every-website-is-a-house.html">Every website is a house</a></span><span class="idea">HTML, CSS and JavaScript, and the DOM they all meet in</span><a class="go" href="lessons/01-every-website-is-a-house.html" aria-hidden="true" tabindex="-1">Read →</a></li>
           <li><span class="t"><a href="lessons/02-why-react-exists.html">Why React exists</a></span><span class="idea">Keeping data and screen in sync by hand, and the idea that replaces it</span><a class="go" href="lessons/02-why-react-exists.html" aria-hidden="true" tabindex="-1">Read →</a></li>
@@ -74,6 +74,24 @@
           <li><span class="t"><a href="lessons/13-styling.html">Styling it</a></span><span class="idea">CSS Modules, CSS variables and inline styles</span><a class="go" href="lessons/13-styling.html" aria-hidden="true" tabindex="-1">Read →</a></li>
           <li><span class="t"><a href="lessons/14-building.html">Building for production</a></span><span class="idea">What npm run build makes, and why</span><a class="go" href="lessons/14-building.html" aria-hidden="true" tabindex="-1">Read →</a></li>
           <li><span class="t"><a href="lessons/15-put-it-online.html">Put it online</a></span><span class="idea">Deploying the shelf to a real address</span><a class="go" href="lessons/15-put-it-online.html" aria-hidden="true" tabindex="-1">Read →</a></li>
+          <li class="group-start"><span class="t"><a href="lessons/16-composition.html">Splitting components</a></span><span class="idea">children, slots, and when to split a component</span><a class="go" href="lessons/16-composition.html" aria-hidden="true" tabindex="-1">Read →</a></li>
+          <li><span class="t"><a href="lessons/17-use-reducer.html">useReducer</a></span><span class="idea">A basket with quantities, and every change in one function</span><a class="go" href="lessons/17-use-reducer.html" aria-hidden="true" tabindex="-1">Read →</a></li>
+          <li><span class="t"><a href="lessons/18-custom-hooks.html">Custom hooks</a></span><span class="idea">Your own use… functions, and saving the basket</span><a class="go" href="lessons/18-custom-hooks.html" aria-hidden="true" tabindex="-1">Read →</a></li>
+          <li><span class="t"><a href="lessons/19-context.html">Context</a></span><span class="idea">Sharing the basket without passing props down</span><a class="go" href="lessons/19-context.html" aria-hidden="true" tabindex="-1">Read →</a></li>
+          <li><span class="t"><a href="lessons/20-use-ref.html">useRef</a></span><span class="idea">Keyboard focus, timers, and values that don't re-render</span><a class="go" href="lessons/20-use-ref.html" aria-hidden="true" tabindex="-1">Read →</a></li>
+          <li><span class="t"><a href="lessons/21-routing.html">Pages and routing</a></span><span class="idea">A page per snack with React Router, and the URL as state</span><a class="go" href="lessons/21-routing.html" aria-hidden="true" tabindex="-1">Read →</a></li>
+          <li><span class="t"><a href="lessons/22-forms.html">Forms</a></span><span class="idea">A checkout form with validation and React 19 form actions</span><a class="go" href="lessons/22-forms.html" aria-hidden="true" tabindex="-1">Read →</a></li>
+          <li><span class="t"><a href="lessons/23-tanstack-query.html">TanStack Query</a></span><span class="idea">Server state: caching, retries and refreshing</span><a class="go" href="lessons/23-tanstack-query.html" aria-hidden="true" tabindex="-1">Read →</a></li>
+          <li><span class="t"><a href="lessons/24-testing.html">Testing</a></span><span class="idea">Vitest and Testing Library, tests that click like a user</span><a class="go" href="lessons/24-testing.html" aria-hidden="true" tabindex="-1">Read →</a></li>
+          <li class="group-start"><span class="t"><a href="lessons/25-error-boundaries.html">Error boundaries</a></span><span class="idea">Catching a crash so one broken snack stays one broken card</span><a class="go" href="lessons/25-error-boundaries.html" aria-hidden="true" tabindex="-1">Read →</a></li>
+          <li><span class="t"><a href="lessons/26-portals.html">Portals and toasts</a></span><span class="idea">Notifications with Undo, rendered outside the component tree</span><a class="go" href="lessons/26-portals.html" aria-hidden="true" tabindex="-1">Read →</a></li>
+          <li><span class="t"><a href="lessons/27-performance.html">Performance and the React Compiler</a></span><span class="idea">Measuring re-renders, memo, and letting the compiler do it</span><a class="go" href="lessons/27-performance.html" aria-hidden="true" tabindex="-1">Read →</a></li>
+          <li><span class="t"><a href="lessons/28-suspense.html">Suspense and lazy loading</a></span><span class="idea">Waiting for data and code without loading states everywhere</span><a class="go" href="lessons/28-suspense.html" aria-hidden="true" tabindex="-1">Read →</a></li>
+          <li><span class="t"><a href="lessons/29-transitions.html">Transitions</a></span><span class="idea">Typing that stays instant while a slow list catches up</span><a class="go" href="lessons/29-transitions.html" aria-hidden="true" tabindex="-1">Read →</a></li>
+          <li><span class="t"><a href="lessons/30-typescript-patterns.html">TypeScript for components</a></span><span class="idea">Generic components, derived types, and checking server data</span><a class="go" href="lessons/30-typescript-patterns.html" aria-hidden="true" tabindex="-1">Read →</a></li>
+          <li><span class="t"><a href="lessons/31-zustand.html">State libraries (Zustand)</a></span><span class="idea">A basket store with selectors instead of a context</span><a class="go" href="lessons/31-zustand.html" aria-hidden="true" tabindex="-1">Read →</a></li>
+          <li><span class="t"><a href="lessons/32-server-components.html">Server Components and Next.js</a></span><span class="idea">React on the server, and actions that run there</span><a class="go" href="lessons/32-server-components.html" aria-hidden="true" tabindex="-1">Read →</a></li>
+          <li><span class="t"><a href="lessons/33-accessibility.html">Accessibility</a></span><span class="idea">Keyboard, screen readers, focus, and what automated checks miss</span><a class="go" href="lessons/33-accessibility.html" aria-hidden="true" tabindex="-1">Read →</a></li>
         </ol>
       </div>
     </div>
@@ -111,7 +129,7 @@
 
 <footer class="foot">
   <div class="foot-top">
-    <p>A beginner course in React and TypeScript, written while learning both.</p>
+    <p>A course in React and TypeScript, written while learning both.</p>
     <p>Every lesson comes with the app's real code at that point, and a live demo.</p>
     <a href="#hero-title" class="to-top">Back to top</a>
   </div>

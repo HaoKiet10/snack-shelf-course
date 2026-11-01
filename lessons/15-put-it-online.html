@@ -20,7 +20,7 @@
   <div class="lesson-head" data-reveal>
     <h1>Put it online</h1>
     <p class="lead">Push the app to GitHub and let a workflow build and publish it to GitHub Pages on every push, so the shelf has a real address you can send to people.</p>
-    <p class="meta">Lesson 15 of 15, about 20 minutes</p>
+    <p class="meta">Lesson 15 of 33, about 20 minutes</p>
   </div>
   <aside class="demo" aria-label="Live demo">
     <div class="demo-sticky">
@@ -130,15 +130,9 @@
 <tr><td>the old version still shows</td><td>the browser cached <code>index.html</code>: reload with Ctrl+F5</td></tr></tbody></table></div>
 <p>Read the failed step&#39;s log on the Actions tab. It is the same output you would get by running that command yourself.</p>
 <h2 id="where-to-go-from-here">Where to go from here</h2>
-<p>The shelf now covers the core of React: components, props, state, events, lists, conditional rendering, lifting state, effects, styling and shipping. Good next steps, in roughly this order:</p>
-<ul>
-<li><strong>Forms with several fields</strong>, and a <strong>reducer</strong> (<code>useReducer</code>) when one state update has to change several things at once. The basket would be a good candidate: remove an item, change a quantity.</li>
-<li><strong>Context</strong> (<code>useContext</code>), for data that many components at different depths need, so you do not pass the same prop through five layers.</li>
-<li><strong>Routing</strong> (React Router), for an app with several pages, such as a page per snack.</li>
-<li><strong>Data fetching libraries</strong> (TanStack Query), which handle loading, errors, caching and retries so you rarely write the lesson-12 effect by hand.</li>
-<li><strong>Testing</strong> (Vitest and Testing Library).</li>
-</ul>
-<p>And the best next step of all: build something of your own. The concepts carry over; the snacks were only an excuse.</p>
+<p>That is the end of part one. The shelf now covers the core of React: components, props, state, events, lists, conditional rendering, lifting state, effects, styling and shipping.</p>
+<p><strong>Part two</strong> keeps building the same app with the tools real projects use: splitting components, a reducer for a proper basket, custom hooks, context, refs, pages with React Router, a checkout form, TanStack Query for server data, and tests. It starts with <a href="16-composition.html">Splitting components</a>.</p>
+<p>And whenever you are ready, build something of your own alongside it. The concepts carry over; the snacks were only an excuse.</p>
 <h2 id="check-yourself">Check yourself</h2>
 <details>
 <summary><span>Why build on GitHub instead of committing <code>dist/</code>?</span></summary>
@@ -162,10 +156,10 @@
 </main>
 <nav class="pager" aria-label="Lessons">
   <a class="pager-prev" href="14-building.html"><span>Previous</span>Building for production</a>
-  
+  <a class="pager-next" href="16-composition.html"><span>Next</span>Splitting components</a>
 </nav>
 <footer class="foot-small">
-  <p>Snack Shelf, a beginner course in React and TypeScript. 15 lessons.</p>
+  <p>Snack Shelf, a course in React and TypeScript. 33 lessons.</p>
 </footer>
 </body>
 </html>

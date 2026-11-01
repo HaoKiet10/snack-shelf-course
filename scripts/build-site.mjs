@@ -104,13 +104,19 @@ async function buildDemos() {
     const out = path.join(ROOT, 'demos', slug)
     await rm(out, { recursive: true, force: true })
     if (existsSync(path.join(src, 'src/main.tsx'))) {
+      // later lessons bring their own config (the React Compiler from lesson 27)
+      const own = path.join(src, 'vite.config.ts')
       await build({
-        configFile: path.join(ROOT, 'vite.config.ts'),
+        configFile: existsSync(own) ? own : path.join(ROOT, 'vite.config.ts'),
         root: src,
         base: './',
         logLevel: 'warn',
         build: { outDir: out, emptyOutDir: true },
       })
+    } else if (existsSync(path.join(src, 'package.json'))) {
+      // a project with its own toolchain (Next.js): no in-page demo
+      console.log('skip', slug)
+      continue
     } else {
       await mkdir(out, { recursive: true })
       await cp(src, out, { recursive: true })
@@ -120,6 +126,22 @@ async function buildDemos() {
 }
 
 // ---------- lesson pages ----------
+
+// For a lesson whose app needs a server (Next.js): say how to run it instead.
+function noDemo(slug, codeLink) {
+  return `<aside class="demo" aria-label="Running this lesson's app">
+    <div class="demo-sticky">
+      <div class="demo-frame demo-note">
+        <p>This lesson's app runs on a Node server, so it can't play inside this page. Run it on your computer:</p>
+        <pre><code>cd code/lessons/${esc(slug)}
+npm install
+npm run dev</code></pre>
+        <p>Then open http://localhost:3000.</p>
+      </div>
+      <p class="demo-links">${codeLink}</p>
+    </div>
+  </aside>`
+}
 
 async function buildLessons() {
   const published = manifest.filter((l) => !l.soon)
@@ -156,21 +178,21 @@ ${bar('../')}
     <p class="lead">${esc(meta.summary)}</p>
     <p class="meta">Lesson ${i + 1} of ${manifest.length}, about ${esc(meta.minutes)} minutes</p>
   </div>
-  <aside class="demo" aria-label="Live demo">
+  ${demo === 'none' ? noDemo(lesson.slug, codeLink) : `<aside class="demo" aria-label="Live demo">
     <div class="demo-sticky">
       <div class="demo-frame" data-ui>
         <iframe src="../demos/${esc(demo)}/index.html" title="Live demo for ${esc(meta.title)}" loading="lazy"></iframe>
       </div>
       <p class="demo-links"><a href="../demos/${esc(demo)}/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a>${codeLink}</p>
     </div>
-  </aside>
+  </aside>`}
   <article class="prose">
 ${html}
   </article>
 </main>
 ${pager}
 <footer class="foot-small">
-  <p>Snack Shelf, a beginner course in React and TypeScript. ${published.length === manifest.length ? `${manifest.length} lessons.` : `${published.length} of ${manifest.length} lessons written.`}</p>
+  <p>Snack Shelf, a course in React and TypeScript. ${published.length === manifest.length ? `${manifest.length} lessons.` : `${published.length} of ${manifest.length} lessons written.`}</p>
 </footer>
 </body>
 </html>
@@ -184,7 +206,7 @@ ${pager}
 
 async function buildHome() {
   let tpl = await readFile(path.join(ROOT, 'content/home.html'), 'utf8')
-  const groups = [3, 9] // extra space after these lesson numbers
+  const groups = [3, 9, 15, 24] // extra space after these lesson numbers
   const rows = manifest
     .map((l, i) => {
       const cls = groups.includes(i) ? ' class="group-start"' : ''
@@ -195,12 +217,12 @@ async function buildHome() {
     .join('\n          ')
   const published = manifest.filter((l) => !l.soon).length
   tpl = tpl
-    .replaceAll('{{HEAD}}', head({ title: 'Snack Shelf: learn React one snack at a time', description: 'A free beginner course in React and TypeScript. Build a small snack-shelf web app, one idea per lesson.', prefix: '' }).replace(/^<!doctype html>\n<html lang="en">\n/, ''))
+    .replaceAll('{{HEAD}}', head({ title: 'Snack Shelf: learn React one snack at a time', description: 'A free course in React and TypeScript, from the basics to Suspense, Server Components and accessibility. Build a small snack-shelf web app, one idea per lesson.', prefix: '' }).replace(/^<!doctype html>\n<html lang="en">\n/, ''))
     .replaceAll('{{LESSON_ROWS}}', rows)
     .replaceAll(
       '{{LESSONS_NOTE}}',
       published === manifest.length
-        ? `All ${manifest.length} lessons are written, each with its code and a live demo.`
+        ? `All ${manifest.length} lessons are written, each with its code, and a live demo wherever the app can run in the page.`
         : `${published} of ${manifest.length} written so far. New lessons arrive as they are finished.`,
     )
     .replaceAll('{{PUBLISHED}}', String(published))

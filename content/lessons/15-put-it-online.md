@@ -123,15 +123,11 @@ Read the failed step's log on the Actions tab. It is the same output you would g
 
 ## Where to go from here
 
-The shelf now covers the core of React: components, props, state, events, lists, conditional rendering, lifting state, effects, styling and shipping. Good next steps, in roughly this order:
+That is the end of part one. The shelf now covers the core of React: components, props, state, events, lists, conditional rendering, lifting state, effects, styling and shipping.
 
-- **Forms with several fields**, and a **reducer** (`useReducer`) when one state update has to change several things at once. The basket would be a good candidate: remove an item, change a quantity.
-- **Context** (`useContext`), for data that many components at different depths need, so you do not pass the same prop through five layers.
-- **Routing** (React Router), for an app with several pages, such as a page per snack.
-- **Data fetching libraries** (TanStack Query), which handle loading, errors, caching and retries so you rarely write the lesson-12 effect by hand.
-- **Testing** (Vitest and Testing Library).
+**Part two** keeps building the same app with the tools real projects use: splitting components, a reducer for a proper basket, custom hooks, context, refs, pages with React Router, a checkout form, TanStack Query for server data, and tests. It starts with [Splitting components](16-composition.html).
 
-And the best next step of all: build something of your own. The concepts carry over; the snacks were only an excuse.
+And whenever you are ready, build something of your own alongside it. The concepts carry over; the snacks were only an excuse.
 
 ## Check yourself
 

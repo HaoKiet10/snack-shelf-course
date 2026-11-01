@@ -22,5 +22,7 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["code/lessons"]
+  "include": ["code/lessons"],
+  // lesson 32 is a Next.js project with its own tsconfig
+  "exclude": ["code/lessons/32-server-components"]
 }

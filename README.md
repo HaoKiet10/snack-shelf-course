@@ -1,6 +1,6 @@
 # Snack Shelf
 
-A free beginner course in **React and TypeScript**. You build one small web app, a shelf of Japanese snacks with like buttons and a search box, adding one idea per lesson.
+A free course in **React and TypeScript**, from the first component to advanced topics like Suspense, Server Components and accessibility. You build one small web app, a shelf of Japanese snacks with like buttons and a search box, adding one idea per lesson.
 
 Each lesson has a written explanation, the app's real code at that point, a live demo, and a few "check yourself" questions with answers.
 
@@ -23,6 +23,26 @@ Each lesson has a written explanation, the app's real code at that point, a live
 | 13 | Styling it | CSS Modules, CSS variables and inline styles |
 | 14 | Building for production | What npm run build makes, and why |
 | 15 | Put it online | Deploying the shelf to a real address |
+| | **Part two: intermediate** | |
+| 16 | Splitting components | children, slots, and when to split a component |
+| 17 | useReducer | A basket with quantities, and every change in one function |
+| 18 | Custom hooks | Your own use… functions, and saving the basket |
+| 19 | Context | Sharing the basket without passing props down |
+| 20 | useRef | Keyboard focus, timers, and values that don't re-render |
+| 21 | Pages and routing | A page per snack with React Router, and the URL as state |
+| 22 | Forms | A checkout form with validation and React 19 form actions |
+| 23 | TanStack Query | Server state: caching, retries and refreshing |
+| 24 | Testing | Vitest and Testing Library, tests that click like a user |
+| | **Part three: advanced** | |
+| 25 | Error boundaries | Catching a crash so one broken snack stays one broken card |
+| 26 | Portals and toasts | Notifications with Undo, rendered outside the component tree |
+| 27 | Performance and the React Compiler | Measuring re-renders, memo, and letting the compiler do it |
+| 28 | Suspense and lazy loading | Waiting for data and code without loading states everywhere |
+| 29 | Transitions | Typing that stays instant while a slow list catches up |
+| 30 | TypeScript for components | Generic components, derived types, and checking server data |
+| 31 | State libraries (Zustand) | A basket store with selectors instead of a context |
+| 32 | Server Components and Next.js | React on the server, and actions that run there |
+| 33 | Accessibility | Keyboard, screen readers, focus, and what automated checks miss |
 
 ## Reading the course
 
@@ -41,7 +61,13 @@ npm install
 npm run lesson -- code/lessons/06-state
 ```
 
-Lessons 1 and 2 are plain HTML; open their `index.html` directly.
+Lessons 1 and 2 are plain HTML; open their `index.html` directly. Lesson 32 is a Next.js project: run `npm install` and `npm run dev` inside its folder.
+
+The latest lesson's tests (lesson 33) run with:
+
+```bash
+npm test
+```
 
 ## Building the site
 
