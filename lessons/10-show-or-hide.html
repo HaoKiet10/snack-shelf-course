@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/site.css">
-<script src="../assets/site.js" defer></script>
+<link rel="stylesheet" href="../assets/site.css?v=57f4a1da">
+<script src="../assets/site.js?v=57f4a1da" defer></script>
 </head>
 <body class="lesson-page">
 <header class="bar">
@@ -125,7 +125,118 @@
 
 <p>Conditional rendering removes the card from the tree, and its state goes with it. When Pocky comes back, it is a new card with likes at 0, so <code>popular</code> is false.</p>
 </details>
+<section class="practice" aria-labelledby="practice">
+<h2 id="practice">Practice</h2>
+<p class="practice-intro">Pick an answer to see if it's right. Wrong picks are crossed out, so you can try again.</p>
+<div class="quiz">
+<fieldset class="quiz-q" data-answer="1">
+<legend class="visually-hidden">Question 1</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">1</span><div><p><code>likes</code> is 0. What does <code>{likes &amp;&amp; &lt;span&gt;Liked&lt;/span&gt;}</code> show?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="10-show-or-hide-q1" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Nothing</span></label>
+<label class="quiz-choice"><input type="radio" name="10-show-or-hide-q1" value="1"><span class="quiz-letter">B</span><span class="quiz-text">A <code>0</code></span></label>
+<label class="quiz-choice"><input type="radio" name="10-show-or-hide-q1" value="2"><span class="quiz-letter">C</span><span class="quiz-text">&quot;Liked&quot;</span></label>
+<label class="quiz-choice"><input type="radio" name="10-show-or-hide-q1" value="3"><span class="quiz-letter">D</span><span class="quiz-text">&quot;false&quot;</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: B.</strong></p>
+<p><code>0 &amp;&amp; …</code> evaluates to <code>0</code>, and React renders numbers. Use a boolean: <code>{likes &gt; 0 &amp;&amp; …}</code>.</p>
 
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="0">
+<legend class="visually-hidden">Question 2</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">2</span><div><p>Which of these renders nothing at all?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="10-show-or-hide-q2" value="0"><span class="quiz-letter">A</span><span class="quiz-text"><code>{false}</code></span></label>
+<label class="quiz-choice"><input type="radio" name="10-show-or-hide-q2" value="1"><span class="quiz-letter">B</span><span class="quiz-text"><code>{&#39;0&#39;}</code></span></label>
+<label class="quiz-choice"><input type="radio" name="10-show-or-hide-q2" value="2"><span class="quiz-letter">C</span><span class="quiz-text"><code>{NaN}</code></span></label>
+<label class="quiz-choice"><input type="radio" name="10-show-or-hide-q2" value="3"><span class="quiz-letter">D</span><span class="quiz-text"><code>{0}</code></span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: A.</strong></p>
+<p><code>false</code>, <code>true</code>, <code>null</code> and <code>undefined</code> render as nothing. Numbers (including 0 and NaN) and strings render as text.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="1">
+<legend class="visually-hidden">Question 3</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">3</span><div><p>You need to show either the shelf or a &quot;nothing found&quot; message. Which fits best inside JSX?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="10-show-or-hide-q3" value="0"><span class="quiz-letter">A</span><span class="quiz-text">A <code>for</code> loop</span></label>
+<label class="quiz-choice"><input type="radio" name="10-show-or-hide-q3" value="1"><span class="quiz-letter">B</span><span class="quiz-text"><code>condition ? &lt;Shelf /&gt; : &lt;Empty /&gt;</code></span></label>
+<label class="quiz-choice"><input type="radio" name="10-show-or-hide-q3" value="2"><span class="quiz-letter">C</span><span class="quiz-text">An <code>if</code> statement inside the braces</span></label>
+<label class="quiz-choice"><input type="radio" name="10-show-or-hide-q3" value="3"><span class="quiz-letter">D</span><span class="quiz-text"><code>&amp;&amp;</code></span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: B.</strong></p>
+<p><code>? :</code> picks one of two. <code>&amp;&amp;</code> is for something or nothing, and <code>if</code> can&#39;t go inside braces.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="1">
+<legend class="visually-hidden">Question 4</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">4</span><div><p>How does a component render nothing?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="10-show-or-hide-q4" value="0"><span class="quiz-letter">A</span><span class="quiz-text"><code>return undefined</code> is an error, so it can&#39;t</span></label>
+<label class="quiz-choice"><input type="radio" name="10-show-or-hide-q4" value="1"><span class="quiz-letter">B</span><span class="quiz-text"><code>return null</code></span></label>
+<label class="quiz-choice"><input type="radio" name="10-show-or-hide-q4" value="2"><span class="quiz-letter">C</span><span class="quiz-text"><code>return &lt;&gt;&lt;/&gt;</code> is required</span></label>
+<label class="quiz-choice"><input type="radio" name="10-show-or-hide-q4" value="3"><span class="quiz-letter">D</span><span class="quiz-text"><code>return false</code> throws</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: B.</strong></p>
+<p>Returning <code>null</code> renders nothing. (Since React 18, <code>undefined</code> is allowed too, but <code>null</code> says it clearly.)</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="3">
+<legend class="visually-hidden">Question 5</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">5</span><div><p>A search hides Pocky&#39;s card, then you clear the search. Why are Pocky&#39;s likes back at 0 (in lesson 10)?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="10-show-or-hide-q5" value="0"><span class="quiz-letter">A</span><span class="quiz-text">The key is wrong</span></label>
+<label class="quiz-choice"><input type="radio" name="10-show-or-hide-q5" value="1"><span class="quiz-letter">B</span><span class="quiz-text">CSS hid the likes</span></label>
+<label class="quiz-choice"><input type="radio" name="10-show-or-hide-q5" value="2"><span class="quiz-letter">C</span><span class="quiz-text">The search resets all state</span></label>
+<label class="quiz-choice"><input type="radio" name="10-show-or-hide-q5" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Conditionally not rendering removes the card from the tree, and its state goes with it</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: D.</strong></p>
+<p>Not rendered is not the same as hidden. Removed components lose their state. Lesson 11 moves the likes up to fix it.</p>
+
+</details>
+</fieldset>
+<p class="quiz-score" aria-live="polite"></p>
+</div>
+<h2 id="exercise">Try it yourself</h2>
+<div class="exercise">
+<h3>A &quot;new&quot; badge</h3>
+<p>Give two snacks a <code>isNew: true</code> field in the data, and show a &quot;New&quot; badge on their cards. Cards for other snacks show no badge.</p>
+
+<details><summary><span>Hint</span></summary>
+<p>Add an optional field to the <code>Snack</code> type (<code>isNew?: boolean</code>), pass it as a prop, and use <code>&amp;&amp;</code> with a real boolean.</p>
+</details>
+<details><summary><span>One way to do it</span></summary>
+<pre class="code" data-lang="ts"><code><span class="token keyword">export</span> <span class="token keyword">type</span> <span class="token class-name">Snack</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+  id<span class="token operator">:</span> <span class="token builtin">string</span>
+  name<span class="token operator">:</span> <span class="token builtin">string</span>
+  price<span class="token operator">:</span> <span class="token builtin">number</span>
+  emoji<span class="token operator">:</span> <span class="token builtin">string</span>
+  isNew<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span>
+<span class="token punctuation">}</span></code></pre>
+<pre class="code" data-lang="tsx"><code><span class="token punctuation">{</span>isNew <span class="token operator">===</span> <span class="token boolean">true</span> <span class="token operator">&amp;&amp;</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>badge<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">New</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span><span class="token punctuation">}</span></code></pre>
+<p><code>isNew === true</code> handles both <code>false</code> and a missing field, and is always a boolean, so no stray values can appear.</p>
+</details>
+</div>
+</section>
   </article>
 </main>
 <nav class="pager" aria-label="Lessons">

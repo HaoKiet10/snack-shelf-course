@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/site.css">
-<script src="../assets/site.js" defer></script>
+<link rel="stylesheet" href="../assets/site.css?v=57f4a1da">
+<script src="../assets/site.js?v=57f4a1da" defer></script>
 </head>
 <body class="lesson-page">
 <header class="bar">
@@ -121,7 +121,111 @@ document<span class="token punctuation">.</span><span class="token function">que
 
 <p>It compares the new description (plain JavaScript objects) with the previous description. Comparing objects is cheap. Touching the real DOM is the expensive part, and React only does it for the parts that actually differ.</p>
 </details>
+<section class="practice" aria-labelledby="practice">
+<h2 id="practice">Practice</h2>
+<p class="practice-intro">Pick an answer to see if it's right. Wrong picks are crossed out, so you can try again.</p>
+<div class="quiz">
+<fieldset class="quiz-q" data-answer="0">
+<legend class="visually-hidden">Question 1</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">1</span><div><p>In the hand-written version, a like changes three things on screen: the count, the button colour and the basket total. What is the real problem with updating them by hand?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="02-why-react-exists-q1" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Every change must remember every place that shows that data, and forgetting one leaves the screen out of sync</span></label>
+<label class="quiz-choice"><input type="radio" name="02-why-react-exists-q1" value="1"><span class="quiz-letter">B</span><span class="quiz-text">JavaScript is too slow to update three elements</span></label>
+<label class="quiz-choice"><input type="radio" name="02-why-react-exists-q1" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Browsers can only update one element per click</span></label>
+<label class="quiz-choice"><input type="radio" name="02-why-react-exists-q1" value="3"><span class="quiz-letter">D</span><span class="quiz-text">CSS can&#39;t change colours after the page loads</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: A.</strong></p>
+<p>The code works, but each new feature adds more places to keep in sync. Miss one and the screen disagrees with the data. That bookkeeping grows faster than the app.</p>
 
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="0">
+<legend class="visually-hidden">Question 2</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">2</span><div><p>What does &quot;UI = f(data)&quot; mean?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="02-why-react-exists-q2" value="0"><span class="quiz-letter">A</span><span class="quiz-text">The screen is calculated from the data, the way a function&#39;s result is calculated from its input</span></label>
+<label class="quiz-choice"><input type="radio" name="02-why-react-exists-q2" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Data must be stored in the UI</span></label>
+<label class="quiz-choice"><input type="radio" name="02-why-react-exists-q2" value="2"><span class="quiz-letter">C</span><span class="quiz-text">The UI is a function you call to fetch data</span></label>
+<label class="quiz-choice"><input type="radio" name="02-why-react-exists-q2" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Every element needs its own function</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: A.</strong></p>
+<p>You describe what the screen should look like for any given data. When the data changes, the screen is recalculated, instead of being patched step by step.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="1">
+<legend class="visually-hidden">Question 3</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">3</span><div><p>Which is <strong>declarative</strong>?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="02-why-react-exists-q3" value="0"><span class="quiz-letter">A</span><span class="quiz-text">&quot;Wait for a click, then change the DOM&quot;</span></label>
+<label class="quiz-choice"><input type="radio" name="02-why-react-exists-q3" value="1"><span class="quiz-letter">B</span><span class="quiz-text">&quot;If likes is above 0, the button has the class <code>liked</code>&quot;</span></label>
+<label class="quiz-choice"><input type="radio" name="02-why-react-exists-q3" value="2"><span class="quiz-letter">C</span><span class="quiz-text">&quot;Loop over the cards and change each one&quot;</span></label>
+<label class="quiz-choice"><input type="radio" name="02-why-react-exists-q3" value="3"><span class="quiz-letter">D</span><span class="quiz-text">&quot;Find the button, add the class <code>liked</code>, then update the counter&#39;s text&quot;</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: B.</strong></p>
+<p>Declarative code says what the result should be. Imperative code lists the steps to get there. React lets you write the first and does the steps for you.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="1">
+<legend class="visually-hidden">Question 4</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">4</span><div><p>When the data changes, what does React do with the DOM?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="02-why-react-exists-q4" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Nothing: you still update it yourself</span></label>
+<label class="quiz-choice"><input type="radio" name="02-why-react-exists-q4" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Works out what is different from last time and changes only that</span></label>
+<label class="quiz-choice"><input type="radio" name="02-why-react-exists-q4" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Reloads the page from the server</span></label>
+<label class="quiz-choice"><input type="radio" name="02-why-react-exists-q4" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Throws it away and rebuilds the whole page</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: B.</strong></p>
+<p>React calculates the new description of the screen, compares it with the previous one, and makes the smallest set of DOM changes. This is called reconciliation.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="2">
+<legend class="visually-hidden">Question 5</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">5</span><div><p>Which job does React <strong>not</strong> take over from you?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="02-why-react-exists-q5" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Updating the DOM when data changes</span></label>
+<label class="quiz-choice"><input type="radio" name="02-why-react-exists-q5" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Keeping the count and the button colour in sync</span></label>
+<label class="quiz-choice"><input type="radio" name="02-why-react-exists-q5" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Deciding what the data is and how it changes</span></label>
+<label class="quiz-choice"><input type="radio" name="02-why-react-exists-q5" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Working out which elements need to change</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: C.</strong></p>
+<p>You still own the data and the rules for changing it. React&#39;s job is turning that data into the screen.</p>
+
+</details>
+</fieldset>
+<p class="quiz-score" aria-live="polite"></p>
+</div>
+<h2 id="exercise">Try it yourself</h2>
+<div class="exercise">
+<h3>Spot the sync bugs</h3>
+<p>In lesson 2&#39;s hand-written version, imagine adding a <strong>&quot;liked snacks: 2&quot;</strong> line in the header that counts how many snacks have at least one like. List every function you would have to change, and what each would have to do.</p>
+
+<details><summary><span>Hint</span></summary>
+<p>Look for every place that changes a like count. Each one now also affects the new line.</p>
+</details>
+<details><summary><span>One way to do it</span></summary>
+<p>Every handler that changes likes (the like button, and any reset or remove you add later) must also recount the liked snacks and update the header text. If one forgets, the header lies.</p>
+<p>In React you would write the line once, <code>{snacks.filter((s) =&gt; likes[s.id] &gt; 0).length}</code>, and it would be right after every change, because it is recalculated from the data.</p>
+</details>
+</div>
+</section>
   </article>
 </main>
 <nav class="pager" aria-label="Lessons">

@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/site.css">
-<script src="../assets/site.js" defer></script>
+<link rel="stylesheet" href="../assets/site.css?v=57f4a1da">
+<script src="../assets/site.js?v=57f4a1da" defer></script>
 </head>
 <body class="lesson-page">
 <header class="bar">
@@ -169,7 +169,115 @@ npm run dev</code></pre>
 
 <p>A server function is a public endpoint. Anyone can call it with any data, bypassing the form, so only the server&#39;s own check can be trusted.</p>
 </details>
+<section class="practice" aria-labelledby="practice">
+<h2 id="practice">Practice</h2>
+<p class="practice-intro">Pick an answer to see if it's right. Wrong picks are crossed out, so you can try again.</p>
+<div class="quiz">
+<fieldset class="quiz-q" data-answer="3">
+<legend class="visually-hidden">Question 1</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">1</span><div><p>Why can a Server Component be <code>async</code> and <code>await</code> its data directly?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="32-server-components-q1" value="0"><span class="quiz-letter">A</span><span class="quiz-text">All React components can be async</span></label>
+<label class="quiz-choice"><input type="radio" name="32-server-components-q1" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Next.js converts it to a Client Component</span></label>
+<label class="quiz-choice"><input type="radio" name="32-server-components-q1" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Because it uses <code>useEffect</code> internally</span></label>
+<label class="quiz-choice"><input type="radio" name="32-server-components-q1" value="3"><span class="quiz-letter">D</span><span class="quiz-text">It runs on the server before anything is sent, so it can wait and send finished HTML</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: D.</strong></p>
+<p>There&#39;s no screen yet to show a loading state on.</p>
 
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="1">
+<legend class="visually-hidden">Question 2</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">2</span><div><p>What does <code>&#39;use client&#39;</code> at the top of a file mean?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="32-server-components-q2" value="0"><span class="quiz-letter">A</span><span class="quiz-text">The file only runs in the browser, never on the server</span></label>
+<label class="quiz-choice"><input type="radio" name="32-server-components-q2" value="1"><span class="quiz-letter">B</span><span class="quiz-text">This file and everything it imports are client code: they can use state, effects and events, and are sent to the browser</span></label>
+<label class="quiz-choice"><input type="radio" name="32-server-components-q2" value="2"><span class="quiz-letter">C</span><span class="quiz-text">The component can&#39;t be used by Server Components</span></label>
+<label class="quiz-choice"><input type="radio" name="32-server-components-q2" value="3"><span class="quiz-letter">D</span><span class="quiz-text">The file is skipped in production</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: B.</strong></p>
+<p>It marks the boundary between server and client code. (Client Components are still pre-rendered to HTML on the server.)</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="1">
+<legend class="visually-hidden">Question 3</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">3</span><div><p>Which prop <strong>can&#39;t</strong> a Server Component pass to a Client Component?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="32-server-components-q3" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Some JSX</span></label>
+<label class="quiz-choice"><input type="radio" name="32-server-components-q3" value="1"><span class="quiz-letter">B</span><span class="quiz-text">An ordinary function like <code>() =&gt; console.log(&#39;hi&#39;)</code></span></label>
+<label class="quiz-choice"><input type="radio" name="32-server-components-q3" value="2"><span class="quiz-letter">C</span><span class="quiz-text">A plain object with numbers</span></label>
+<label class="quiz-choice"><input type="radio" name="32-server-components-q3" value="3"><span class="quiz-letter">D</span><span class="quiz-text">A string</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: B.</strong></p>
+<p>Props cross from server to browser and must be serialisable. Server functions are the exception, sent as references.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="3">
+<legend class="visually-hidden">Question 4</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">4</span><div><p>Why does <code>placeOrder</code> check <code>qty</code> on the server, when the input already has <code>min</code> and <code>max</code>?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="32-server-components-q4" value="0"><span class="quiz-letter">A</span><span class="quiz-text">TypeScript requires it</span></label>
+<label class="quiz-choice"><input type="radio" name="32-server-components-q4" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Browsers ignore <code>min</code> and <code>max</code></span></label>
+<label class="quiz-choice"><input type="radio" name="32-server-components-q4" value="2"><span class="quiz-letter">C</span><span class="quiz-text">To make it faster</span></label>
+<label class="quiz-choice"><input type="radio" name="32-server-components-q4" value="3"><span class="quiz-letter">D</span><span class="quiz-text">A server function is a public endpoint; anyone can call it with any data, bypassing the form</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: D.</strong></p>
+<p>Only the server&#39;s own checks can be trusted.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="3">
+<legend class="visually-hidden">Question 5</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">5</span><div><p>Why can&#39;t lesson 32&#39;s app be hosted on GitHub Pages like the others?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="32-server-components-q5" value="0"><span class="quiz-letter">A</span><span class="quiz-text">It has no <code>index.html</code></span></label>
+<label class="quiz-choice"><input type="radio" name="32-server-components-q5" value="1"><span class="quiz-letter">B</span><span class="quiz-text">GitHub doesn&#39;t allow Next.js</span></label>
+<label class="quiz-choice"><input type="radio" name="32-server-components-q5" value="2"><span class="quiz-letter">C</span><span class="quiz-text">It&#39;s too big</span></label>
+<label class="quiz-choice"><input type="radio" name="32-server-components-q5" value="3"><span class="quiz-letter">D</span><span class="quiz-text">It needs a server to run Server Components and actions; GitHub Pages only serves files</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: D.</strong></p>
+<p>A Vite single-page app is just files. Server Components need something running.</p>
+
+</details>
+</fieldset>
+<p class="quiz-score" aria-live="polite"></p>
+</div>
+<h2 id="exercise">Try it yourself</h2>
+<div class="exercise">
+<h3>A server-only total</h3>
+<p>In <code>snack-shelf-next</code>, add a line under the shelf: &quot;6 snacks, from $1.50 to $3.00&quot;, calculated in the Server Component. Check in the browser&#39;s DevTools that no JavaScript for it was downloaded.</p>
+
+<details><summary><span>Hint</span></summary>
+<p>You already have the snacks in <code>ShelfPage</code>. <code>Math.min</code> and <code>Math.max</code> with spread.</p>
+</details>
+<details><summary><span>One way to do it</span></summary>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">const</span> prices <span class="token operator">=</span> snacks<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span> <span class="token operator">=></span> s<span class="token punctuation">.</span>price<span class="token punctuation">)</span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>summary<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+  </span><span class="token punctuation">{</span>snacks<span class="token punctuation">.</span>length<span class="token punctuation">}</span><span class="token plain-text"> snacks, from $</span><span class="token punctuation">{</span>Math<span class="token punctuation">.</span><span class="token function">min</span><span class="token punctuation">(</span><span class="token operator">...</span>prices<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toFixed</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token plain-text"> to $</span><span class="token punctuation">{</span>Math<span class="token punctuation">.</span><span class="token function">max</span><span class="token punctuation">(</span><span class="token operator">...</span>prices<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toFixed</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token plain-text">
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span></code></pre>
+<p>The calculation happens on the server, and only the resulting text reaches the browser.</p>
+</details>
+</div>
+</section>
   </article>
 </main>
 <nav class="pager" aria-label="Lessons">

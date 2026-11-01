@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/site.css">
-<script src="../assets/site.js" defer></script>
+<link rel="stylesheet" href="../assets/site.css?v=57f4a1da">
+<script src="../assets/site.js?v=57f4a1da" defer></script>
 </head>
 <body class="lesson-page">
 <header class="bar">
@@ -135,7 +135,129 @@
 
 <p>When the value depends on data at runtime, like the meter&#39;s width. Fixed styles belong in CSS, where they can use <code>:hover</code>, media queries and variables.</p>
 </details>
+<section class="practice" aria-labelledby="practice">
+<h2 id="practice">Practice</h2>
+<p class="practice-intro">Pick an answer to see if it's right. Wrong picks are crossed out, so you can try again.</p>
+<div class="quiz">
+<fieldset class="quiz-q" data-answer="3">
+<legend class="visually-hidden">Question 1</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">1</span><div><p>Two components each import a CSS file with a <code>.badge</code> rule. What happens?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="13-styling-q1" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Each rule only applies to its own component</span></label>
+<label class="quiz-choice"><input type="radio" name="13-styling-q1" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Only the first file is used</span></label>
+<label class="quiz-choice"><input type="radio" name="13-styling-q1" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Vite reports an error</span></label>
+<label class="quiz-choice"><input type="radio" name="13-styling-q1" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Both rules apply to every <code>.badge</code> on the page; the later one wins where they conflict</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: D.</strong></p>
+<p>Imported CSS files all end up on the same page, and class names are global. Importing doesn&#39;t scope anything.</p>
 
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="3">
+<legend class="visually-hidden">Question 2</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">2</span><div><p>What turns a CSS file into a CSS Module in Vite?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="13-styling-q2" value="0"><span class="quiz-letter">A</span><span class="quiz-text">A comment at the top</span></label>
+<label class="quiz-choice"><input type="radio" name="13-styling-q2" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Installing a plugin</span></label>
+<label class="quiz-choice"><input type="radio" name="13-styling-q2" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Importing it with <code>import * as</code></span></label>
+<label class="quiz-choice"><input type="radio" name="13-styling-q2" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Naming it <code>something.module.css</code></span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: D.</strong></p>
+<p>The <code>.module.css</code> ending is all it takes. Vite then renames each class uniquely and gives you a <code>styles</code> object.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="0">
+<legend class="visually-hidden">Question 3</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">3</span><div><p>In a CSS Module, what is <code>styles.card</code>?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="13-styling-q3" value="0"><span class="quiz-letter">A</span><span class="quiz-text">A string: the unique class name Vite generated, like <code>_card_13giw_2</code></span></label>
+<label class="quiz-choice"><input type="radio" name="13-styling-q3" value="1"><span class="quiz-letter">B</span><span class="quiz-text">The CSS rules as an object</span></label>
+<label class="quiz-choice"><input type="radio" name="13-styling-q3" value="2"><span class="quiz-letter">C</span><span class="quiz-text"><code>true</code> if the class exists</span></label>
+<label class="quiz-choice"><input type="radio" name="13-styling-q3" value="3"><span class="quiz-letter">D</span><span class="quiz-text">A React component</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: A.</strong></p>
+<p>You pass it to <code>className</code>. A typo like <code>styles.crad</code> is <code>undefined</code> and silently applies nothing.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="3">
+<legend class="visually-hidden">Question 4</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">4</span><div><p>How did dark mode work without touching any component?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="13-styling-q4" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Each component checks the system theme</span></label>
+<label class="quiz-choice"><input type="radio" name="13-styling-q4" value="1"><span class="quiz-letter">B</span><span class="quiz-text">The browser inverts the colours</span></label>
+<label class="quiz-choice"><input type="radio" name="13-styling-q4" value="2"><span class="quiz-letter">C</span><span class="quiz-text">React has a dark mode setting</span></label>
+<label class="quiz-choice"><input type="radio" name="13-styling-q4" value="3"><span class="quiz-letter">D</span><span class="quiz-text">All colours go through CSS variables, and a <code>prefers-color-scheme: dark</code> block redefines them</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: D.</strong></p>
+<p>Change the variables once and every rule that uses them follows.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="3">
+<legend class="visually-hidden">Question 5</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">5</span><div><p>Which is the right use of the <code>style</code> prop?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="13-styling-q5" value="0"><span class="quiz-letter">A</span><span class="quiz-text"><code>style={{ &#39;:hover&#39;: { color: &#39;red&#39; } }}</code></span></label>
+<label class="quiz-choice"><input type="radio" name="13-styling-q5" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Putting all of a component&#39;s styles in it</span></label>
+<label class="quiz-choice"><input type="radio" name="13-styling-q5" value="2"><span class="quiz-letter">C</span><span class="quiz-text"><code>style=&quot;width: 50%&quot;</code></span></label>
+<label class="quiz-choice"><input type="radio" name="13-styling-q5" value="3"><span class="quiz-letter">D</span><span class="quiz-text"><code>style={{ width: meterWidth }}</code>, for a value calculated from data</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: D.</strong></p>
+<p><code>style</code> takes an object with camelCase keys. Keep it for runtime values; fixed styles, hover and media queries belong in CSS.</p>
+
+</details>
+</fieldset>
+<p class="quiz-score" aria-live="polite"></p>
+</div>
+<h2 id="exercise">Try it yourself</h2>
+<div class="exercise">
+<h3>A sale colour</h3>
+<p>Add a <code>--sale</code> colour variable (for example a green) in <code>index.css</code>, with a different value in dark mode, and use it for a &quot;Sale&quot; badge class in <code>SnackCard.module.css</code>.</p>
+
+<details><summary><span>Hint</span></summary>
+<p>Define it in <code>:root</code> and again inside the <code>@media (prefers-color-scheme: dark)</code> block. Use it with <code>var(--sale)</code>.</p>
+</details>
+<details><summary><span>One way to do it</span></summary>
+<pre class="code" data-lang="css"><code><span class="token comment">/* index.css */</span>
+<span class="token selector">:root</span> <span class="token punctuation">{</span>
+  <span class="token comment">/* … */</span>
+  <span class="token property">--sale</span><span class="token punctuation">:</span> #1f7a3a<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token atrule"><span class="token rule">@media</span> <span class="token punctuation">(</span><span class="token property">prefers-color-scheme</span><span class="token punctuation">:</span> dark<span class="token punctuation">)</span></span> <span class="token punctuation">{</span>
+  <span class="token selector">:root</span> <span class="token punctuation">{</span>
+    <span class="token comment">/* … */</span>
+    <span class="token property">--sale</span><span class="token punctuation">:</span> #5fd38a<span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<pre class="code" data-lang="css"><code><span class="token comment">/* SnackCard.module.css */</span>
+<span class="token selector">.sale</span> <span class="token punctuation">{</span>
+  <span class="token property">padding</span><span class="token punctuation">:</span> 2px 8px<span class="token punctuation">;</span>
+  <span class="token property">border-radius</span><span class="token punctuation">:</span> 999px<span class="token punctuation">;</span>
+  <span class="token property">background</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--sale<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token property">color</span><span class="token punctuation">:</span> white<span class="token punctuation">;</span>
+  <span class="token property">font-size</span><span class="token punctuation">:</span> 0.75rem<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<pre class="code" data-lang="tsx"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span> <span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>sale<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">Sale</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span></code></pre>
+</details>
+</div>
+</section>
   </article>
 </main>
 <nav class="pager" aria-label="Lessons">

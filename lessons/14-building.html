@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/site.css">
-<script src="../assets/site.js" defer></script>
+<link rel="stylesheet" href="../assets/site.css?v=57f4a1da">
+<script src="../assets/site.js?v=57f4a1da" defer></script>
 </head>
 <body class="lesson-page">
 <header class="bar">
@@ -109,7 +109,119 @@ dist/assets/index-CoFGYht5.js   222.76 kB │ gzip: 69.94 kB</code></pre>
 
 <p>No. Whatever the front-end code reads is written into the JS file that every visitor downloads. Secrets belong on a server.</p>
 </details>
+<section class="practice" aria-labelledby="practice">
+<h2 id="practice">Practice</h2>
+<p class="practice-intro">Pick an answer to see if it's right. Wrong picks are crossed out, so you can try again.</p>
+<div class="quiz">
+<fieldset class="quiz-q" data-answer="0">
+<legend class="visually-hidden">Question 1</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">1</span><div><p>What does <code>npm run build</code> produce?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="14-building-q1" value="0"><span class="quiz-letter">A</span><span class="quiz-text">A <code>dist/</code> folder of plain HTML, CSS and JavaScript that any web server can serve</span></label>
+<label class="quiz-choice"><input type="radio" name="14-building-q1" value="1"><span class="quiz-letter">B</span><span class="quiz-text">A running server</span></label>
+<label class="quiz-choice"><input type="radio" name="14-building-q1" value="2"><span class="quiz-letter">C</span><span class="quiz-text">An installer for the app</span></label>
+<label class="quiz-choice"><input type="radio" name="14-building-q1" value="3"><span class="quiz-letter">D</span><span class="quiz-text">A copy of <code>src/</code> with types removed</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: A.</strong></p>
+<p>The build bundles, compiles, minifies and hashes everything into static files.</p>
 
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="0">
+<legend class="visually-hidden">Question 2</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">2</span><div><p>Why do built files have names like <code>index-CoFGYht5.js</code>?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="14-building-q2" value="0"><span class="quiz-letter">A</span><span class="quiz-text">The hash comes from the contents, so browsers can cache the file forever and still get new versions</span></label>
+<label class="quiz-choice"><input type="radio" name="14-building-q2" value="1"><span class="quiz-letter">B</span><span class="quiz-text">To hide the code from visitors</span></label>
+<label class="quiz-choice"><input type="radio" name="14-building-q2" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Vite adds random letters to avoid name clashes</span></label>
+<label class="quiz-choice"><input type="radio" name="14-building-q2" value="3"><span class="quiz-letter">D</span><span class="quiz-text">It&#39;s the date of the build</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: A.</strong></p>
+<p>Changed code means a new file name, which the new <code>index.html</code> points to. Unchanged files are never downloaded twice.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="2">
+<legend class="visually-hidden">Question 3</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">3</span><div><p>You double-click <code>dist/index.html</code> and get a blank page. Why?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="14-building-q3" value="0"><span class="quiz-letter">A</span><span class="quiz-text">The build failed</span></label>
+<label class="quiz-choice"><input type="radio" name="14-building-q3" value="1"><span class="quiz-letter">B</span><span class="quiz-text">React only runs online</span></label>
+<label class="quiz-choice"><input type="radio" name="14-building-q3" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Browsers won&#39;t load ES modules from <code>file://</code>; it needs a server, like <code>npm run preview</code></span></label>
+<label class="quiz-choice"><input type="radio" name="14-building-q3" value="3"><span class="quiz-letter">D</span><span class="quiz-text">The CSS is missing</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: C.</strong></p>
+<p>The page loads its code as a module, which <code>file://</code> blocks. Any local server works.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="3">
+<legend class="visually-hidden">Question 4</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">4</span><div><p>What happens to <code>if (import.meta.env.DEV) { … }</code> in a production build?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="14-building-q4" value="0"><span class="quiz-letter">A</span><span class="quiz-text">It&#39;s kept but skipped at runtime</span></label>
+<label class="quiz-choice"><input type="radio" name="14-building-q4" value="1"><span class="quiz-letter">B</span><span class="quiz-text">It throws an error</span></label>
+<label class="quiz-choice"><input type="radio" name="14-building-q4" value="2"><span class="quiz-letter">C</span><span class="quiz-text">It runs, because DEV is a variable</span></label>
+<label class="quiz-choice"><input type="radio" name="14-building-q4" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Vite replaces the condition with <code>false</code> and the block is removed entirely</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: D.</strong></p>
+<p>The value is fixed at build time, so the minifier can delete code that can never run.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="2">
+<legend class="visually-hidden">Question 5</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">5</span><div><p>Is it safe to put a secret API key in your front-end code?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="14-building-q5" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Yes, if it&#39;s in <code>import.meta.env</code></span></label>
+<label class="quiz-choice"><input type="radio" name="14-building-q5" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Yes, after minifying</span></label>
+<label class="quiz-choice"><input type="radio" name="14-building-q5" value="2"><span class="quiz-letter">C</span><span class="quiz-text">No; anything the front end uses ends up in files every visitor downloads</span></label>
+<label class="quiz-choice"><input type="radio" name="14-building-q5" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Yes, if the repo is private</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: C.</strong></p>
+<p>Front-end code is public. Secrets belong on a server.</p>
+
+</details>
+</fieldset>
+<p class="quiz-score" aria-live="polite"></p>
+</div>
+<h2 id="exercise">Try it yourself</h2>
+<div class="exercise">
+<h3>A build stamp</h3>
+<p>Show the app version from <code>package.json</code> and the mode in a small footer, for example &quot;v0.0.0 · production&quot;.</p>
+
+<details><summary><span>Hint</span></summary>
+<p>JSON files can be imported directly with Vite (<code>import pkg from &#39;../package.json&#39;</code>). <code>import.meta.env.MODE</code> gives the mode.</p>
+</details>
+<details><summary><span>One way to do it</span></summary>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">import</span> pkg <span class="token keyword">from</span> <span class="token string">'../package.json'</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">Footer</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>footer</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>dev-note<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+      v</span><span class="token punctuation">{</span>pkg<span class="token punctuation">.</span>version<span class="token punctuation">}</span><span class="token plain-text"> · </span><span class="token punctuation">{</span><span class="token keyword">import</span><span class="token punctuation">.</span>meta<span class="token punctuation">.</span>env<span class="token punctuation">.</span><span class="token constant">MODE</span><span class="token punctuation">}</span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>footer</span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<p>Careful: importing <code>package.json</code> puts the <strong>whole file</strong> in your bundle, including its dependency list. For just a version, Vite&#39;s <code>define</code> option in <code>vite.config.ts</code> is tidier.</p>
+</details>
+</div>
+</section>
   </article>
 </main>
 <nav class="pager" aria-label="Lessons">

@@ -134,6 +134,108 @@ async function buildDemos() {
   }
 }
 
+// ---------- practice ----------
+
+// content/practice/<slug>.md holds a lesson's practice, in a small format:
+//
+//   ## Q
+//   The question (any Markdown, code blocks too)
+//   - [ ] a wrong choice
+//   - [x] the right choice
+//   > Why it's right (Markdown)
+//
+//   ## Exercise: A title
+//   The task
+//   ### Hint
+//   …
+//   ### Solution
+//   …
+function parsePractice(text) {
+  const blocks = text.split(/^## /m).map((b) => b.trim()).filter(Boolean)
+  const questions = []
+  const exercises = []
+  for (const block of blocks) {
+    const [head, ...rest] = block.split(/\r?\n/)
+    if (head.trim() === 'Q') {
+      const body = []
+      const choices = []
+      const why = []
+      let answer = -1
+      for (const line of rest) {
+        const choice = line.match(/^- \[( |x)\] (.*)$/)
+        if (choice) {
+          if (choice[1] === 'x') answer = choices.length
+          choices.push(choice[2])
+        } else if (line.startsWith('>')) {
+          why.push(line.replace(/^> ?/, ''))
+        } else if (choices.length === 0) {
+          body.push(line)
+        }
+      }
+      if (answer < 0 || choices.length < 2) throw new Error('practice question needs choices and one [x]: ' + head)
+      questions.push({ body: body.join('\n').trim(), choices, answer, why: why.join('\n').trim() })
+    } else if (head.startsWith('Exercise')) {
+      const title = head.replace(/^Exercise:?\s*/, '') || 'Exercise'
+      const parts = rest.join('\n').split(/^### /m)
+      const ex = { title, task: parts[0].trim(), hint: '', solution: '' }
+      for (const part of parts.slice(1)) {
+        const [h, ...b] = part.split(/\r?\n/)
+        if (/^hint/i.test(h)) ex.hint = b.join('\n').trim()
+        if (/^solution/i.test(h)) ex.solution = b.join('\n').trim()
+      }
+      exercises.push(ex)
+    }
+  }
+  return { questions, exercises }
+}
+
+const LETTERS = 'ABCDEFGH'
+
+function practiceHtml(slug, { questions, exercises }) {
+  const qs = questions
+    .map((q, i) => {
+      const name = `${slug}-q${i + 1}`
+      const choices = q.choices
+        .map(
+          (c, k) =>
+            `<label class="quiz-choice"><input type="radio" name="${name}" value="${k}"><span class="quiz-letter">${LETTERS[k]}</span><span class="quiz-text">${marked.parseInline(c)}</span></label>`,
+        )
+        .join('\n')
+      return `<fieldset class="quiz-q" data-answer="${q.answer}">
+<legend class="visually-hidden">Question ${i + 1}</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">${i + 1}</span><div>${marked.parse(q.body)}</div></div>
+<div class="quiz-choices">
+${choices}
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: ${LETTERS[q.answer]}.</strong></p>
+${marked.parse(q.why)}
+</details>
+</fieldset>`
+    })
+    .join('\n')
+  const exs = exercises
+    .map(
+      (ex) => `<div class="exercise">
+<h3>${esc(ex.title)}</h3>
+${marked.parse(ex.task)}
+${ex.hint ? `<details><summary><span>Hint</span></summary>\n${marked.parse(ex.hint)}</details>` : ''}
+${ex.solution ? `<details><summary><span>One way to do it</span></summary>\n${marked.parse(ex.solution)}</details>` : ''}
+</div>`,
+    )
+    .join('\n')
+  return `<section class="practice" aria-labelledby="practice">
+<h2 id="practice">Practice</h2>
+<p class="practice-intro">Pick an answer to see if it's right. Wrong picks are crossed out, so you can try again.</p>
+<div class="quiz">
+${qs}
+<p class="quiz-score" aria-live="polite"></p>
+</div>
+${exs ? `<h2 id="exercise">Try it yourself</h2>\n${exs}` : ''}
+</section>`
+}
+
 // ---------- lesson pages ----------
 
 // For a lesson whose app needs a server (Next.js): say how to run it instead.
@@ -161,7 +263,11 @@ async function buildLessons() {
     const file = path.join(ROOT, 'content/lessons', lesson.slug + '.md')
     const { meta, body } = parseFrontMatter(await readFile(file, 'utf8'))
     // wrap each question so the open/closed arrow and the text sit in two columns
-    const html = marked.parse(body).replace(/<summary>([\s\S]*?)<\/summary>/g, '<summary><span>$1</span></summary>')
+    let html = marked.parse(body).replace(/<summary>([\s\S]*?)<\/summary>/g, '<summary><span>$1</span></summary>')
+    const practiceFile = path.join(ROOT, 'content/practice', lesson.slug + '.md')
+    if (existsSync(practiceFile)) {
+      html += practiceHtml(lesson.slug, parsePractice(await readFile(practiceFile, 'utf8')))
+    }
     const prev = manifest[i - 1]
     const next = manifest[i + 1]
     const demo = meta.demo

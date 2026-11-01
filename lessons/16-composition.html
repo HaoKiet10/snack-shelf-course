@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/site.css">
-<script src="../assets/site.js" defer></script>
+<link rel="stylesheet" href="../assets/site.css?v=57f4a1da">
+<script src="../assets/site.js?v=57f4a1da" defer></script>
 </head>
 <body class="lesson-page">
 <header class="bar">
@@ -131,7 +131,121 @@
 
 <p>Use <code>children</code> for one, and an ordinary prop typed <code>ReactNode</code> (a slot, like <code>action</code>) for the other.</p>
 </details>
+<section class="practice" aria-labelledby="practice">
+<h2 id="practice">Practice</h2>
+<p class="practice-intro">Pick an answer to see if it's right. Wrong picks are crossed out, so you can try again.</p>
+<div class="quiz">
+<fieldset class="quiz-q" data-answer="1">
+<legend class="visually-hidden">Question 1</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">1</span><div><p>What is <code>children</code> in <code>&lt;Panel title=&quot;Hi&quot;&gt;Some text&lt;/Panel&gt;</code>?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="16-composition-q1" value="0"><span class="quiz-letter">A</span><span class="quiz-text">An array of Panel&#39;s child components</span></label>
+<label class="quiz-choice"><input type="radio" name="16-composition-q1" value="1"><span class="quiz-letter">B</span><span class="quiz-text"><code>&quot;Some text&quot;</code>: whatever is written between the tags</span></label>
+<label class="quiz-choice"><input type="radio" name="16-composition-q1" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Nothing; Panel takes no children</span></label>
+<label class="quiz-choice"><input type="radio" name="16-composition-q1" value="3"><span class="quiz-letter">D</span><span class="quiz-text"><code>&quot;Hi&quot;</code></span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: B.</strong></p>
+<p><code>children</code> is a special prop holding the content between the opening and closing tags.</p>
 
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="3">
+<legend class="visually-hidden">Question 2</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">2</span><div><p>Panel needs a second place for outside JSX, a button at the bottom. How?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="16-composition-q2" value="0"><span class="quiz-letter">A</span><span class="quiz-text">It can&#39;t; components only get one <code>children</code></span></label>
+<label class="quiz-choice"><input type="radio" name="16-composition-q2" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Use two Panels</span></label>
+<label class="quiz-choice"><input type="radio" name="16-composition-q2" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Pass the button inside <code>title</code></span></label>
+<label class="quiz-choice"><input type="radio" name="16-composition-q2" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Add a prop typed <code>ReactNode</code>, like <code>action</code>, and render it where the button goes</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: D.</strong></p>
+<p>JSX is a value, so any prop can carry it. Such a prop is often called a slot.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="3">
+<legend class="visually-hidden">Question 3</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">3</span><div><p>What is the type of a prop that can hold any renderable content?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="16-composition-q3" value="0"><span class="quiz-letter">A</span><span class="quiz-text"><code>HTMLElement</code></span></label>
+<label class="quiz-choice"><input type="radio" name="16-composition-q3" value="1"><span class="quiz-letter">B</span><span class="quiz-text"><code>JSX</code></span></label>
+<label class="quiz-choice"><input type="radio" name="16-composition-q3" value="2"><span class="quiz-letter">C</span><span class="quiz-text"><code>string</code></span></label>
+<label class="quiz-choice"><input type="radio" name="16-composition-q3" value="3"><span class="quiz-letter">D</span><span class="quiz-text"><code>ReactNode</code></span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: D.</strong></p>
+<p><code>ReactNode</code> covers elements, strings, numbers, arrays, <code>null</code> and more.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="3">
+<legend class="visually-hidden">Question 4</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">4</span><div><p>What is <strong>prop drilling</strong>?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="16-composition-q4" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Passing too many props to one component</span></label>
+<label class="quiz-choice"><input type="radio" name="16-composition-q4" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Using <code>children</code> everywhere</span></label>
+<label class="quiz-choice"><input type="radio" name="16-composition-q4" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Changing props inside a child</span></label>
+<label class="quiz-choice"><input type="radio" name="16-composition-q4" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Passing props through components that don&#39;t use them, just to reach a deeper one</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: D.</strong></p>
+<p>In lesson 16, <code>Shelf</code> received <code>onAdd</code> only to hand it to <code>SnackCard</code>. Lesson 19 removes it with context.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="3">
+<legend class="visually-hidden">Question 5</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">5</span><div><p>Which is a <strong>bad</strong> reason to split out a component?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="16-composition-q5" value="0"><span class="quiz-letter">A</span><span class="quiz-text">It has a job you can name in two words</span></label>
+<label class="quiz-choice"><input type="radio" name="16-composition-q5" value="1"><span class="quiz-letter">B</span><span class="quiz-text">The same markup appears in several places</span></label>
+<label class="quiz-choice"><input type="radio" name="16-composition-q5" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Reading the parent means scrolling back and forth</span></label>
+<label class="quiz-choice"><input type="radio" name="16-composition-q5" value="3"><span class="quiz-letter">D</span><span class="quiz-text">To keep every file under ten lines, even if each needs six props from its parent</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: D.</strong></p>
+<p>Splitting should make the code that uses the component simpler. Tiny pieces with long prop lists do the opposite.</p>
+
+</details>
+</fieldset>
+<p class="quiz-score" aria-live="polite"></p>
+</div>
+<h2 id="exercise">Try it yourself</h2>
+<div class="exercise">
+<h3>A Card wrapper</h3>
+<p>Many boxes in the app share the same look: padding, rounded corners, a surface background. Make a <code>Box</code> component that takes <code>children</code> and an optional <code>tone?: &#39;plain&#39; | &#39;highlight&#39;</code>, and use it for the empty-search message.</p>
+
+<details><summary><span>Hint</span></summary>
+<p>Combine a base class with one that depends on <code>tone</code>, and render <code>children</code> inside.</p>
+</details>
+<details><summary><span>One way to do it</span></summary>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">import</span> <span class="token keyword">type</span> <span class="token punctuation">{</span> ReactNode <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'react'</span>
+
+<span class="token keyword">type</span> <span class="token class-name">BoxProps</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+  tone<span class="token operator">?</span><span class="token operator">:</span> <span class="token string">'plain'</span> <span class="token operator">|</span> <span class="token string">'highlight'</span>
+  children<span class="token operator">:</span> ReactNode
+<span class="token punctuation">}</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">Box</span><span class="token punctuation">(</span><span class="token punctuation">{</span> tone <span class="token operator">=</span> <span class="token string">'plain'</span><span class="token punctuation">,</span> children <span class="token punctuation">}</span><span class="token operator">:</span> BoxProps<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">box box-</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>tone<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token punctuation">{</span>children<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token punctuation">}</span></code></pre>
+<pre class="code" data-lang="tsx"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Box</span></span> <span class="token attr-name">tone</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>highlight<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">No snacks match “</span><span class="token punctuation">{</span>query<span class="token punctuation">}</span><span class="token plain-text">”.</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Box</span></span><span class="token punctuation">></span></span></code></pre>
+<p><code>tone = &#39;plain&#39;</code> is a default value for an optional prop.</p>
+</details>
+</div>
+</section>
   </article>
 </main>
 <nav class="pager" aria-label="Lessons">

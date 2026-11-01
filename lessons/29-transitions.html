@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/site.css">
-<script src="../assets/site.js" defer></script>
+<link rel="stylesheet" href="../assets/site.css?v=57f4a1da">
+<script src="../assets/site.js?v=57f4a1da" defer></script>
 </head>
 <body class="lesson-page">
 <header class="bar">
@@ -110,7 +110,112 @@
 
 <p>React Router updates the URL in a transition, which is non-urgent. On a slow render, the input would show each letter late.</p>
 </details>
+<section class="practice" aria-labelledby="practice">
+<h2 id="practice">Practice</h2>
+<p class="practice-intro">Pick an answer to see if it's right. Wrong picks are crossed out, so you can try again.</p>
+<div class="quiz">
+<fieldset class="quiz-q" data-answer="1">
+<legend class="visually-hidden">Question 1</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">1</span><div><p>What makes an update &quot;non-urgent&quot;?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="29-transitions-q1" value="0"><span class="quiz-letter">A</span><span class="quiz-text">It&#39;s skipped entirely</span></label>
+<label class="quiz-choice"><input type="radio" name="29-transitions-q1" value="1"><span class="quiz-letter">B</span><span class="quiz-text">React renders it in the background and abandons it if a more urgent update comes in</span></label>
+<label class="quiz-choice"><input type="radio" name="29-transitions-q1" value="2"><span class="quiz-letter">C</span><span class="quiz-text">It happens in a <code>setTimeout</code></span></label>
+<label class="quiz-choice"><input type="radio" name="29-transitions-q1" value="3"><span class="quiz-letter">D</span><span class="quiz-text">It runs on a different thread</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: B.</strong></p>
+<p>Typing is urgent. Showing the results can wait a moment, as long as typing never waits for it.</p>
 
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="2">
+<legend class="visually-hidden">Question 2</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">2</span><div><p>While you type with the slow device on, what is <code>deferredQuery</code>?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="29-transitions-q2" value="0"><span class="quiz-letter">A</span><span class="quiz-text">The previous letter only</span></label>
+<label class="quiz-choice"><input type="radio" name="29-transitions-q2" value="1"><span class="quiz-letter">B</span><span class="quiz-text">An empty string until you stop typing</span></label>
+<label class="quiz-choice"><input type="radio" name="29-transitions-q2" value="2"><span class="quiz-letter">C</span><span class="quiz-text">The value the shelf last finished rendering with; it catches up after the background render</span></label>
+<label class="quiz-choice"><input type="radio" name="29-transitions-q2" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Always the same as <code>query</code></span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: C.</strong></p>
+<p><code>query</code> is what&#39;s in the box now; <code>deferredQuery</code> lags behind it.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="0">
+<legend class="visually-hidden">Question 3</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">3</span><div><p>Sorting is set by our own click handler. Which tool fits?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="29-transitions-q3" value="0"><span class="quiz-letter">A</span><span class="quiz-text"><code>useTransition</code>, wrapping <code>setSort</code> in <code>startTransition</code></span></label>
+<label class="quiz-choice"><input type="radio" name="29-transitions-q3" value="1"><span class="quiz-letter">B</span><span class="quiz-text"><code>useMemo</code></span></label>
+<label class="quiz-choice"><input type="radio" name="29-transitions-q3" value="2"><span class="quiz-letter">C</span><span class="quiz-text"><code>useDeferredValue</code></span></label>
+<label class="quiz-choice"><input type="radio" name="29-transitions-q3" value="3"><span class="quiz-letter">D</span><span class="quiz-text"><code>useEffect</code></span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: A.</strong></p>
+<p>When you write the code that sets the state, wrap it in a transition. When you only receive a value, defer it.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="2">
+<legend class="visually-hidden">Question 4</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">4</span><div><p>Why did the search text move back into <code>useState</code> in this lesson?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="29-transitions-q4" value="0"><span class="quiz-letter">A</span><span class="quiz-text">To fix a TypeScript error</span></label>
+<label class="quiz-choice"><input type="radio" name="29-transitions-q4" value="1"><span class="quiz-letter">B</span><span class="quiz-text">URLs can&#39;t hold search text</span></label>
+<label class="quiz-choice"><input type="radio" name="29-transitions-q4" value="2"><span class="quiz-letter">C</span><span class="quiz-text">React Router updates the URL in a transition, which is non-urgent, so an input reading it would lag</span></label>
+<label class="quiz-choice"><input type="radio" name="29-transitions-q4" value="3"><span class="quiz-letter">D</span><span class="quiz-text"><code>useDeferredValue</code> doesn&#39;t work with the URL</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: C.</strong></p>
+<p>A controlled input&#39;s value must come from an urgent update. The URL is still updated, just after.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="0">
+<legend class="visually-hidden">Question 5</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">5</span><div><p>Do transitions make a slow render faster?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="29-transitions-q5" value="0"><span class="quiz-letter">A</span><span class="quiz-text">No; the render takes as long, but the app stays responsive while it happens</span></label>
+<label class="quiz-choice"><input type="radio" name="29-transitions-q5" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Yes, they split the work across threads</span></label>
+<label class="quiz-choice"><input type="radio" name="29-transitions-q5" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Only with the React Compiler</span></label>
+<label class="quiz-choice"><input type="radio" name="29-transitions-q5" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Yes, in production only</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: A.</strong></p>
+<p>First make the work smaller; use transitions for the work that remains.</p>
+
+</details>
+</fieldset>
+<p class="quiz-score" aria-live="polite"></p>
+</div>
+<h2 id="exercise">Try it yourself</h2>
+<div class="exercise">
+<h3>A pending hint</h3>
+<p>While a sort is pending, show a small &quot;Sorting…&quot; label next to the sort buttons.</p>
+
+<details><summary><span>Hint</span></summary>
+<p><code>isPending</code> from <code>useTransition</code> is already there. Render the label with <code>&amp;&amp;</code>, and give it <code>role=&quot;status&quot;</code> so screen readers hear it.</p>
+</details>
+<details><summary><span>One way to do it</span></summary>
+<pre class="code" data-lang="tsx"><code><span class="token operator">&lt;</span>SegmentedControl … <span class="token operator">/</span><span class="token operator">></span>
+<span class="token punctuation">{</span>isPending <span class="token operator">&amp;&amp;</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>sorting<span class="token punctuation">"</span></span> <span class="token attr-name">role</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>status<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">Sorting…</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span><span class="token punctuation">}</span></code></pre>
+<p>Only <code>isPending</code>, not <code>isStale</code>: the search already fades the results, and a label for every keystroke would be noisy.</p>
+</details>
+</div>
+</section>
   </article>
 </main>
 <nav class="pager" aria-label="Lessons">

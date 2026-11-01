@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/site.css">
-<script src="../assets/site.js" defer></script>
+<link rel="stylesheet" href="../assets/site.css?v=57f4a1da">
+<script src="../assets/site.js?v=57f4a1da" defer></script>
 </head>
 <body class="lesson-page">
 <header class="bar">
@@ -132,7 +132,120 @@
 
 <p>No. Event handlers run outside rendering. Catch it in the handler with <code>try</code>/<code>catch</code> and show an error through state.</p>
 </details>
+<section class="practice" aria-labelledby="practice">
+<h2 id="practice">Practice</h2>
+<p class="practice-intro">Pick an answer to see if it's right. Wrong picks are crossed out, so you can try again.</p>
+<div class="quiz">
+<fieldset class="quiz-q" data-answer="3">
+<legend class="visually-hidden">Question 1</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">1</span><div><p>Rendering throws and no error boundary catches it. What does React do?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="25-error-boundaries-q1" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Reloads the page</span></label>
+<label class="quiz-choice"><input type="radio" name="25-error-boundaries-q1" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Skips just the broken component</span></label>
+<label class="quiz-choice"><input type="radio" name="25-error-boundaries-q1" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Shows the error message on the page</span></label>
+<label class="quiz-choice"><input type="radio" name="25-error-boundaries-q1" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Removes the whole tree: the page goes blank</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: D.</strong></p>
+<p>React can&#39;t know what a half-rendered screen should show, so without a boundary it shows nothing.</p>
 
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="1">
+<legend class="visually-hidden">Question 2</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">2</span><div><p>Why is <code>ErrorBoundary</code> a class component?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="25-error-boundaries-q2" value="0"><span class="quiz-letter">A</span><span class="quiz-text">React Router requires it</span></label>
+<label class="quiz-choice"><input type="radio" name="25-error-boundaries-q2" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Catching render errors needs <code>getDerivedStateFromError</code> / <code>componentDidCatch</code>, which have no hook equivalent</span></label>
+<label class="quiz-choice"><input type="radio" name="25-error-boundaries-q2" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Classes are faster</span></label>
+<label class="quiz-choice"><input type="radio" name="25-error-boundaries-q2" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Hooks can&#39;t be used with TypeScript</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: B.</strong></p>
+<p>It&#39;s the one class you write, once. Packages like <code>react-error-boundary</code> wrap the same thing.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="2">
+<legend class="visually-hidden">Question 3</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">3</span><div><p>A button&#39;s <code>onClick</code> handler throws. Does the error boundary catch it?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="25-error-boundaries-q3" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Only in development</span></label>
+<label class="quiz-choice"><input type="radio" name="25-error-boundaries-q3" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Only if the button is inside the boundary</span></label>
+<label class="quiz-choice"><input type="radio" name="25-error-boundaries-q3" value="2"><span class="quiz-letter">C</span><span class="quiz-text">No; event handlers run outside rendering. Use <code>try</code>/<code>catch</code> in the handler</span></label>
+<label class="quiz-choice"><input type="radio" name="25-error-boundaries-q3" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Yes, always</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: C.</strong></p>
+<p>Boundaries catch errors while rendering (and in lifecycle code like effects), not in event handlers or async callbacks.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="2">
+<legend class="visually-hidden">Question 4</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">4</span><div><p>Why does the page boundary have <code>key={location.pathname}</code>?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="25-error-boundaries-q4" value="0"><span class="quiz-letter">A</span><span class="quiz-text">To make it faster</span></label>
+<label class="quiz-choice"><input type="radio" name="25-error-boundaries-q4" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Keys are required on every component</span></label>
+<label class="quiz-choice"><input type="radio" name="25-error-boundaries-q4" value="2"><span class="quiz-letter">C</span><span class="quiz-text">A new path gives a new boundary with no error, so navigating away clears the fallback</span></label>
+<label class="quiz-choice"><input type="radio" name="25-error-boundaries-q4" value="3"><span class="quiz-letter">D</span><span class="quiz-text">To log the path with the error</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: C.</strong></p>
+<p>Changing a key replaces the component and its state (lesson 9).</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="0">
+<legend class="visually-hidden">Question 5</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">5</span><div><p>Where are boundaries most useful?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="25-error-boundaries-q5" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Around each page, and around independent parts like each card or widget</span></label>
+<label class="quiz-choice"><input type="radio" name="25-error-boundaries-q5" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Only around forms</span></label>
+<label class="quiz-choice"><input type="radio" name="25-error-boundaries-q5" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Around every single element</span></label>
+<label class="quiz-choice"><input type="radio" name="25-error-boundaries-q5" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Only around the whole app</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: A.</strong></p>
+<p>Like fuses: placed so one failure takes out as little as possible.</p>
+
+</details>
+</fieldset>
+<p class="quiz-score" aria-live="polite"></p>
+</div>
+<h2 id="exercise">Try it yourself</h2>
+<div class="exercise">
+<h3>Try again</h3>
+<p>Give the per-card fallback a &quot;Try again&quot; button that resets that card&#39;s boundary.</p>
+
+<details><summary><span>Hint</span></summary>
+<p>The <code>fallback</code> function already receives <code>(error, reset)</code>.</p>
+</details>
+<details><summary><span>One way to do it</span></summary>
+<pre class="code" data-lang="tsx"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">ErrorBoundary</span></span>
+  <span class="token attr-name">key</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>snack<span class="token punctuation">.</span>id<span class="token punctuation">}</span></span>
+  <span class="token attr-name">fallback</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span>_error<span class="token punctuation">,</span> reset<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>card-broken<span class="token punctuation">"</span></span> <span class="token attr-name">role</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>note<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>strong</span><span class="token punctuation">></span></span><span class="token punctuation">{</span>snack<span class="token punctuation">.</span>name<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>strong</span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span><span class="token punctuation">></span></span><span class="token plain-text">can't be shown right now</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>reset<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">Try again</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span><span class="token punctuation">}</span></span>
+<span class="token punctuation">></span></span></code></pre>
+<p>With bad data it will fail again straight away, which is honest. It helps when the error was temporary.</p>
+</details>
+</div>
+</section>
   </article>
 </main>
 <nav class="pager" aria-label="Lessons">

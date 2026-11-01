@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/site.css">
-<script src="../assets/site.js" defer></script>
+<link rel="stylesheet" href="../assets/site.css?v=57f4a1da">
+<script src="../assets/site.js?v=57f4a1da" defer></script>
 </head>
 <body class="lesson-page">
 <header class="bar">
@@ -131,7 +131,121 @@ updates just those two things in the DOM</code></pre>
 
 <p>React finds each hook&#39;s box by the order the hooks are called. If a hook is skipped on some renders, every hook after it shifts by one and reads someone else&#39;s box.</p>
 </details>
+<section class="practice" aria-labelledby="practice">
+<h2 id="practice">Practice</h2>
+<p class="practice-intro">Pick an answer to see if it's right. Wrong picks are crossed out, so you can try again.</p>
+<div class="quiz">
+<fieldset class="quiz-q" data-answer="2">
+<legend class="visually-hidden">Question 1</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">1</span><div><p>Why can&#39;t <code>let likes = 0</code> and <code>likes++</code> in a click handler make the count go up on screen?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="06-state-q1" value="0"><span class="quiz-letter">A</span><span class="quiz-text">TypeScript blocks it</span></label>
+<label class="quiz-choice"><input type="radio" name="06-state-q1" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Click handlers can&#39;t change variables</span></label>
+<label class="quiz-choice"><input type="radio" name="06-state-q1" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Nothing tells React to re-render, and the next render would start again at 0 anyway</span></label>
+<label class="quiz-choice"><input type="radio" name="06-state-q1" value="3"><span class="quiz-letter">D</span><span class="quiz-text"><code>let</code> variables can&#39;t be numbers in JSX</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: C.</strong></p>
+<p>A plain variable lives only during one call of the component. Changing it doesn&#39;t trigger a render, and when the component does render again, the variable is created fresh at 0.</p>
 
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="1">
+<legend class="visually-hidden">Question 2</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">2</span><div><p>What does <code>const [likes, setLikes] = useState(0)</code> give you?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="06-state-q2" value="0"><span class="quiz-letter">A</span><span class="quiz-text">A reference to a DOM element</span></label>
+<label class="quiz-choice"><input type="radio" name="06-state-q2" value="1"><span class="quiz-letter">B</span><span class="quiz-text">The current value, and a function that stores a new value and asks React to re-render</span></label>
+<label class="quiz-choice"><input type="radio" name="06-state-q2" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Two state variables, both starting at 0</span></label>
+<label class="quiz-choice"><input type="radio" name="06-state-q2" value="3"><span class="quiz-letter">D</span><span class="quiz-text">A value that updates itself every second</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: B.</strong></p>
+<p>React keeps the value between renders. <code>setLikes</code> stores a new one and schedules a re-render, during which <code>likes</code> holds the new value.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="0">
+<legend class="visually-hidden">Question 3</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">3</span><div><pre class="code" data-lang="tsx"><code><span class="token keyword">function</span> <span class="token function">handleClick</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token function">setLikes</span><span class="token punctuation">(</span>likes <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span>
+  <span class="token function">setLikes</span><span class="token punctuation">(</span>likes <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<p><code>likes</code> is 0. What is it after one click?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="06-state-q3" value="0"><span class="quiz-letter">A</span><span class="quiz-text">1</span></label>
+<label class="quiz-choice"><input type="radio" name="06-state-q3" value="1"><span class="quiz-letter">B</span><span class="quiz-text">0</span></label>
+<label class="quiz-choice"><input type="radio" name="06-state-q3" value="2"><span class="quiz-letter">C</span><span class="quiz-text">It throws an error</span></label>
+<label class="quiz-choice"><input type="radio" name="06-state-q3" value="3"><span class="quiz-letter">D</span><span class="quiz-text">2</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: A.</strong></p>
+<p><code>likes</code> is a snapshot: 0 for this whole render. Both calls say &quot;set it to 0 + 1&quot;. Use <code>setLikes((l) =&gt; l + 1)</code> twice to get 2.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="3">
+<legend class="visually-hidden">Question 4</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">4</span><div><p>Each <code>SnackCard</code> calls <code>useState(0)</code>. What happens when you like Pocky?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="06-state-q4" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Only the first card&#39;s count changes</span></label>
+<label class="quiz-choice"><input type="radio" name="06-state-q4" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Every card&#39;s count goes up</span></label>
+<label class="quiz-choice"><input type="radio" name="06-state-q4" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Nothing, state has to live in App</span></label>
+<label class="quiz-choice"><input type="radio" name="06-state-q4" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Only Pocky&#39;s count changes; each card has its own state</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: D.</strong></p>
+<p>State belongs to one component instance. Six cards mean six separate boxes.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="3">
+<legend class="visually-hidden">Question 5</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">5</span><div><p>Which breaks the rules of hooks?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="06-state-q5" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Calling <code>useState</code> in a custom hook named <code>useLikes</code></span></label>
+<label class="quiz-choice"><input type="radio" name="06-state-q5" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Passing a number to <code>useState</code></span></label>
+<label class="quiz-choice"><input type="radio" name="06-state-q5" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Calling <code>useState</code> twice at the top of a component</span></label>
+<label class="quiz-choice"><input type="radio" name="06-state-q5" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Calling <code>useState</code> inside an <code>if</code></span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: D.</strong></p>
+<p>React matches hooks to their state by call order. A hook inside a condition can be skipped on some renders, which shifts every hook after it.</p>
+
+</details>
+</fieldset>
+<p class="quiz-score" aria-live="polite"></p>
+</div>
+<h2 id="exercise">Try it yourself</h2>
+<div class="exercise">
+<h3>An unlike button</h3>
+<p>Add a second button to <code>SnackCard</code>, <strong>−</strong>, that takes one like away, but never below 0. Disable it when there are no likes.</p>
+
+<details><summary><span>Hint</span></summary>
+<p>Use the updater form and <code>Math.max</code>. <code>disabled</code> takes a boolean.</p>
+</details>
+<details><summary><span>One way to do it</span></summary>
+<pre class="code" data-lang="tsx"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span>
+  <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">setLikes</span><span class="token punctuation">(</span><span class="token punctuation">(</span>l<span class="token punctuation">)</span> <span class="token operator">=></span> Math<span class="token punctuation">.</span><span class="token function">max</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> l <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">}</span></span>
+  <span class="token attr-name">disabled</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>likes <span class="token operator">===</span> <span class="token number">0</span><span class="token punctuation">}</span></span>
+  <span class="token attr-name">aria-label</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Unlike </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>name<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">}</span></span>
+<span class="token punctuation">></span></span><span class="token plain-text">
+  −
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span></code></pre>
+<p>The <code>Math.max</code> guard is still worth having even with <code>disabled</code>: two quick clicks can both be queued before the button turns off.</p>
+</details>
+</div>
+</section>
   </article>
 </main>
 <nav class="pager" aria-label="Lessons">

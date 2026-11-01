@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/site.css">
-<script src="../assets/site.js" defer></script>
+<link rel="stylesheet" href="../assets/site.css?v=57f4a1da">
+<script src="../assets/site.js?v=57f4a1da" defer></script>
 </head>
 <body class="lesson-page">
 <header class="bar">
@@ -113,7 +113,120 @@
 
 <p>The promise rejects: <code>loadSnacks</code> throws when the response is not OK, and a failed <code>fetch</code> throws on its own.</p>
 </details>
+<section class="practice" aria-labelledby="practice">
+<h2 id="practice">Practice</h2>
+<p class="practice-intro">Pick an answer to see if it's right. Wrong picks are crossed out, so you can try again.</p>
+<div class="quiz">
+<fieldset class="quiz-q" data-answer="3">
+<legend class="visually-hidden">Question 1</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">1</span><div><p>What makes the snacks <strong>server state</strong>?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="23-tanstack-query-q1" value="0"><span class="quiz-letter">A</span><span class="quiz-text">They never change</span></label>
+<label class="quiz-choice"><input type="radio" name="23-tanstack-query-q1" value="1"><span class="quiz-letter">B</span><span class="quiz-text">They&#39;re fetched with TanStack Query</span></label>
+<label class="quiz-choice"><input type="radio" name="23-tanstack-query-q1" value="2"><span class="quiz-letter">C</span><span class="quiz-text">They&#39;re stored in React state</span></label>
+<label class="quiz-choice"><input type="radio" name="23-tanstack-query-q1" value="3"><span class="quiz-letter">D</span><span class="quiz-text">They&#39;re a local copy of data that lives on a server and can change there, so they can be loading, failed or stale</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: D.</strong></p>
+<p>The basket, by contrast, is client state: only this app creates and changes it.</p>
 
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="3">
+<legend class="visually-hidden">Question 2</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">2</span><div><p>Three components call <code>useQuery({ queryKey: [&#39;snacks&#39;], queryFn: loadSnacks })</code> at once. How many requests?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="23-tanstack-query-q2" value="0"><span class="quiz-letter">A</span><span class="quiz-text">None until one of them asks</span></label>
+<label class="quiz-choice"><input type="radio" name="23-tanstack-query-q2" value="1"><span class="quiz-letter">B</span><span class="quiz-text">It depends on StrictMode</span></label>
+<label class="quiz-choice"><input type="radio" name="23-tanstack-query-q2" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Three</span></label>
+<label class="quiz-choice"><input type="radio" name="23-tanstack-query-q2" value="3"><span class="quiz-letter">D</span><span class="quiz-text">One; they share the cache entry for <code>[&#39;snacks&#39;]</code></span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: D.</strong></p>
+<p>The query&#39;s state lives in the QueryClient&#39;s cache, keyed by <code>queryKey</code>. Requests for the same key are deduplicated.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="2">
+<legend class="visually-hidden">Question 3</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">3</span><div><p>What does <code>staleTime: 60_000</code> do?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="23-tanstack-query-q3" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Waits a minute before the first fetch</span></label>
+<label class="quiz-choice"><input type="radio" name="23-tanstack-query-q3" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Deletes the data after a minute</span></label>
+<label class="quiz-choice"><input type="radio" name="23-tanstack-query-q3" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Treats fetched data as fresh for a minute, so it isn&#39;t refetched in that time</span></label>
+<label class="quiz-choice"><input type="radio" name="23-tanstack-query-q3" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Retries failed requests for a minute</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: C.</strong></p>
+<p>After that, the data is still shown immediately, but refreshed in the background when needed.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="1">
+<legend class="visually-hidden">Question 4</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">4</span><div><p>How does TanStack Query know <code>loadSnacks</code> failed?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="23-tanstack-query-q4" value="0"><span class="quiz-letter">A</span><span class="quiz-text">It doesn&#39;t; you must set <code>isError</code> yourself</span></label>
+<label class="quiz-choice"><input type="radio" name="23-tanstack-query-q4" value="1"><span class="quiz-letter">B</span><span class="quiz-text">The returned promise rejects: <code>loadSnacks</code> throws on a bad response</span></label>
+<label class="quiz-choice"><input type="radio" name="23-tanstack-query-q4" value="2"><span class="quiz-letter">C</span><span class="quiz-text">It checks the HTTP status itself</span></label>
+<label class="quiz-choice"><input type="radio" name="23-tanstack-query-q4" value="3"><span class="quiz-letter">D</span><span class="quiz-text">It compares the data with the last result</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: B.</strong></p>
+<p>That&#39;s why lesson 12&#39;s <code>if (!res.ok) throw …</code> matters: <code>fetch</code> alone only rejects on network failures.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="3">
+<legend class="visually-hidden">Question 5</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">5</span><div><p>Where should the basket live after this lesson?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="23-tanstack-query-q5" value="0"><span class="quiz-letter">A</span><span class="quiz-text">In a query, so it&#39;s cached</span></label>
+<label class="quiz-choice"><input type="radio" name="23-tanstack-query-q5" value="1"><span class="quiz-letter">B</span><span class="quiz-text">In the QueryClient&#39;s default options</span></label>
+<label class="quiz-choice"><input type="radio" name="23-tanstack-query-q5" value="2"><span class="quiz-letter">C</span><span class="quiz-text">In <code>snacks.json</code></span></label>
+<label class="quiz-choice"><input type="radio" name="23-tanstack-query-q5" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Where it was: it&#39;s client state, owned by the app, not a copy of server data</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: D.</strong></p>
+<p>TanStack Query is for server state. Putting client state in it adds complexity for nothing.</p>
+
+</details>
+</fieldset>
+<p class="quiz-score" aria-live="polite"></p>
+</div>
+<h2 id="exercise">Try it yourself</h2>
+<div class="exercise">
+<h3>One snack, one query</h3>
+<p>On the snack page, fetch the single snack with its own query, keyed by id: <code>[&#39;snack&#39;, id]</code>. (Pretend the server has <code>snack-&lt;id&gt;.json</code> files; you can use the list and <code>find</code> inside the query function.)</p>
+
+<details><summary><span>Hint</span></summary>
+<p>The key includes the id, so each snack gets its own cache entry. <code>queryFn</code> can reuse <code>loadSnacks</code>.</p>
+</details>
+<details><summary><span>One way to do it</span></summary>
+<pre class="code" data-lang="ts"><code><span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">useSnack</span><span class="token punctuation">(</span>id<span class="token operator">:</span> <span class="token builtin">string</span> <span class="token operator">|</span> <span class="token keyword">undefined</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token function">useQuery</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    queryKey<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'snack'</span><span class="token punctuation">,</span> id<span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token function-variable function">queryFn</span><span class="token operator">:</span> <span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+      <span class="token keyword">const</span> snacks <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token function">loadSnacks</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+      <span class="token keyword">return</span> snacks<span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span> <span class="token operator">=></span> s<span class="token punctuation">.</span>id <span class="token operator">===</span> id<span class="token punctuation">)</span> <span class="token operator">??</span> <span class="token keyword">null</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    enabled<span class="token operator">:</span> id <span class="token operator">!==</span> <span class="token keyword">undefined</span><span class="token punctuation">,</span>   <span class="token comment">// don't run without an id</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<p>Each id has its own entry: visiting Pocky, then Mochi, then Pocky again shows Pocky from the cache.</p>
+</details>
+</div>
+</section>
   </article>
 </main>
 <nav class="pager" aria-label="Lessons">

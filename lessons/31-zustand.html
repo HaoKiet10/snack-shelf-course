@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/site.css">
-<script src="../assets/site.js" defer></script>
+<link rel="stylesheet" href="../assets/site.css?v=57f4a1da">
+<script src="../assets/site.js?v=57f4a1da" defer></script>
 </head>
 <body class="lesson-page">
 <header class="bar">
@@ -125,7 +125,127 @@
 
 <p>It builds a new object on every call, which never equals the previous one. Zustand treats it as always changed, which in version 5 leads to an endless render loop. Select <code>s.lines</code> directly, or use <code>useShallow</code>.</p>
 </details>
+<section class="practice" aria-labelledby="practice">
+<h2 id="practice">Practice</h2>
+<p class="practice-intro">Pick an answer to see if it's right. Wrong picks are crossed out, so you can try again.</p>
+<div class="quiz">
+<fieldset class="quiz-q" data-answer="0">
+<legend class="visually-hidden">Question 1</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">1</span><div><p>Where does a Zustand store&#39;s state live?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="31-zustand-q1" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Outside React, in a module, with a hook to read it</span></label>
+<label class="quiz-choice"><input type="radio" name="31-zustand-q1" value="1"><span class="quiz-letter">B</span><span class="quiz-text">In the component that created it</span></label>
+<label class="quiz-choice"><input type="radio" name="31-zustand-q1" value="2"><span class="quiz-letter">C</span><span class="quiz-text">In a React context</span></label>
+<label class="quiz-choice"><input type="radio" name="31-zustand-q1" value="3"><span class="quiz-letter">D</span><span class="quiz-text">In <code>localStorage</code> only</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: A.</strong></p>
+<p>That&#39;s why there&#39;s no provider: any file can import the store.</p>
 
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="0">
+<legend class="visually-hidden">Question 2</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">2</span><div><p><code>Shelf</code> uses <code>useBasketStore((s) =&gt; s.dispatch)</code>. Does it re-render when something is added to the basket?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="31-zustand-q2" value="0"><span class="quiz-letter">A</span><span class="quiz-text">No; its selector picks <code>dispatch</code>, which never changes</span></label>
+<label class="quiz-choice"><input type="radio" name="31-zustand-q2" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Yes, every store change re-renders every reader</span></label>
+<label class="quiz-choice"><input type="radio" name="31-zustand-q2" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Only in development</span></label>
+<label class="quiz-choice"><input type="radio" name="31-zustand-q2" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Only if it&#39;s on screen</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: A.</strong></p>
+<p>Zustand re-renders a component only when its selector&#39;s result changes.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="1">
+<legend class="visually-hidden">Question 3</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">3</span><div><p>What&#39;s wrong with <code>useBasketStore((s) =&gt; ({ lines: s.lines, count: s.lines.length }))</code>?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="31-zustand-q3" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Nothing</span></label>
+<label class="quiz-choice"><input type="radio" name="31-zustand-q3" value="1"><span class="quiz-letter">B</span><span class="quiz-text">It returns a new object every time, so it always counts as changed; in Zustand 5 that causes an endless render loop</span></label>
+<label class="quiz-choice"><input type="radio" name="31-zustand-q3" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Selectors can&#39;t use <code>.length</code></span></label>
+<label class="quiz-choice"><input type="radio" name="31-zustand-q3" value="3"><span class="quiz-letter">D</span><span class="quiz-text">It saves to storage twice</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: B.</strong></p>
+<p>Select values separately, or wrap the selector in <code>useShallow</code>.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="2">
+<legend class="visually-hidden">Question 4</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">4</span><div><p>What does <code>persist(…, { name: &#39;snack-shelf-basket-store&#39; })</code> do?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="31-zustand-q4" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Sends the basket to a server</span></label>
+<label class="quiz-choice"><input type="radio" name="31-zustand-q4" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Shares it between browser tabs instantly</span></label>
+<label class="quiz-choice"><input type="radio" name="31-zustand-q4" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Saves the store to <code>localStorage</code> under that name and loads it on start</span></label>
+<label class="quiz-choice"><input type="radio" name="31-zustand-q4" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Makes the store read-only</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: C.</strong></p>
+<p>It replaced lesson 18&#39;s hand-written save-and-load hook.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="1">
+<legend class="visually-hidden">Question 5</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">5</span><div><p>Which state is the best fit for a Zustand store in this app?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="31-zustand-q5" value="0"><span class="quiz-letter">A</span><span class="quiz-text">The search text</span></label>
+<label class="quiz-choice"><input type="radio" name="31-zustand-q5" value="1"><span class="quiz-letter">B</span><span class="quiz-text">The basket: client state that many components read and that changes often</span></label>
+<label class="quiz-choice"><input type="radio" name="31-zustand-q5" value="2"><span class="quiz-letter">C</span><span class="quiz-text">The snacks from the server</span></label>
+<label class="quiz-choice"><input type="radio" name="31-zustand-q5" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Whether the ✓ flash is showing</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: B.</strong></p>
+<p>Local UI state stays in <code>useState</code>, server state in TanStack Query, shareable state in the URL.</p>
+
+</details>
+</fieldset>
+<p class="quiz-score" aria-live="polite"></p>
+</div>
+<h2 id="exercise">Try it yourself</h2>
+<div class="exercise">
+<h3>A likes store</h3>
+<p>Move the likes from <code>LikesContext</code> into a Zustand store with <code>persist</code>, and delete <code>LikesProvider</code>. Cards should re-render only when their own snack&#39;s likes change.</p>
+
+<details><summary><span>Hint</span></summary>
+<p>The store holds <code>likes</code> and a <code>like(id)</code> action. Each card can select just its own number: <code>useLikesStore((s) =&gt; s.likes[id] ?? 0)</code>.</p>
+</details>
+<details><summary><span>One way to do it</span></summary>
+<pre class="code" data-lang="ts"><code><span class="token keyword">type</span> <span class="token class-name">LikesStore</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+  likes<span class="token operator">:</span> Record<span class="token operator">&lt;</span><span class="token builtin">string</span><span class="token punctuation">,</span> <span class="token builtin">number</span><span class="token operator">></span>
+  <span class="token function-variable function">like</span><span class="token operator">:</span> <span class="token punctuation">(</span>id<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token keyword">void</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">export</span> <span class="token keyword">const</span> useLikesStore <span class="token operator">=</span> <span class="token generic-function"><span class="token function">create</span><span class="token generic class-name"><span class="token operator">&lt;</span>LikesStore<span class="token operator">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">(</span>
+  <span class="token function">persist</span><span class="token punctuation">(</span>
+    <span class="token punctuation">(</span>set<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">(</span><span class="token punctuation">{</span>
+      likes<span class="token operator">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token function-variable function">like</span><span class="token operator">:</span> <span class="token punctuation">(</span>id<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">set</span><span class="token punctuation">(</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">(</span><span class="token punctuation">{</span> likes<span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token operator">...</span>s<span class="token punctuation">.</span>likes<span class="token punctuation">,</span> <span class="token punctuation">[</span>id<span class="token punctuation">]</span><span class="token operator">:</span> <span class="token punctuation">(</span>s<span class="token punctuation">.</span>likes<span class="token punctuation">[</span>id<span class="token punctuation">]</span> <span class="token operator">??</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">1</span> <span class="token punctuation">}</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span> name<span class="token operator">:</span> <span class="token string">'snack-shelf-likes-store'</span><span class="token punctuation">,</span> <span class="token function-variable function">partialize</span><span class="token operator">:</span> <span class="token punctuation">(</span>s<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">(</span><span class="token punctuation">{</span> likes<span class="token operator">:</span> s<span class="token punctuation">.</span>likes <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">)</span><span class="token punctuation">,</span>
+<span class="token punctuation">)</span></code></pre>
+<pre class="code" data-lang="tsx"><code><span class="token comment">// inside the card (or a small wrapper around it)</span>
+<span class="token keyword">const</span> likes <span class="token operator">=</span> <span class="token function">useLikesStore</span><span class="token punctuation">(</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span> <span class="token operator">=></span> s<span class="token punctuation">.</span>likes<span class="token punctuation">[</span>id<span class="token punctuation">]</span> <span class="token operator">??</span> <span class="token number">0</span><span class="token punctuation">)</span>
+<span class="token keyword">const</span> like <span class="token operator">=</span> <span class="token function">useLikesStore</span><span class="token punctuation">(</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span> <span class="token operator">=></span> s<span class="token punctuation">.</span>like<span class="token punctuation">)</span></code></pre>
+<p>Selecting one number per card is what makes only that card re-render.</p>
+</details>
+</div>
+</section>
   </article>
 </main>
 <nav class="pager" aria-label="Lessons">

@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/site.css">
-<script src="../assets/site.js" defer></script>
+<link rel="stylesheet" href="../assets/site.css?v=57f4a1da">
+<script src="../assets/site.js?v=57f4a1da" defer></script>
 </head>
 <body class="lesson-page">
 <header class="bar">
@@ -122,7 +122,124 @@ dispatch({ type: 'added' })  → (lines, action) =&gt; new lines  → re-render 
 
 <p>It only has one kind of change, &quot;set it to this text&quot;, so a reducer would add code without making anything clearer.</p>
 </details>
+<section class="practice" aria-labelledby="practice">
+<h2 id="practice">Practice</h2>
+<p class="practice-intro">Pick an answer to see if it's right. Wrong picks are crossed out, so you can try again.</p>
+<div class="quiz">
+<fieldset class="quiz-q" data-answer="3">
+<legend class="visually-hidden">Question 1</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">1</span><div><p>What does a reducer take and return?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="17-use-reducer-q1" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Props, and returns state</span></label>
+<label class="quiz-choice"><input type="radio" name="17-use-reducer-q1" value="1"><span class="quiz-letter">B</span><span class="quiz-text">An event, and returns JSX</span></label>
+<label class="quiz-choice"><input type="radio" name="17-use-reducer-q1" value="2"><span class="quiz-letter">C</span><span class="quiz-text">The DOM, and returns nothing</span></label>
+<label class="quiz-choice"><input type="radio" name="17-use-reducer-q1" value="3"><span class="quiz-letter">D</span><span class="quiz-text">The current state and an action, and returns the next state</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: D.</strong></p>
+<p><code>(state, action) =&gt; newState</code>. That&#39;s the whole interface.</p>
 
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="0">
+<legend class="visually-hidden">Question 2</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">2</span><div><p>Which is <strong>not</strong> allowed inside a reducer?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="17-use-reducer-q2" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Calling <code>fetch</code> to save the basket</span></label>
+<label class="quiz-choice"><input type="radio" name="17-use-reducer-q2" value="1"><span class="quiz-letter">B</span><span class="quiz-text">A <code>switch</code> on <code>action.type</code></span></label>
+<label class="quiz-choice"><input type="radio" name="17-use-reducer-q2" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Returning the old state unchanged</span></label>
+<label class="quiz-choice"><input type="radio" name="17-use-reducer-q2" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Returning a new array built with <code>map</code></span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: A.</strong></p>
+<p>Reducers must be pure: no side effects, no changing the old state. Fetching belongs in an event handler or effect.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="0">
+<legend class="visually-hidden">Question 3</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">3</span><div><p>What does <code>dispatch({ type: &#39;emptied&#39; })</code> do?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="17-use-reducer-q3" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Sends the action to React, which runs the reducer with the current state and stores the result</span></label>
+<label class="quiz-choice"><input type="radio" name="17-use-reducer-q3" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Empties the basket directly</span></label>
+<label class="quiz-choice"><input type="radio" name="17-use-reducer-q3" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Calls every component&#39;s reducer</span></label>
+<label class="quiz-choice"><input type="radio" name="17-use-reducer-q3" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Deletes the reducer</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: A.</strong></p>
+<p>Components describe what happened; the reducer decides what it means.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="2">
+<legend class="visually-hidden">Question 4</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">4</span><div><pre class="code" data-lang="ts"><code><span class="token keyword">type</span> <span class="token class-name">BasketAction</span> <span class="token operator">=</span>
+  <span class="token operator">|</span> <span class="token punctuation">{</span> type<span class="token operator">:</span> <span class="token string">'added'</span><span class="token punctuation">;</span> id<span class="token operator">:</span> <span class="token builtin">string</span> <span class="token punctuation">}</span>
+  <span class="token operator">|</span> <span class="token punctuation">{</span> type<span class="token operator">:</span> <span class="token string">'emptied'</span> <span class="token punctuation">}</span></code></pre>
+<p>Which is a type error?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="17-use-reducer-q4" value="0"><span class="quiz-letter">A</span><span class="quiz-text"><code>{ type: &#39;added&#39;, id: &#39;pocky&#39; }</code></span></label>
+<label class="quiz-choice"><input type="radio" name="17-use-reducer-q4" value="1"><span class="quiz-letter">B</span><span class="quiz-text"><code>{ type: &#39;emptied&#39; }</code></span></label>
+<label class="quiz-choice"><input type="radio" name="17-use-reducer-q4" value="2"><span class="quiz-letter">C</span><span class="quiz-text"><code>{ type: &#39;added&#39; }</code></span></label>
+<label class="quiz-choice"><input type="radio" name="17-use-reducer-q4" value="3"><span class="quiz-letter">D</span><span class="quiz-text">All are fine</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: C.</strong></p>
+<p>TypeScript uses <code>type</code> to know which shape applies. <code>added</code> needs an <code>id</code>.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="0">
+<legend class="visually-hidden">Question 5</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">5</span><div><p>When is <code>useReducer</code> a better fit than <code>useState</code>?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="17-use-reducer-q5" value="0"><span class="quiz-letter">A</span><span class="quiz-text">When state changes in several ways with rules, like a basket with add, remove, change quantity and empty</span></label>
+<label class="quiz-choice"><input type="radio" name="17-use-reducer-q5" value="1"><span class="quiz-letter">B</span><span class="quiz-text">For a single text input</span></label>
+<label class="quiz-choice"><input type="radio" name="17-use-reducer-q5" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Always</span></label>
+<label class="quiz-choice"><input type="radio" name="17-use-reducer-q5" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Only when the state is a number</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: A.</strong></p>
+<p>A reducer puts every kind of change in one tested place. For a value that only gets &quot;set to this&quot;, <code>useState</code> is simpler.</p>
+
+</details>
+</fieldset>
+<p class="quiz-score" aria-live="polite"></p>
+</div>
+<h2 id="exercise">Try it yourself</h2>
+<div class="exercise">
+<h3>A &quot;set quantity&quot; input</h3>
+<p>In the basket panel, replace the − and + buttons with a number input (1–9) for the quantity, using the existing <code>quantityChanged</code> action.</p>
+
+<details><summary><span>Hint</span></summary>
+<p><code>e.target.valueAsNumber</code> gives a number from <code>&lt;input type=&quot;number&quot;&gt;</code>. The reducer already removes lines at 0 and caps at the maximum.</p>
+</details>
+<details><summary><span>One way to do it</span></summary>
+<pre class="code" data-lang="tsx"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span>
+  <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>number<span class="token punctuation">"</span></span>
+  <span class="token attr-name">min</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token number">1</span><span class="token punctuation">}</span></span>
+  <span class="token attr-name">max</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token constant">MAX_QTY</span><span class="token punctuation">}</span></span>
+  <span class="token attr-name">value</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>line<span class="token punctuation">.</span>qty<span class="token punctuation">}</span></span>
+  <span class="token attr-name">aria-label</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Quantity of </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>snack<span class="token punctuation">.</span>name<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">}</span></span>
+  <span class="token attr-name">onChange</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> qty <span class="token operator">=</span> e<span class="token punctuation">.</span>target<span class="token punctuation">.</span>valueAsNumber
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>Number<span class="token punctuation">.</span><span class="token function">isNaN</span><span class="token punctuation">(</span>qty<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token function">dispatch</span><span class="token punctuation">(</span><span class="token punctuation">{</span> type<span class="token operator">:</span> <span class="token string">'quantityChanged'</span><span class="token punctuation">,</span> id<span class="token operator">:</span> line<span class="token punctuation">.</span>id<span class="token punctuation">,</span> qty <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span><span class="token punctuation">}</span></span>
+<span class="token punctuation">/></span></span></code></pre>
+<p>No reducer change was needed: the rules were already in one place.</p>
+</details>
+</div>
+</section>
   </article>
 </main>
 <nav class="pager" aria-label="Lessons">

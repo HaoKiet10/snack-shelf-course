@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/site.css">
-<script src="../assets/site.js" defer></script>
+<link rel="stylesheet" href="../assets/site.css?v=57f4a1da">
+<script src="../assets/site.js?v=57f4a1da" defer></script>
 </head>
 <body class="lesson-page">
 <header class="bar">
@@ -177,7 +177,113 @@
 
 <p>No. It comes from <code>basket</code> and <code>snacks</code>, both already available while rendering. Calculate it directly; effects are for syncing with things outside React.</p>
 </details>
+<section class="practice" aria-labelledby="practice">
+<h2 id="practice">Practice</h2>
+<p class="practice-intro">Pick an answer to see if it's right. Wrong picks are crossed out, so you can try again.</p>
+<div class="quiz">
+<fieldset class="quiz-q" data-answer="2">
+<legend class="visually-hidden">Question 1</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">1</span><div><p>When does an effect run?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="12-use-effect-q1" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Only when the user clicks</span></label>
+<label class="quiz-choice"><input type="radio" name="12-use-effect-q1" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Before the component renders</span></label>
+<label class="quiz-choice"><input type="radio" name="12-use-effect-q1" value="2"><span class="quiz-letter">C</span><span class="quiz-text">After React has put the render on the screen</span></label>
+<label class="quiz-choice"><input type="radio" name="12-use-effect-q1" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Once, when the page loads, whatever its dependencies</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: C.</strong></p>
+<p>Effects run after the commit, so rendering itself stays pure and fast.</p>
 
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="0">
+<legend class="visually-hidden">Question 2</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">2</span><div><p>What does <code>useEffect(fn, [])</code> mean?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="12-use-effect-q2" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Run <code>fn</code> after the first render only (and clean up when the component goes away)</span></label>
+<label class="quiz-choice"><input type="radio" name="12-use-effect-q2" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Never run <code>fn</code></span></label>
+<label class="quiz-choice"><input type="radio" name="12-use-effect-q2" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Run <code>fn</code> on every render</span></label>
+<label class="quiz-choice"><input type="radio" name="12-use-effect-q2" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Run <code>fn</code> before the first render</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: A.</strong></p>
+<p>An empty list means &quot;depends on nothing that changes&quot;, so it runs once after mounting. (StrictMode runs it, cleans up and runs it again in development.)</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="0">
+<legend class="visually-hidden">Question 3</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">3</span><div><p>An effect reads <code>query</code> but its dependency list is <code>[]</code>. What goes wrong?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="12-use-effect-q3" value="0"><span class="quiz-letter">A</span><span class="quiz-text">It keeps using the <code>query</code> from the first render: a stale value</span></label>
+<label class="quiz-choice"><input type="radio" name="12-use-effect-q3" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Nothing; fewer runs is faster</span></label>
+<label class="quiz-choice"><input type="radio" name="12-use-effect-q3" value="2"><span class="quiz-letter">C</span><span class="quiz-text">It throws an error</span></label>
+<label class="quiz-choice"><input type="radio" name="12-use-effect-q3" value="3"><span class="quiz-letter">D</span><span class="quiz-text">React adds <code>query</code> automatically</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: A.</strong></p>
+<p>The dependency list must contain everything the effect reads that can change. Leaving one out doesn&#39;t save work, it gives wrong results.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="3">
+<legend class="visually-hidden">Question 4</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">4</span><div><p>In the loading effect, what is <code>let ignore = false</code> with a cleanup that sets it to <code>true</code> for?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="12-use-effect-q4" value="0"><span class="quiz-letter">A</span><span class="quiz-text">To cancel the network request itself</span></label>
+<label class="quiz-choice"><input type="radio" name="12-use-effect-q4" value="1"><span class="quiz-letter">B</span><span class="quiz-text">To make fetch faster</span></label>
+<label class="quiz-choice"><input type="radio" name="12-use-effect-q4" value="2"><span class="quiz-letter">C</span><span class="quiz-text">To stop React from rendering</span></label>
+<label class="quiz-choice"><input type="radio" name="12-use-effect-q4" value="3"><span class="quiz-letter">D</span><span class="quiz-text">So a slow, outdated request can&#39;t overwrite newer data when it finally finishes</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: D.</strong></p>
+<p>The request may still complete, but its result is ignored. Without it, an old response arriving late could replace a newer one.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="3">
+<legend class="visually-hidden">Question 5</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">5</span><div><p>Which of these should <strong>not</strong> be an effect?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="12-use-effect-q5" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Fetching data when the page opens</span></label>
+<label class="quiz-choice"><input type="radio" name="12-use-effect-q5" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Listening to a key on <code>window</code></span></label>
+<label class="quiz-choice"><input type="radio" name="12-use-effect-q5" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Saving likes to <code>localStorage</code> when they change</span></label>
+<label class="quiz-choice"><input type="radio" name="12-use-effect-q5" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Filtering the snacks by the search text</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: D.</strong></p>
+<p>The filtered list is calculated from state you already have. Compute it while rendering. Effects are for syncing with things outside React.</p>
+
+</details>
+</fieldset>
+<p class="quiz-score" aria-live="polite"></p>
+</div>
+<h2 id="exercise">Try it yourself</h2>
+<div class="exercise">
+<h3>The page title</h3>
+<p>Make the browser tab show the number of snacks in the basket, like &quot;(3) Yune&#39;s Snack Shelf&quot;, and just &quot;Yune&#39;s Snack Shelf&quot; when the basket is empty.</p>
+
+<details><summary><span>Hint</span></summary>
+<p><code>document.title</code> is outside React, so setting it is an effect. What does it depend on?</p>
+</details>
+<details><summary><span>One way to do it</span></summary>
+<pre class="code" data-lang="tsx"><code><span class="token function">useEffect</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  document<span class="token punctuation">.</span>title <span class="token operator">=</span> basket<span class="token punctuation">.</span>length <span class="token operator">></span> <span class="token number">0</span> <span class="token operator">?</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">(</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>basket<span class="token punctuation">.</span>length<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">) Yune's Snack Shelf</span><span class="token template-punctuation string">`</span></span> <span class="token operator">:</span> <span class="token string">"Yune's Snack Shelf"</span>
+<span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">[</span>basket<span class="token punctuation">.</span>length<span class="token punctuation">]</span><span class="token punctuation">)</span></code></pre>
+<p>The dependency is <code>basket.length</code>: the only value it reads. (Lesson 33 shows React 19&#39;s <code>&lt;title&gt;</code> element, which does this without an effect.)</p>
+</details>
+</div>
+</section>
   </article>
 </main>
 <nav class="pager" aria-label="Lessons">

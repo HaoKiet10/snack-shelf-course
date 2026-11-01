@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/site.css">
-<script src="../assets/site.js" defer></script>
+<link rel="stylesheet" href="../assets/site.css?v=57f4a1da">
+<script src="../assets/site.js?v=57f4a1da" defer></script>
 </head>
 <body class="lesson-page">
 <header class="bar">
@@ -111,7 +111,121 @@ ref<span class="token punctuation">.</span>current <span class="token operator">
 
 <p>It listens on <code>window</code>, outside React. The effect adds the listener after mounting, and the cleanup removes it on unmount, so listeners do not pile up.</p>
 </details>
+<section class="practice" aria-labelledby="practice">
+<h2 id="practice">Practice</h2>
+<p class="practice-intro">Pick an answer to see if it's right. Wrong picks are crossed out, so you can try again.</p>
+<div class="quiz">
+<fieldset class="quiz-q" data-answer="1">
+<legend class="visually-hidden">Question 1</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">1</span><div><p>What happens when you change <code>ref.current</code>?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="20-use-ref-q1" value="0"><span class="quiz-letter">A</span><span class="quiz-text">React throws an error</span></label>
+<label class="quiz-choice"><input type="radio" name="20-use-ref-q1" value="1"><span class="quiz-letter">B</span><span class="quiz-text">The value changes, but React doesn&#39;t re-render</span></label>
+<label class="quiz-choice"><input type="radio" name="20-use-ref-q1" value="2"><span class="quiz-letter">C</span><span class="quiz-text">The DOM updates automatically</span></label>
+<label class="quiz-choice"><input type="radio" name="20-use-ref-q1" value="3"><span class="quiz-letter">D</span><span class="quiz-text">The component re-renders</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: B.</strong></p>
+<p>A ref is a box React keeps between renders, which it doesn&#39;t watch.</p>
 
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="2">
+<legend class="visually-hidden">Question 2</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">2</span><div><p><code>const inputRef = useRef&lt;HTMLInputElement&gt;(null)</code> and <code>&lt;input ref={inputRef} /&gt;</code>. When is <code>inputRef.current</code> the input element?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="20-use-ref-q2" value="0"><span class="quiz-letter">A</span><span class="quiz-text">During the first render</span></label>
+<label class="quiz-choice"><input type="radio" name="20-use-ref-q2" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Only after a click</span></label>
+<label class="quiz-choice"><input type="radio" name="20-use-ref-q2" value="2"><span class="quiz-letter">C</span><span class="quiz-text">After React has put the input in the DOM</span></label>
+<label class="quiz-choice"><input type="radio" name="20-use-ref-q2" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Never; you must set it yourself</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: C.</strong></p>
+<p>React fills it in after committing to the DOM, and sets it back to <code>null</code> when the element is removed. That&#39;s why you write <code>inputRef.current?.focus()</code>.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="3">
+<legend class="visually-hidden">Question 3</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">3</span><div><p>Which belongs in a ref rather than state?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="20-use-ref-q3" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Whether the ✓ flash is showing</span></label>
+<label class="quiz-choice"><input type="radio" name="20-use-ref-q3" value="1"><span class="quiz-letter">B</span><span class="quiz-text">The search text</span></label>
+<label class="quiz-choice"><input type="radio" name="20-use-ref-q3" value="2"><span class="quiz-letter">C</span><span class="quiz-text">The number of likes</span></label>
+<label class="quiz-choice"><input type="radio" name="20-use-ref-q3" value="3"><span class="quiz-letter">D</span><span class="quiz-text">The id of a <code>setTimeout</code>, needed only to cancel it later</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: D.</strong></p>
+<p>If the screen depends on it, it&#39;s state. A timer id is never shown, so a ref is enough.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="1">
+<legend class="visually-hidden">Question 4</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">4</span><div><pre class="code" data-lang="tsx"><code><span class="token keyword">const</span> clicks <span class="token operator">=</span> <span class="token function">useRef</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> clicks<span class="token punctuation">.</span>current<span class="token operator">++</span><span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">Clicked </span><span class="token punctuation">{</span>clicks<span class="token punctuation">.</span>current<span class="token punctuation">}</span><span class="token plain-text"> times</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span></code></pre>
+<p>What&#39;s wrong?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="20-use-ref-q4" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Refs can&#39;t hold numbers</span></label>
+<label class="quiz-choice"><input type="radio" name="20-use-ref-q4" value="1"><span class="quiz-letter">B</span><span class="quiz-text">The number on the button won&#39;t update, because changing a ref doesn&#39;t re-render</span></label>
+<label class="quiz-choice"><input type="radio" name="20-use-ref-q4" value="2"><span class="quiz-letter">C</span><span class="quiz-text">It counts every click twice</span></label>
+<label class="quiz-choice"><input type="radio" name="20-use-ref-q4" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Nothing</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: B.</strong></p>
+<p>If it&#39;s displayed, it must be state.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="2">
+<legend class="visually-hidden">Question 5</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">5</span><div><p>Why does the <code>/</code> shortcut&#39;s effect return a cleanup that removes the listener?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="20-use-ref-q5" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Listeners expire otherwise</span></label>
+<label class="quiz-choice"><input type="radio" name="20-use-ref-q5" value="1"><span class="quiz-letter">B</span><span class="quiz-text">React requires every effect to return something</span></label>
+<label class="quiz-choice"><input type="radio" name="20-use-ref-q5" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Without it, every mount adds another listener to <code>window</code> and they pile up</span></label>
+<label class="quiz-choice"><input type="radio" name="20-use-ref-q5" value="3"><span class="quiz-letter">D</span><span class="quiz-text">To focus the input</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: C.</strong></p>
+<p><code>window</code> is outside React. Anything an effect adds there, its cleanup should remove.</p>
+
+</details>
+</fieldset>
+<p class="quiz-score" aria-live="polite"></p>
+</div>
+<h2 id="exercise">Try it yourself</h2>
+<div class="exercise">
+<h3>Scroll to the basket</h3>
+<p>On the shelf page, add a &quot;Go to basket&quot; button that smoothly scrolls the basket panel into view (lesson 17–20 layout, where the basket panel is under the shelf).</p>
+
+<details><summary><span>Hint</span></summary>
+<p>Put a ref on the basket panel&#39;s outer element. <code>element.scrollIntoView({ behavior: &#39;smooth&#39; })</code> does the scrolling.</p>
+</details>
+<details><summary><span>One way to do it</span></summary>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">const</span> basketRef <span class="token operator">=</span> <span class="token generic-function"><span class="token function">useRef</span><span class="token generic class-name"><span class="token operator">&lt;</span>HTMLDivElement<span class="token operator">></span></span></span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">)</span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> basketRef<span class="token punctuation">.</span>current<span class="token operator">?.</span><span class="token function">scrollIntoView</span><span class="token punctuation">(</span><span class="token punctuation">{</span> behavior<span class="token operator">:</span> <span class="token string">'smooth'</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+  Go to basket
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">ref</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>basketRef<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">BasketPanel</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span></code></pre>
+<p><code>Panel</code> doesn&#39;t accept a ref, so a plain <code>&lt;div&gt;</code> around it holds it. (In React 19 a component can also accept <code>ref</code> as a normal prop and pass it on.)</p>
+</details>
+</div>
+</section>
   </article>
 </main>
 <nav class="pager" aria-label="Lessons">

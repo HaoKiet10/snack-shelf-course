@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/site.css">
-<script src="../assets/site.js" defer></script>
+<link rel="stylesheet" href="../assets/site.css?v=57f4a1da">
+<script src="../assets/site.js?v=57f4a1da" defer></script>
 </head>
 <body class="lesson-page">
 <header class="bar">
@@ -148,7 +148,137 @@
 
 <p><code>as</code> tells TypeScript to assume the type without checking anything at runtime. A type guard actually checks the value, and only then lets TypeScript treat it as a <code>Snack</code>.</p>
 </details>
+<section class="practice" aria-labelledby="practice">
+<h2 id="practice">Practice</h2>
+<p class="practice-intro">Pick an answer to see if it's right. Wrong picks are crossed out, so you can try again.</p>
+<div class="quiz">
+<fieldset class="quiz-q" data-answer="0">
+<legend class="visually-hidden">Question 1</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">1</span><div><p>In <code>&lt;SegmentedControl options={SORTS} value={sort} onChange={…} /&gt;</code>, where does the generic <code>T</code> come from?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="30-typescript-patterns-q1" value="0"><span class="quiz-letter">A</span><span class="quiz-text">TypeScript infers it from the props, here <code>&#39;name&#39; | &#39;price&#39; | &#39;likes&#39;</code></span></label>
+<label class="quiz-choice"><input type="radio" name="30-typescript-patterns-q1" value="1"><span class="quiz-letter">B</span><span class="quiz-text">From the component&#39;s default export</span></label>
+<label class="quiz-choice"><input type="radio" name="30-typescript-patterns-q1" value="2"><span class="quiz-letter">C</span><span class="quiz-text">You must always write <code>&lt;SegmentedControl&lt;SortKey&gt;&gt;</code></span></label>
+<label class="quiz-choice"><input type="radio" name="30-typescript-patterns-q1" value="3"><span class="quiz-letter">D</span><span class="quiz-text">It&#39;s always <code>string</code></span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: A.</strong></p>
+<p>Inference fills <code>T</code> from <code>options</code> and <code>value</code>, so <code>onChange</code> receives exactly those values.</p>
 
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="2">
+<legend class="visually-hidden">Question 2</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">2</span><div><p>What would <code>SortKey</code> be without <code>as const</code> on <code>SORTS</code>?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="30-typescript-patterns-q2" value="0"><span class="quiz-letter">A</span><span class="quiz-text">A type error</span></label>
+<label class="quiz-choice"><input type="radio" name="30-typescript-patterns-q2" value="1"><span class="quiz-letter">B</span><span class="quiz-text">The same union</span></label>
+<label class="quiz-choice"><input type="radio" name="30-typescript-patterns-q2" value="2"><span class="quiz-letter">C</span><span class="quiz-text"><code>string</code></span></label>
+<label class="quiz-choice"><input type="radio" name="30-typescript-patterns-q2" value="3"><span class="quiz-letter">D</span><span class="quiz-text"><code>never</code></span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: C.</strong></p>
+<p>Without <code>as const</code>, the literal values widen to <code>string</code> in the array&#39;s type.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="3">
+<legend class="visually-hidden">Question 3</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">3</span><div><p>What does <code>satisfies readonly Option&lt;string&gt;[]</code> do?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="30-typescript-patterns-q3" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Converts the array to the <code>Option</code> type</span></label>
+<label class="quiz-choice"><input type="radio" name="30-typescript-patterns-q3" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Makes the array read-only at runtime</span></label>
+<label class="quiz-choice"><input type="radio" name="30-typescript-patterns-q3" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Nothing; it&#39;s a comment</span></label>
+<label class="quiz-choice"><input type="radio" name="30-typescript-patterns-q3" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Checks the shape fits <code>Option</code> without changing the array&#39;s own, more exact type</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: D.</strong></p>
+<p>A type annotation would check too, but throw away the exact values <code>as const</code> kept.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="3">
+<legend class="visually-hidden">Question 4</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">4</span><div><p><code>type ButtonProps = ComponentProps&lt;&#39;button&#39;&gt; &amp; { variant?: &#39;soft&#39; | &#39;primary&#39; }</code>. What does <code>ComponentProps&lt;&#39;button&#39;&gt;</code> give?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="30-typescript-patterns-q4" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Only <code>onClick</code></span></label>
+<label class="quiz-choice"><input type="radio" name="30-typescript-patterns-q4" value="1"><span class="quiz-letter">B</span><span class="quiz-text">A ref to the button</span></label>
+<label class="quiz-choice"><input type="radio" name="30-typescript-patterns-q4" value="2"><span class="quiz-letter">C</span><span class="quiz-text">The button&#39;s CSS</span></label>
+<label class="quiz-choice"><input type="radio" name="30-typescript-patterns-q4" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Every prop a real <code>&lt;button&gt;</code> accepts</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: D.</strong></p>
+<p>Spread <code>...rest</code> onto the <code>&lt;button&gt;</code>, and your component accepts everything a button does.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="1">
+<legend class="visually-hidden">Question 5</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">5</span><div><p>What&#39;s the difference between <code>data as Snack[]</code> and filtering with <code>isSnack</code>?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="30-typescript-patterns-q5" value="0"><span class="quiz-letter">A</span><span class="quiz-text">None</span></label>
+<label class="quiz-choice"><input type="radio" name="30-typescript-patterns-q5" value="1"><span class="quiz-letter">B</span><span class="quiz-text"><code>as</code> only tells TypeScript to assume; the type guard actually checks each value at runtime</span></label>
+<label class="quiz-choice"><input type="radio" name="30-typescript-patterns-q5" value="2"><span class="quiz-letter">C</span><span class="quiz-text"><code>as</code> is slower</span></label>
+<label class="quiz-choice"><input type="radio" name="30-typescript-patterns-q5" value="3"><span class="quiz-letter">D</span><span class="quiz-text">The guard only works in tests</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: B.</strong></p>
+<p>Data from outside can be anything. Start from <code>unknown</code> and check.</p>
+
+</details>
+</fieldset>
+<p class="quiz-score" aria-live="polite"></p>
+</div>
+<h2 id="exercise">Try it yourself</h2>
+<div class="exercise">
+<h3>A generic Select</h3>
+<p>Write a <code>Select&lt;T extends string&gt;</code> component with <code>label</code>, <code>options: readonly Option&lt;T&gt;[]</code>, <code>value: T</code> and <code>onChange: (value: T) =&gt; void</code>, rendering a real <code>&lt;select&gt;</code>. Use it for the sort on narrow screens.</p>
+
+<details><summary><span>Hint</span></summary>
+<p><code>e.target.value</code> is a <code>string</code>. Find the matching option instead of casting, so a wrong value can&#39;t slip through.</p>
+</details>
+<details><summary><span>One way to do it</span></summary>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">type</span> <span class="token class-name">SelectProps<span class="token operator">&lt;</span><span class="token constant">T</span> <span class="token keyword">extends</span> <span class="token builtin">string</span><span class="token operator">></span></span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+  label<span class="token operator">:</span> <span class="token builtin">string</span>
+  options<span class="token operator">:</span> <span class="token keyword">readonly</span> Option<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">></span><span class="token punctuation">[</span><span class="token punctuation">]</span>
+  value<span class="token operator">:</span> <span class="token constant">T</span>
+  <span class="token function-variable function">onChange</span><span class="token operator">:</span> <span class="token punctuation">(</span>value<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token keyword">void</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token generic-function"><span class="token function">Select</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token constant">T</span> <span class="token keyword">extends</span> <span class="token builtin">string</span><span class="token operator">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">{</span> label<span class="token punctuation">,</span> options<span class="token punctuation">,</span> value<span class="token punctuation">,</span> onChange <span class="token punctuation">}</span><span class="token operator">:</span> SelectProps<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token punctuation">{</span>label<span class="token punctuation">}</span><span class="token punctuation">{</span><span class="token string">' '</span><span class="token punctuation">}</span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>select</span>
+        <span class="token attr-name">value</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>value<span class="token punctuation">}</span></span>
+        <span class="token attr-name">onChange</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+          <span class="token keyword">const</span> picked <span class="token operator">=</span> options<span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span><span class="token punctuation">(</span>o<span class="token punctuation">)</span> <span class="token operator">=></span> o<span class="token punctuation">.</span>value <span class="token operator">===</span> e<span class="token punctuation">.</span>target<span class="token punctuation">.</span>value<span class="token punctuation">)</span>
+          <span class="token keyword">if</span> <span class="token punctuation">(</span>picked<span class="token punctuation">)</span> <span class="token function">onChange</span><span class="token punctuation">(</span>picked<span class="token punctuation">.</span>value<span class="token punctuation">)</span>
+        <span class="token punctuation">}</span><span class="token punctuation">}</span></span>
+      <span class="token punctuation">></span></span><span class="token plain-text">
+        </span><span class="token punctuation">{</span>options<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span>o<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">(</span>
+          <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>option</span> <span class="token attr-name">key</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>o<span class="token punctuation">.</span>value<span class="token punctuation">}</span></span> <span class="token attr-name">value</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>o<span class="token punctuation">.</span>value<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+            </span><span class="token punctuation">{</span>o<span class="token punctuation">.</span>label<span class="token punctuation">}</span><span class="token plain-text">
+          </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>option</span><span class="token punctuation">></span></span>
+        <span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>select</span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>label</span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<p><code>find</code> returns an <code>Option&lt;T&gt;</code>, so <code>picked.value</code> is a <code>T</code> with no <code>as</code> needed.</p>
+</details>
+</div>
+</section>
   </article>
 </main>
 <nav class="pager" aria-label="Lessons">

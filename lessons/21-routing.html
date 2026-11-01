@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/site.css">
-<script src="../assets/site.js" defer></script>
+<link rel="stylesheet" href="../assets/site.css?v=57f4a1da">
+<script src="../assets/site.js?v=57f4a1da" defer></script>
 </head>
 <body class="lesson-page">
 <header class="bar">
@@ -145,7 +145,125 @@
 
 <p>ShelfPage unmounts when you go to another page, which would throw its state away. The URL survives navigation, reloads and sharing.</p>
 </details>
+<section class="practice" aria-labelledby="practice">
+<h2 id="practice">Practice</h2>
+<p class="practice-intro">Pick an answer to see if it's right. Wrong picks are crossed out, so you can try again.</p>
+<div class="quiz">
+<fieldset class="quiz-q" data-answer="3">
+<legend class="visually-hidden">Question 1</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">1</span><div><p>Why use <code>&lt;Link to=&quot;/basket&quot;&gt;</code> instead of <code>&lt;a href=&quot;/basket&quot;&gt;</code>?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="21-routing-q1" value="0"><span class="quiz-letter">A</span><span class="quiz-text"><code>&lt;Link&gt;</code> is faster to type</span></label>
+<label class="quiz-choice"><input type="radio" name="21-routing-q1" value="1"><span class="quiz-letter">B</span><span class="quiz-text"><code>&lt;a&gt;</code> doesn&#39;t work in JSX</span></label>
+<label class="quiz-choice"><input type="radio" name="21-routing-q1" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Links are styled differently</span></label>
+<label class="quiz-choice"><input type="radio" name="21-routing-q1" value="3"><span class="quiz-letter">D</span><span class="quiz-text"><code>&lt;a&gt;</code> reloads the whole page and loses React&#39;s state; <code>&lt;Link&gt;</code> changes the URL and lets the router render</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: D.</strong></p>
+<p><code>&lt;Link&gt;</code> still renders a real <code>&lt;a&gt;</code>, so new tabs and screen readers work, but it handles normal clicks itself.</p>
 
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="2">
+<legend class="visually-hidden">Question 2</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">2</span><div><p>What does <code>&lt;Outlet /&gt;</code> do in a layout route?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="21-routing-q2" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Exits the router</span></label>
+<label class="quiz-choice"><input type="radio" name="21-routing-q2" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Links to another page</span></label>
+<label class="quiz-choice"><input type="radio" name="21-routing-q2" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Marks where the child route that matches the URL is rendered</span></label>
+<label class="quiz-choice"><input type="radio" name="21-routing-q2" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Shows a 404 page</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: C.</strong></p>
+<p>It&#39;s the layout&#39;s hole for the current page, like <code>children</code> filled in by the router.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="2">
+<legend class="visually-hidden">Question 3</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">3</span><div><p>For the route <code>snack/:id</code> and the URL <code>#/snack/mochi</code>, what does <code>useParams()</code> return?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="21-routing-q3" value="0"><span class="quiz-letter">A</span><span class="quiz-text"><code>{ snack: &#39;mochi&#39; }</code></span></label>
+<label class="quiz-choice"><input type="radio" name="21-routing-q3" value="1"><span class="quiz-letter">B</span><span class="quiz-text"><code>&#39;mochi&#39;</code></span></label>
+<label class="quiz-choice"><input type="radio" name="21-routing-q3" value="2"><span class="quiz-letter">C</span><span class="quiz-text"><code>{ id: &#39;mochi&#39; }</code></span></label>
+<label class="quiz-choice"><input type="radio" name="21-routing-q3" value="3"><span class="quiz-letter">D</span><span class="quiz-text"><code>{ path: &#39;/snack/mochi&#39; }</code></span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: C.</strong></p>
+<p>The name after the colon becomes the key. Its type is <code>string | undefined</code>.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="3">
+<legend class="visually-hidden">Question 4</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">4</span><div><p>Why does lesson 21 keep the search text in the URL (<code>?q=mel</code>)?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="21-routing-q4" value="0"><span class="quiz-letter">A</span><span class="quiz-text">To hide it from users</span></label>
+<label class="quiz-choice"><input type="radio" name="21-routing-q4" value="1"><span class="quiz-letter">B</span><span class="quiz-text">URLs are faster than state</span></label>
+<label class="quiz-choice"><input type="radio" name="21-routing-q4" value="2"><span class="quiz-letter">C</span><span class="quiz-text">React Router requires it</span></label>
+<label class="quiz-choice"><input type="radio" name="21-routing-q4" value="3"><span class="quiz-letter">D</span><span class="quiz-text">The shelf page unmounts when you leave it, so state would be lost; the URL survives Back, reloads and sharing</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: D.</strong></p>
+<p>Things worth bookmarking or sharing, like searches and filters, belong in the URL.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="1">
+<legend class="visually-hidden">Question 5</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">5</span><div><p>Why does the app use <code>HashRouter</code> on GitHub Pages?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="21-routing-q5" value="0"><span class="quiz-letter">A</span><span class="quiz-text">It&#39;s the only router in React Router</span></label>
+<label class="quiz-choice"><input type="radio" name="21-routing-q5" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Everything after <code>#</code> never reaches the server, so reloading or opening any address still loads <code>index.html</code></span></label>
+<label class="quiz-choice"><input type="radio" name="21-routing-q5" value="2"><span class="quiz-letter">C</span><span class="quiz-text">It&#39;s faster</span></label>
+<label class="quiz-choice"><input type="radio" name="21-routing-q5" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Hash URLs are better for SEO</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: B.</strong></p>
+<p>With <code>BrowserRouter</code>, the server would have to send <code>index.html</code> for every path, which GitHub Pages can&#39;t be told to do.</p>
+
+</details>
+</fieldset>
+<p class="quiz-score" aria-live="polite"></p>
+</div>
+<h2 id="exercise">Try it yourself</h2>
+<div class="exercise">
+<h3>A &quot;Liked&quot; page</h3>
+<p>Add a page at <code>/liked</code> that shows only the snacks with at least one like, and a link to it in the header.</p>
+
+<details><summary><span>Hint</span></summary>
+<p>A new component in <code>pages/</code>, a new <code>&lt;Route path=&quot;liked&quot;&gt;</code>, the likes from <code>useLikes()</code>, and <code>&lt;NavLink&gt;</code> in the Header.</p>
+</details>
+<details><summary><span>One way to do it</span></summary>
+<pre class="code" data-lang="tsx"><code><span class="token comment">// pages/LikedPage.tsx</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">LikedPage</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> <span class="token punctuation">{</span> snacks <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">useSnackData</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">const</span> <span class="token punctuation">{</span> likes <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">useLikes</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">const</span> liked <span class="token operator">=</span> snacks<span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">(</span>likes<span class="token punctuation">[</span>s<span class="token punctuation">.</span>id<span class="token punctuation">]</span> <span class="token operator">??</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span>
+
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>liked<span class="token punctuation">.</span>length <span class="token operator">===</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Panel</span></span> <span class="token attr-name">title</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>No favourites yet<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">Press ❤ on a snack you like.</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Panel</span></span><span class="token punctuation">></span></span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">return</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Shelf</span></span> <span class="token attr-name">snacks</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>liked<span class="token punctuation">}</span></span> <span class="token punctuation">/></span></span>
+<span class="token punctuation">}</span></code></pre>
+<pre class="code" data-lang="tsx"><code><span class="token comment">// App.tsx</span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Route</span></span> <span class="token attr-name">path</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>liked<span class="token punctuation">"</span></span> <span class="token attr-name">element</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">LikedPage</span></span> <span class="token punctuation">/></span></span><span class="token punctuation">}</span></span> <span class="token punctuation">/></span></span></code></pre>
+<pre class="code" data-lang="tsx"><code><span class="token comment">// Header.tsx</span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">NavLink</span></span> <span class="token attr-name">to</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/liked<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">❤ Liked</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">NavLink</span></span><span class="token punctuation">></span></span></code></pre>
+<p>(In lesson 21 pages also check <code>status</code>; from lesson 28 they don&#39;t need to.)</p>
+</details>
+</div>
+</section>
   </article>
 </main>
 <nav class="pager" aria-label="Lessons">

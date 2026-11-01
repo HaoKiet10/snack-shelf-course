@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/site.css">
-<script src="../assets/site.js" defer></script>
+<link rel="stylesheet" href="../assets/site.css?v=57f4a1da">
+<script src="../assets/site.js?v=57f4a1da" defer></script>
 </head>
 <body class="lesson-page">
 <header class="bar">
@@ -135,7 +135,113 @@ btn<span class="token punctuation">.</span><span class="token function">addEvent
 
 <p><code>setCount(5)</code> runs immediately, during render, and <code>onClick</code> receives its return value (<code>undefined</code>) instead of a function. Setting state during render causes another render, which runs it again, in a loop. Write <code>onClick={() =&gt; setCount(5)}</code>.</p>
 </details>
+<section class="practice" aria-labelledby="practice">
+<h2 id="practice">Practice</h2>
+<p class="practice-intro">Pick an answer to see if it's right. Wrong picks are crossed out, so you can try again.</p>
+<div class="quiz">
+<fieldset class="quiz-q" data-answer="1">
+<legend class="visually-hidden">Question 1</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">1</span><div><p>What does <code>npm run dev</code> do in a Vite project?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="03-first-react-app-q1" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Builds the final files for a web host</span></label>
+<label class="quiz-choice"><input type="radio" name="03-first-react-app-q1" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Starts a development server that serves your app and updates the page as you save</span></label>
+<label class="quiz-choice"><input type="radio" name="03-first-react-app-q1" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Installs React</span></label>
+<label class="quiz-choice"><input type="radio" name="03-first-react-app-q1" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Runs the tests</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: B.</strong></p>
+<p>The dev server translates TypeScript and JSX on the fly and pushes changes to the open page (Hot Module Replacement). Building for production is <code>npm run build</code> (lesson 14).</p>
 
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="2">
+<legend class="visually-hidden">Question 2</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">2</span><div><p>In what order does the page start up?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="03-first-react-app-q2" value="0"><span class="quiz-letter">A</span><span class="quiz-text"><code>App.tsx</code> → <code>index.html</code> → <code>main.tsx</code></span></label>
+<label class="quiz-choice"><input type="radio" name="03-first-react-app-q2" value="1"><span class="quiz-letter">B</span><span class="quiz-text"><code>main.tsx</code> → <code>index.html</code> → <code>App.tsx</code></span></label>
+<label class="quiz-choice"><input type="radio" name="03-first-react-app-q2" value="2"><span class="quiz-letter">C</span><span class="quiz-text"><code>index.html</code> → <code>main.tsx</code> → <code>App.tsx</code></span></label>
+<label class="quiz-choice"><input type="radio" name="03-first-react-app-q2" value="3"><span class="quiz-letter">D</span><span class="quiz-text"><code>App.tsx</code> → <code>main.tsx</code> → <code>index.html</code></span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: C.</strong></p>
+<p>The browser loads <code>index.html</code>, whose <code>&lt;script type=&quot;module&quot;&gt;</code> loads <code>main.tsx</code>, which imports <code>App</code> and tells React to render it into <code>&lt;div id=&quot;root&quot;&gt;</code>.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="1">
+<legend class="visually-hidden">Question 3</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">3</span><div><pre class="code" data-lang="tsx"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">setCount</span><span class="token punctuation">(</span><span class="token punctuation">(</span>count<span class="token punctuation">)</span> <span class="token operator">=></span> count <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">}</span></span><span class="token punctuation">></span></span></code></pre>
+<p>Why is there an arrow function around <code>setCount(...)</code>?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="03-first-react-app-q3" value="0"><span class="quiz-letter">A</span><span class="quiz-text">To make the button faster</span></label>
+<label class="quiz-choice"><input type="radio" name="03-first-react-app-q3" value="1"><span class="quiz-letter">B</span><span class="quiz-text">So React gets a function to call later, on click, instead of calling setCount immediately while drawing</span></label>
+<label class="quiz-choice"><input type="radio" name="03-first-react-app-q3" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Arrow functions are required by TypeScript</span></label>
+<label class="quiz-choice"><input type="radio" name="03-first-react-app-q3" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Because onClick only accepts strings</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: B.</strong></p>
+<p><code>onClick={setCount(5)}</code> would run <code>setCount(5)</code> during rendering and pass its result to onClick. Wrapping it in <code>() =&gt; …</code> passes a function, which React calls when the click happens.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="3">
+<legend class="visually-hidden">Question 4</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">4</span><div><p>What does <code>(count) =&gt; count + 1</code> passed to <code>setCount</code> mean?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="03-first-react-app-q4" value="0"><span class="quiz-letter">A</span><span class="quiz-text">It is the same as <code>setCount(count + 1)</code> in every case</span></label>
+<label class="quiz-choice"><input type="radio" name="03-first-react-app-q4" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Add 1 to every count in the app</span></label>
+<label class="quiz-choice"><input type="radio" name="03-first-react-app-q4" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Set count to the function itself</span></label>
+<label class="quiz-choice"><input type="radio" name="03-first-react-app-q4" value="3"><span class="quiz-letter">D</span><span class="quiz-text">&quot;Take the latest count and return it plus one&quot;: the updater form</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: D.</strong></p>
+<p>Passing a function lets React give you the most recent value, which matters when several updates happen before the next render (lesson 6).</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="2">
+<legend class="visually-hidden">Question 5</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">5</span><div><p>What does TypeScript add to the project?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="03-first-react-app-q5" value="0"><span class="quiz-letter">A</span><span class="quiz-text">A different version of React</span></label>
+<label class="quiz-choice"><input type="radio" name="03-first-react-app-q5" value="1"><span class="quiz-letter">B</span><span class="quiz-text">It makes the app run faster in the browser</span></label>
+<label class="quiz-choice"><input type="radio" name="03-first-react-app-q5" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Type checking while you write, so many mistakes show up before the code runs</span></label>
+<label class="quiz-choice"><input type="radio" name="03-first-react-app-q5" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Automatic tests</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: C.</strong></p>
+<p>Types are removed when the code is built; the browser runs plain JavaScript. Their value is catching mistakes in the editor and in <code>tsc</code>.</p>
+
+</details>
+</fieldset>
+<p class="quiz-score" aria-live="polite"></p>
+</div>
+<h2 id="exercise">Try it yourself</h2>
+<div class="exercise">
+<h3>Change the starter</h3>
+<p>In a fresh Vite project, make the counter button go up by 2 on each click, and add a second button that resets it to 0.</p>
+
+<details><summary><span>Hint</span></summary>
+<p>Both buttons use the same <code>setCount</code>. The reset doesn&#39;t need the previous value.</p>
+</details>
+<details><summary><span>One way to do it</span></summary>
+<pre class="code" data-lang="tsx"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">setCount</span><span class="token punctuation">(</span><span class="token punctuation">(</span>count<span class="token punctuation">)</span> <span class="token operator">=></span> count <span class="token operator">+</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">count is </span><span class="token punctuation">{</span>count<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">setCount</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">Reset</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span></code></pre>
+<p>The reset can pass a plain value, because the new value doesn&#39;t depend on the old one.</p>
+</details>
+</div>
+</section>
   </article>
 </main>
 <nav class="pager" aria-label="Lessons">

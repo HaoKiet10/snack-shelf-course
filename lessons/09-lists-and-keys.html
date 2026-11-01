@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/site.css">
-<script src="../assets/site.js" defer></script>
+<link rel="stylesheet" href="../assets/site.css?v=57f4a1da">
+<script src="../assets/site.js?v=57f4a1da" defer></script>
 </head>
 <body class="lesson-page">
 <header class="bar">
@@ -141,7 +141,120 @@ after:   key 0 = Onigiri                 &quot;key 0 still exists, keep its stat
 
 <p>It can be computed from <code>SNACKS</code> and <code>query</code> on every render. Storing it as state would mean keeping it in sync by hand whenever either changes.</p>
 </details>
+<section class="practice" aria-labelledby="practice">
+<h2 id="practice">Practice</h2>
+<p class="practice-intro">Pick an answer to see if it's right. Wrong picks are crossed out, so you can try again.</p>
+<div class="quiz">
+<fieldset class="quiz-q" data-answer="3">
+<legend class="visually-hidden">Question 1</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">1</span><div><p>What does <code>SNACKS.map((s) =&gt; &lt;SnackCard key={s.id} name={s.name} /&gt;)</code> return?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="09-lists-and-keys-q1" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Nothing; map only loops</span></label>
+<label class="quiz-choice"><input type="radio" name="09-lists-and-keys-q1" value="1"><span class="quiz-letter">B</span><span class="quiz-text">One SnackCard</span></label>
+<label class="quiz-choice"><input type="radio" name="09-lists-and-keys-q1" value="2"><span class="quiz-letter">C</span><span class="quiz-text">The SNACKS array, changed in place</span></label>
+<label class="quiz-choice"><input type="radio" name="09-lists-and-keys-q1" value="3"><span class="quiz-letter">D</span><span class="quiz-text">An array of SnackCard elements, one per snack</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: D.</strong></p>
+<p><code>map</code> returns a new array of whatever the function returns. JSX renders an array by rendering each item in order.</p>
 
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="2">
+<legend class="visually-hidden">Question 2</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">2</span><div><p>What is a <code>key</code> for?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="09-lists-and-keys-q2" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Styling list items</span></label>
+<label class="quiz-choice"><input type="radio" name="09-lists-and-keys-q2" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Sorting the list</span></label>
+<label class="quiz-choice"><input type="radio" name="09-lists-and-keys-q2" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Telling React which item is which across renders, so state stays with the right item</span></label>
+<label class="quiz-choice"><input type="radio" name="09-lists-and-keys-q2" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Making items clickable</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: C.</strong></p>
+<p>Without stable keys React matches items by position, so after filtering or reordering, state can end up on the wrong item.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="1">
+<legend class="visually-hidden">Question 3</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">3</span><div><p>The list can be filtered. Which key is best?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="09-lists-and-keys-q3" value="0"><span class="quiz-letter">A</span><span class="quiz-text"><code>key={index}</code></span></label>
+<label class="quiz-choice"><input type="radio" name="09-lists-and-keys-q3" value="1"><span class="quiz-letter">B</span><span class="quiz-text"><code>key={snack.id}</code></span></label>
+<label class="quiz-choice"><input type="radio" name="09-lists-and-keys-q3" value="2"><span class="quiz-letter">C</span><span class="quiz-text"><code>key={Math.random()}</code></span></label>
+<label class="quiz-choice"><input type="radio" name="09-lists-and-keys-q3" value="3"><span class="quiz-letter">D</span><span class="quiz-text">No key at all</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: B.</strong></p>
+<p>The index changes when items are removed; a random key is new every render, which throws state away. A stable id from the data is right.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="2">
+<legend class="visually-hidden">Question 4</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">4</span><div><p>Can you write a <code>for</code> loop directly inside JSX&#39;s <code>{ }</code>?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="09-lists-and-keys-q4" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Only in TypeScript files</span></label>
+<label class="quiz-choice"><input type="radio" name="09-lists-and-keys-q4" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Only with a key</span></label>
+<label class="quiz-choice"><input type="radio" name="09-lists-and-keys-q4" value="2"><span class="quiz-letter">C</span><span class="quiz-text">No, braces take an expression, and a <code>for</code> loop is a statement</span></label>
+<label class="quiz-choice"><input type="radio" name="09-lists-and-keys-q4" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Yes, any JavaScript works there</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: C.</strong></p>
+<p>Inside braces you need something that produces a value. <code>map</code> produces an array; a <code>for</code> loop produces nothing. You can still loop before the <code>return</code>.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="2">
+<legend class="visually-hidden">Question 5</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">5</span><div><p>In <code>SNACKS.filter((s) =&gt; s.price &lt; 2.5)</code>, where does <code>s</code> come from?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="09-lists-and-keys-q5" value="0"><span class="quiz-letter">A</span><span class="quiz-text">It&#39;s a global variable React defines</span></label>
+<label class="quiz-choice"><input type="radio" name="09-lists-and-keys-q5" value="1"><span class="quiz-letter">B</span><span class="quiz-text">It must be declared with <code>let s</code> first</span></label>
+<label class="quiz-choice"><input type="radio" name="09-lists-and-keys-q5" value="2"><span class="quiz-letter">C</span><span class="quiz-text">It&#39;s the parameter of your arrow function; <code>filter</code> passes each item in</span></label>
+<label class="quiz-choice"><input type="radio" name="09-lists-and-keys-q5" value="3"><span class="quiz-letter">D</span><span class="quiz-text">It&#39;s always the first snack</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: C.</strong></p>
+<p><code>filter</code> calls your function once per item and passes the item as the first argument. You can name it anything.</p>
+
+</details>
+</fieldset>
+<p class="quiz-score" aria-live="polite"></p>
+</div>
+<h2 id="exercise">Try it yourself</h2>
+<div class="exercise">
+<h3>Cheap snacks only</h3>
+<p>Add a checkbox &quot;Under $2.50&quot; above the shelf. When ticked, show only snacks cheaper than $2.50, combined with the search.</p>
+
+<details><summary><span>Hint</span></summary>
+<p>A boolean <code>useState</code>, a controlled checkbox (<code>checked</code> and <code>onChange</code> with <code>e.target.checked</code>), and one more condition in the <code>filter</code>.</p>
+</details>
+<details><summary><span>One way to do it</span></summary>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">const</span> <span class="token punctuation">[</span>cheapOnly<span class="token punctuation">,</span> setCheapOnly<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">useState</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span>
+
+<span class="token keyword">const</span> visible <span class="token operator">=</span> <span class="token constant">SNACKS</span><span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span>
+  <span class="token punctuation">(</span>s<span class="token punctuation">)</span> <span class="token operator">=></span> s<span class="token punctuation">.</span>name<span class="token punctuation">.</span><span class="token function">toLowerCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">includes</span><span class="token punctuation">(</span>q<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span><span class="token operator">!</span>cheapOnly <span class="token operator">||</span> s<span class="token punctuation">.</span>price <span class="token operator">&lt;</span> <span class="token number">2.5</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+<span class="token punctuation">)</span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span><span class="token punctuation">></span></span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>checkbox<span class="token punctuation">"</span></span> <span class="token attr-name">checked</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>cheapOnly<span class="token punctuation">}</span></span> <span class="token attr-name">onChange</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">setCheapOnly</span><span class="token punctuation">(</span>e<span class="token punctuation">.</span>target<span class="token punctuation">.</span>checked<span class="token punctuation">)</span><span class="token punctuation">}</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
+  Under $2.50
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>label</span><span class="token punctuation">></span></span></code></pre>
+<p><code>visible</code> is still derived: no extra state for the filtered list.</p>
+</details>
+</div>
+</section>
   </article>
 </main>
 <nav class="pager" aria-label="Lessons">

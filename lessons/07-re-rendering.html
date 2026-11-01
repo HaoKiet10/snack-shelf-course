@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/site.css">
-<script src="../assets/site.js" defer></script>
+<link rel="stylesheet" href="../assets/site.css?v=57f4a1da">
+<script src="../assets/site.js?v=57f4a1da" defer></script>
 </head>
 <body class="lesson-page">
 <header class="bar">
@@ -98,7 +98,117 @@ render SnackCard Melon Pan: likes=0</code></pre>
 
 <p>The count lives in React&#39;s box for that card, not in the function. The card stays in the same place in the tree, so React keeps its box and <code>useState</code> returns the stored value.</p>
 </details>
+<section class="practice" aria-labelledby="practice">
+<h2 id="practice">Practice</h2>
+<p class="practice-intro">Pick an answer to see if it's right. Wrong picks are crossed out, so you can try again.</p>
+<div class="quiz">
+<fieldset class="quiz-q" data-answer="3">
+<legend class="visually-hidden">Question 1</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">1</span><div><p>What does &quot;re-render&quot; mean in React?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="07-re-rendering-q1" value="0"><span class="quiz-letter">A</span><span class="quiz-text">The CSS is applied again</span></label>
+<label class="quiz-choice"><input type="radio" name="07-re-rendering-q1" value="1"><span class="quiz-letter">B</span><span class="quiz-text">The browser reloads the page</span></label>
+<label class="quiz-choice"><input type="radio" name="07-re-rendering-q1" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Every DOM element is deleted and recreated</span></label>
+<label class="quiz-choice"><input type="radio" name="07-re-rendering-q1" value="3"><span class="quiz-letter">D</span><span class="quiz-text">React calls the component function again to get its new JSX</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: D.</strong></p>
+<p>A render is a function call. Afterwards React compares the result with the last one and changes only what differs in the DOM.</p>
 
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="1">
+<legend class="visually-hidden">Question 2</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">2</span><div><p>The like count in Pocky&#39;s card changes. Which part of the DOM does React change?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="07-re-rendering-q2" value="0"><span class="quiz-letter">A</span><span class="quiz-text">The whole card</span></label>
+<label class="quiz-choice"><input type="radio" name="07-re-rendering-q2" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Only the text inside the like button (and its class, if that changed)</span></label>
+<label class="quiz-choice"><input type="radio" name="07-re-rendering-q2" value="2"><span class="quiz-letter">C</span><span class="quiz-text">The whole page</span></label>
+<label class="quiz-choice"><input type="radio" name="07-re-rendering-q2" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Nothing until the page is refreshed</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: B.</strong></p>
+<p>A re-render is not a redraw. React compares old and new JSX and touches only the parts that differ.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="0">
+<legend class="visually-hidden">Question 3</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">3</span><div><p>App re-renders. What happens to its child components by default?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="07-re-rendering-q3" value="0"><span class="quiz-letter">A</span><span class="quiz-text">They re-render too</span></label>
+<label class="quiz-choice"><input type="radio" name="07-re-rendering-q3" value="1"><span class="quiz-letter">B</span><span class="quiz-text">They are removed and created again</span></label>
+<label class="quiz-choice"><input type="radio" name="07-re-rendering-q3" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Nothing, children only render once</span></label>
+<label class="quiz-choice"><input type="radio" name="07-re-rendering-q3" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Only the children whose props changed re-render</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: A.</strong></p>
+<p>By default every child of a re-rendering component re-renders. Lesson 27 covers how to skip that when it matters.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="2">
+<legend class="visually-hidden">Question 4</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">4</span><div><p>In development, every <code>console.log</code> in a component appears twice. Why?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="07-re-rendering-q4" value="0"><span class="quiz-letter">A</span><span class="quiz-text">React always renders twice in production too</span></label>
+<label class="quiz-choice"><input type="radio" name="07-re-rendering-q4" value="1"><span class="quiz-letter">B</span><span class="quiz-text">The browser is broken</span></label>
+<label class="quiz-choice"><input type="radio" name="07-re-rendering-q4" value="2"><span class="quiz-letter">C</span><span class="quiz-text">StrictMode renders each component twice on purpose, to catch impure components</span></label>
+<label class="quiz-choice"><input type="radio" name="07-re-rendering-q4" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Each component is mounted twice on the page</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: C.</strong></p>
+<p>StrictMode is development only. If a component gives a different result the second time, it has a side effect it shouldn&#39;t.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="2">
+<legend class="visually-hidden">Question 5</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">5</span><div><p>Which of these does <strong>not</strong> cause a component to re-render?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="07-re-rendering-q5" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Its parent re-rendering</span></label>
+<label class="quiz-choice"><input type="radio" name="07-re-rendering-q5" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Its own state changing</span></label>
+<label class="quiz-choice"><input type="radio" name="07-re-rendering-q5" value="2"><span class="quiz-letter">C</span><span class="quiz-text">A plain local variable inside it changing</span></label>
+<label class="quiz-choice"><input type="radio" name="07-re-rendering-q5" value="3"><span class="quiz-letter">D</span><span class="quiz-text">A context it reads changing</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: C.</strong></p>
+<p>React only knows about state, props and context. Changing an ordinary variable is invisible to it.</p>
+
+</details>
+</fieldset>
+<p class="quiz-score" aria-live="polite"></p>
+</div>
+<h2 id="exercise">Try it yourself</h2>
+<div class="exercise">
+<h3>Count the renders</h3>
+<p>Add a render counter to <code>Header</code> that logs how many times it has rendered, without causing extra renders.</p>
+
+<details><summary><span>Hint</span></summary>
+<p>A variable inside the component resets every render. You need something that survives renders but doesn&#39;t trigger one. (Lesson 20 names it, but a variable outside the component works too, for one instance.)</p>
+</details>
+<details><summary><span>One way to do it</span></summary>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">let</span> renders <span class="token operator">=</span> <span class="token number">0</span>   <span class="token comment">// outside the component: survives re-renders</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">Header</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  renders<span class="token operator">++</span>
+  <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Header render'</span><span class="token punctuation">,</span> renders<span class="token punctuation">)</span>
+  <span class="token comment">// …</span>
+<span class="token punctuation">}</span></code></pre>
+<p>It works for a single Header. With StrictMode the count goes up by two each time. Lesson 20&#39;s <code>useRef</code> is the proper per-instance version.</p>
+</details>
+</div>
+</section>
   </article>
 </main>
 <nav class="pager" aria-label="Lessons">

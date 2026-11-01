@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/site.css">
-<script src="../assets/site.js" defer></script>
+<link rel="stylesheet" href="../assets/site.css?v=57f4a1da">
+<script src="../assets/site.js?v=57f4a1da" defer></script>
 </head>
 <body class="lesson-page">
 <header class="bar">
@@ -129,7 +129,116 @@ pockyButton<span class="token punctuation">.</span><span class="token function">
 
 <p>Still the old number. The variable really is 100 now, but changing a variable does not touch the DOM. Only a line like <code>pockyButton.textContent = ...</code> updates the screen, and that runs only on a click. Click once and the button jumps to 101. That gap between data and screen is the whole point of this lesson.</p>
 </details>
+<section class="practice" aria-labelledby="practice">
+<h2 id="practice">Practice</h2>
+<p class="practice-intro">Pick an answer to see if it's right. Wrong picks are crossed out, so you can try again.</p>
+<div class="quiz">
+<fieldset class="quiz-q" data-answer="3">
+<legend class="visually-hidden">Question 1</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">1</span><div><p>What is the DOM?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="01-every-website-is-a-house-q1" value="0"><span class="quiz-letter">A</span><span class="quiz-text">The part of CSS that handles layout</span></label>
+<label class="quiz-choice"><input type="radio" name="01-every-website-is-a-house-q1" value="1"><span class="quiz-letter">B</span><span class="quiz-text">A JavaScript library for changing pages</span></label>
+<label class="quiz-choice"><input type="radio" name="01-every-website-is-a-house-q1" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Another name for the HTML file</span></label>
+<label class="quiz-choice"><input type="radio" name="01-every-website-is-a-house-q1" value="3"><span class="quiz-letter">D</span><span class="quiz-text">The tree of objects the browser builds from the HTML, which the screen is drawn from</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: D.</strong></p>
+<p>The browser reads the HTML once and builds a tree of objects in memory. That tree is the DOM. The screen is drawn from it, and JavaScript changes the page by changing it.</p>
 
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="1">
+<legend class="visually-hidden">Question 2</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">2</span><div><p>A script runs <code>document.querySelector(&#39;.count&#39;).textContent = &#39;3&#39;</code>. What changes?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="01-every-website-is-a-house-q2" value="0"><span class="quiz-letter">A</span><span class="quiz-text">The HTML file on disk</span></label>
+<label class="quiz-choice"><input type="radio" name="01-every-website-is-a-house-q2" value="1"><span class="quiz-letter">B</span><span class="quiz-text">The DOM, and so the screen; the HTML file stays the same</span></label>
+<label class="quiz-choice"><input type="radio" name="01-every-website-is-a-house-q2" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Nothing until you reload the page</span></label>
+<label class="quiz-choice"><input type="radio" name="01-every-website-is-a-house-q2" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Only the CSS</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: B.</strong></p>
+<p>JavaScript works on the DOM, the live copy in memory. The file you wrote is never touched; reload the page and the original text is back.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="1">
+<legend class="visually-hidden">Question 3</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">3</span><div><p>You change some text with JavaScript, then open <strong>View Source</strong> and DevTools&#39; <strong>Elements</strong> tab. Which shows the new text?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="01-every-website-is-a-house-q3" value="0"><span class="quiz-letter">A</span><span class="quiz-text">View Source</span></label>
+<label class="quiz-choice"><input type="radio" name="01-every-website-is-a-house-q3" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Elements</span></label>
+<label class="quiz-choice"><input type="radio" name="01-every-website-is-a-house-q3" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Both</span></label>
+<label class="quiz-choice"><input type="radio" name="01-every-website-is-a-house-q3" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Neither</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: B.</strong></p>
+<p>View Source shows the file the server sent. Elements shows the current DOM, including everything JavaScript changed since.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="0">
+<legend class="visually-hidden">Question 4</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">4</span><div><p>Why does a <code>&lt;script&gt;</code> in the <code>&lt;head&gt;</code> often need <code>defer</code>?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="01-every-website-is-a-house-q4" value="0"><span class="quiz-letter">A</span><span class="quiz-text">So it runs after the HTML has been read, when the elements it looks for exist</span></label>
+<label class="quiz-choice"><input type="radio" name="01-every-website-is-a-house-q4" value="1"><span class="quiz-letter">B</span><span class="quiz-text">To make the script download faster</span></label>
+<label class="quiz-choice"><input type="radio" name="01-every-website-is-a-house-q4" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Because scripts in the head are ignored without it</span></label>
+<label class="quiz-choice"><input type="radio" name="01-every-website-is-a-house-q4" value="3"><span class="quiz-letter">D</span><span class="quiz-text">So the script runs before the page appears</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: A.</strong></p>
+<p>Without <code>defer</code>, the script runs as soon as the browser reaches it, before the body has been read. <code>querySelector</code> would find nothing. <code>defer</code> waits until the whole document is parsed.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="3">
+<legend class="visually-hidden">Question 5</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">5</span><div><p>Which part of the house is CSS?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="01-every-website-is-a-house-q5" value="0"><span class="quiz-letter">A</span><span class="quiz-text">The walls: what&#39;s on the page</span></label>
+<label class="quiz-choice"><input type="radio" name="01-every-website-is-a-house-q5" value="1"><span class="quiz-letter">B</span><span class="quiz-text">The electricity: what happens when you click</span></label>
+<label class="quiz-choice"><input type="radio" name="01-every-website-is-a-house-q5" value="2"><span class="quiz-letter">C</span><span class="quiz-text">The address: where the page lives</span></label>
+<label class="quiz-choice"><input type="radio" name="01-every-website-is-a-house-q5" value="3"><span class="quiz-letter">D</span><span class="quiz-text">The paint: how it looks</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: D.</strong></p>
+<p>HTML is the structure, CSS is the appearance, JavaScript is the behaviour. Each can change without touching the others.</p>
+
+</details>
+</fieldset>
+<p class="quiz-score" aria-live="polite"></p>
+</div>
+<h2 id="exercise">Try it yourself</h2>
+<div class="exercise">
+<h3>A reset button</h3>
+<p>In lesson 1&#39;s plain HTML version, add a <strong>Reset</strong> button under the cards. Clicking it should set every like count back to 0 on the screen.</p>
+
+<details><summary><span>Hint</span></summary>
+<p><code>document.querySelectorAll(&#39;.count&#39;)</code> gives you every count element. Loop over them and set each <code>textContent</code>. Remember to wire the button with <code>addEventListener(&#39;click&#39;, …)</code>.</p>
+</details>
+<details><summary><span>One way to do it</span></summary>
+<pre class="code" data-lang="html"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>reset<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Reset likes<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span></code></pre>
+<pre class="code" data-lang="js"><code>document<span class="token punctuation">.</span><span class="token function">querySelector</span><span class="token punctuation">(</span><span class="token string">'#reset'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">'click'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  document<span class="token punctuation">.</span><span class="token function">querySelectorAll</span><span class="token punctuation">(</span><span class="token string">'.count'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">el</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+    el<span class="token punctuation">.</span>textContent <span class="token operator">=</span> <span class="token string">'0'</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span></code></pre>
+<p>Notice what you had to remember: every place a like count is shown. That bookkeeping is exactly the problem lesson 2 is about.</p>
+</details>
+</div>
+</section>
   </article>
 </main>
 <nav class="pager" aria-label="Lessons">

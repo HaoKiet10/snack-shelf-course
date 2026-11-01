@@ -512,3 +512,36 @@ h1, h2, h3 { font-weight: 300; letter-spacing: -0.035em; line-height: 0.98; marg
   .pager .pager-next { text-align: left; }
   .pager a, .pager p { font-size: clamp(1.8rem, 1.2rem + 3vw, 2.4rem); }
 }
+
+/* ---------- practice ---------- */
+.prose .practice-intro { color: var(--muted); }
+.quiz-q { border: 0; margin: 0 0 40px; padding: 0; min-width: 0; }
+.quiz-body { display: grid; grid-template-columns: 2.2em 1fr; align-items: start; }
+.quiz-body > div > :last-child { margin-bottom: 16px; }
+.quiz-n { font-size: var(--step-lead); line-height: 1.3; color: var(--muted); font-variant-numeric: tabular-nums; }
+.quiz-choices { display: grid; gap: 6px; margin-left: 2.2em; }
+.quiz-choice {
+  display: grid; grid-template-columns: 2.4em 1fr; align-items: baseline; column-gap: 10px;
+  padding: 12px 16px; background: var(--surface); cursor: pointer;
+  transition: background-color 160ms var(--ease);
+}
+.quiz-choice:hover { background: var(--surface-2); }
+.quiz-choice input { position: absolute; opacity: 0; pointer-events: none; }
+.quiz-choice:has(input:focus-visible) { outline: 2px solid var(--ink); outline-offset: 2px; }
+.quiz-letter { font-weight: 500; white-space: nowrap; }
+.quiz-text p { margin: 0; }
+.quiz-choice.right { background: var(--ink); color: var(--bg); }
+.quiz-choice.right code { background: rgba(230, 219, 199, 0.16); color: inherit; }
+.quiz-choice.right .quiz-letter::after { content: ' ✓'; }
+.quiz-choice.wrong { background: transparent; color: var(--muted); text-decoration: line-through; cursor: default; }
+.quiz-choice.wrong .quiz-letter::after { content: ' ✗'; }
+.quiz-q.done .quiz-choice:not(.right):not(.wrong) { opacity: 0.6; cursor: default; }
+.prose .quiz-feedback { margin: 10px 0 0 2.2em; min-height: 1.5em; font-weight: 500; }
+.quiz-why { margin: 10px 0 0 2.2em !important; }
+.prose .quiz-score { font-size: var(--step-lead); margin: 0 0 24px; }
+.quiz-score button { margin-left: 12px; padding: 6px 14px; border: 1px solid var(--ink); background: transparent; color: var(--ink); font: inherit; font-size: var(--step-small); cursor: pointer; }
+.quiz-score button:hover { background: var(--ink); color: var(--bg); }
+.exercise { background: var(--surface); padding: 4px 24px 12px; margin: 0 0 24px; }
+.exercise h3 { margin-top: 24px; }
+.exercise details { background: var(--surface-2); }
+.exercise details[open] { background: var(--bg); }

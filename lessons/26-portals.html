@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/site.css">
-<script src="../assets/site.js" defer></script>
+<link rel="stylesheet" href="../assets/site.css?v=57f4a1da">
+<script src="../assets/site.js?v=57f4a1da" defer></script>
 </head>
 <body class="lesson-page">
 <header class="bar">
@@ -139,7 +139,119 @@
 
 <p>It asks screen readers to announce content added to that region, when they finish what they are currently reading, without moving focus.</p>
 </details>
+<section class="practice" aria-labelledby="practice">
+<h2 id="practice">Practice</h2>
+<p class="practice-intro">Pick an answer to see if it's right. Wrong picks are crossed out, so you can try again.</p>
+<div class="quiz">
+<fieldset class="quiz-q" data-answer="1">
+<legend class="visually-hidden">Question 1</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">1</span><div><p>What does <code>createPortal(jsx, document.body)</code> change?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="26-portals-q1" value="0"><span class="quiz-letter">A</span><span class="quiz-text">It opens a new browser window</span></label>
+<label class="quiz-choice"><input type="radio" name="26-portals-q1" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Where the JSX goes in the DOM; its place in the React tree stays the same</span></label>
+<label class="quiz-choice"><input type="radio" name="26-portals-q1" value="2"><span class="quiz-letter">C</span><span class="quiz-text">The component&#39;s place in the React tree</span></label>
+<label class="quiz-choice"><input type="radio" name="26-portals-q1" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Nothing; it&#39;s only for styling</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: B.</strong></p>
+<p>Logically here, physically there: context and state work as if it were rendered in place.</p>
 
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="1">
+<legend class="visually-hidden">Question 2</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">2</span><div><p>A click happens inside a portal. Which <code>onClick</code> handlers can it reach as it bubbles?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="26-portals-q2" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Only DOM ancestors in <code>&lt;body&gt;</code></span></label>
+<label class="quiz-choice"><input type="radio" name="26-portals-q2" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Its ancestors in the React tree, even though they&#39;re elsewhere in the DOM</span></label>
+<label class="quiz-choice"><input type="radio" name="26-portals-q2" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Every handler on the page</span></label>
+<label class="quiz-choice"><input type="radio" name="26-portals-q2" value="3"><span class="quiz-letter">D</span><span class="quiz-text">None; portals stop events</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: B.</strong></p>
+<p>React events follow the React tree. This surprises people with modals inside clickable cards.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="3">
+<legend class="visually-hidden">Question 3</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">3</span><div><p>Why render toasts into <code>document.body</code> instead of next to the button?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="26-portals-q3" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Screen readers only read the body</span></label>
+<label class="quiz-choice"><input type="radio" name="26-portals-q3" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Buttons can&#39;t contain text</span></label>
+<label class="quiz-choice"><input type="radio" name="26-portals-q3" value="2"><span class="quiz-letter">C</span><span class="quiz-text">It&#39;s faster</span></label>
+<label class="quiz-choice"><input type="radio" name="26-portals-q3" value="3"><span class="quiz-letter">D</span><span class="quiz-text">A parent&#39;s <code>overflow</code>, <code>z-index</code> or <code>transform</code> could clip or bury them</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: D.</strong></p>
+<p>At the top of the body, nothing above them in the DOM can interfere.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="0">
+<legend class="visually-hidden">Question 4</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">4</span><div><p>Why are the toasts&#39; timer ids kept in a ref?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="26-portals-q4" value="0"><span class="quiz-letter">A</span><span class="quiz-text">They&#39;re needed to cancel timers, but never shown, so changing them shouldn&#39;t re-render</span></label>
+<label class="quiz-choice"><input type="radio" name="26-portals-q4" value="1"><span class="quiz-letter">B</span><span class="quiz-text">State can&#39;t hold numbers</span></label>
+<label class="quiz-choice"><input type="radio" name="26-portals-q4" value="2"><span class="quiz-letter">C</span><span class="quiz-text">So the timers run faster</span></label>
+<label class="quiz-choice"><input type="radio" name="26-portals-q4" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Refs are required for timers</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: A.</strong></p>
+<p>The toasts themselves are on screen, so they&#39;re state.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="0">
+<legend class="visually-hidden">Question 5</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">5</span><div><p>For a modal dialog, what does the lesson suggest trying first?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="26-portals-q5" value="0"><span class="quiz-letter">A</span><span class="quiz-text">The native <code>&lt;dialog&gt;</code> element with <code>showModal()</code>, which uses the browser&#39;s top layer</span></label>
+<label class="quiz-choice"><input type="radio" name="26-portals-q5" value="1"><span class="quiz-letter">B</span><span class="quiz-text">An iframe</span></label>
+<label class="quiz-choice"><input type="radio" name="26-portals-q5" value="2"><span class="quiz-letter">C</span><span class="quiz-text">A portal into <code>document.body</code></span></label>
+<label class="quiz-choice"><input type="radio" name="26-portals-q5" value="3"><span class="quiz-letter">D</span><span class="quiz-text"><code>position: absolute</code> and a high z-index</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: A.</strong></p>
+<p><code>showModal()</code> puts the dialog above everything, traps focus and closes on Escape.</p>
+
+</details>
+</fieldset>
+<p class="quiz-score" aria-live="polite"></p>
+</div>
+<h2 id="exercise">Try it yourself</h2>
+<div class="exercise">
+<h3>Different kinds of toast</h3>
+<p>Let <code>show</code> take an optional <code>tone: &#39;info&#39; | &#39;error&#39;</code>, and show error toasts in the accent colour. Use it to show &quot;Couldn&#39;t add, basket is full&quot; when a snack is already at the maximum.</p>
+
+<details><summary><span>Hint</span></summary>
+<p>Add <code>tone</code> to the <code>Toast</code> type and to <code>show</code>&#39;s parameters, and set a class from it. Check the line&#39;s quantity against <code>MAX_QTY</code> before dispatching.</p>
+</details>
+<details><summary><span>One way to do it</span></summary>
+<pre class="code" data-lang="ts"><code><span class="token keyword">type</span> <span class="token class-name">Toast</span> <span class="token operator">=</span> <span class="token punctuation">{</span> id<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">;</span> message<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span> action<span class="token operator">?</span><span class="token operator">:</span> ToastAction<span class="token punctuation">;</span> tone<span class="token operator">:</span> <span class="token string">'info'</span> <span class="token operator">|</span> <span class="token string">'error'</span> <span class="token punctuation">}</span>
+
+<span class="token keyword">function</span> <span class="token function">show</span><span class="token punctuation">(</span>message<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">,</span> action<span class="token operator">?</span><span class="token operator">:</span> ToastAction<span class="token punctuation">,</span> tone<span class="token operator">:</span> <span class="token string">'info'</span> <span class="token operator">|</span> <span class="token string">'error'</span> <span class="token operator">=</span> <span class="token string">'info'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> id <span class="token operator">=</span> nextId<span class="token punctuation">.</span>current<span class="token operator">++</span>
+  <span class="token function">setToasts</span><span class="token punctuation">(</span><span class="token punctuation">(</span>prev<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">[</span><span class="token operator">...</span>prev<span class="token punctuation">,</span> <span class="token punctuation">{</span> id<span class="token punctuation">,</span> message<span class="token punctuation">,</span> action<span class="token punctuation">,</span> tone <span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">slice</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token constant">MAX_TOASTS</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+  timers<span class="token punctuation">.</span>current<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span>id<span class="token punctuation">,</span> window<span class="token punctuation">.</span><span class="token function">setTimeout</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">dismiss</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token constant">TOAST_MS</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<pre class="code" data-lang="tsx"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>tone <span class="token operator">===</span> <span class="token string">'error'</span> <span class="token operator">?</span> <span class="token string">'toast toast-error'</span> <span class="token operator">:</span> <span class="token string">'toast'</span><span class="token punctuation">}</span></span> <span class="token attr-name">key</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>id<span class="token punctuation">}</span></span><span class="token punctuation">></span></span></code></pre>
+<pre class="code" data-lang="css"><code><span class="token selector">.toast-error</span> <span class="token punctuation">{</span> <span class="token property">background</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--accent<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token property">color</span><span class="token punctuation">:</span> white<span class="token punctuation">;</span> <span class="token punctuation">}</span></code></pre>
+<p>Update <code>ToastValue</code>&#39;s type to match. Errors could also use <code>role=&quot;alert&quot;</code> so screen readers announce them at once.</p>
+</details>
+</div>
+</section>
   </article>
 </main>
 <nav class="pager" aria-label="Lessons">

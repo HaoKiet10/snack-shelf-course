@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/site.css">
-<script src="../assets/site.js" defer></script>
+<link rel="stylesheet" href="../assets/site.css?v=57f4a1da">
+<script src="../assets/site.js?v=57f4a1da" defer></script>
 </head>
 <body class="lesson-page">
 <header class="bar">
@@ -116,7 +116,110 @@
 
 <p>So the shelf can pass the same function to every card. Per-item arrow functions in a <code>map</code> cannot be memoised, so they would change on every render.</p>
 </details>
+<section class="practice" aria-labelledby="practice">
+<h2 id="practice">Practice</h2>
+<p class="practice-intro">Pick an answer to see if it's right. Wrong picks are crossed out, so you can try again.</p>
+<div class="quiz">
+<fieldset class="quiz-q" data-answer="3">
+<legend class="visually-hidden">Question 1</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">1</span><div><p>What should you do before optimising a component?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="27-performance-q1" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Wrap it in <code>memo</code></span></label>
+<label class="quiz-choice"><input type="radio" name="27-performance-q1" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Add <code>useCallback</code> to every function</span></label>
+<label class="quiz-choice"><input type="radio" name="27-performance-q1" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Rewrite it as a class</span></label>
+<label class="quiz-choice"><input type="radio" name="27-performance-q1" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Measure with the React DevTools Profiler to see if it&#39;s actually slow</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: D.</strong></p>
+<p>Most re-renders cost almost nothing. Optimise what the Profiler shows is slow.</p>
 
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="2">
+<legend class="visually-hidden">Question 2</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">2</span><div><p><code>SnackCard</code> is wrapped in <code>memo</code>, but gets <code>onLike={() =&gt; like(snack.id)}</code>. Does <code>memo</code> skip re-renders?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="27-performance-q2" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Only in production</span></label>
+<label class="quiz-choice"><input type="radio" name="27-performance-q2" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Only if <code>like</code> is a <code>useCallback</code></span></label>
+<label class="quiz-choice"><input type="radio" name="27-performance-q2" value="2"><span class="quiz-letter">C</span><span class="quiz-text">No; the arrow function is new every render, so a prop always looks changed</span></label>
+<label class="quiz-choice"><input type="radio" name="27-performance-q2" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Yes, always</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: C.</strong></p>
+<p><code>memo</code> compares props with <code>Object.is</code>. New functions are different objects.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="1">
+<legend class="visually-hidden">Question 3</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">3</span><div><p>What does <code>useMemo(() =&gt; expensive(a, b), [a, b])</code> do?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="27-performance-q3" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Runs <code>expensive</code> once, ever</span></label>
+<label class="quiz-choice"><input type="radio" name="27-performance-q3" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Keeps the result between renders and only recomputes when <code>a</code> or <code>b</code> change</span></label>
+<label class="quiz-choice"><input type="radio" name="27-performance-q3" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Caches the result in <code>localStorage</code></span></label>
+<label class="quiz-choice"><input type="radio" name="27-performance-q3" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Runs <code>expensive</code> in a background thread</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: B.</strong></p>
+<p>It memoises a value. <code>useCallback</code> does the same for a function.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="0">
+<legend class="visually-hidden">Question 4</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">4</span><div><p>What does the React Compiler need from your code to work?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="27-performance-q4" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Pure components and hooks that don&#39;t mutate props, state or earlier values</span></label>
+<label class="quiz-choice"><input type="radio" name="27-performance-q4" value="1"><span class="quiz-letter">B</span><span class="quiz-text"><code>memo</code> on every component</span></label>
+<label class="quiz-choice"><input type="radio" name="27-performance-q4" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Class components</span></label>
+<label class="quiz-choice"><input type="radio" name="27-performance-q4" value="3"><span class="quiz-letter">D</span><span class="quiz-text">A special file extension</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: A.</strong></p>
+<p>It skips code that breaks the rules, which then works as before, without the optimisation.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="3">
+<legend class="visually-hidden">Question 5</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">5</span><div><p>Why did the card&#39;s <code>onLike</code> change to take the snack&#39;s id?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="27-performance-q5" value="0"><span class="quiz-letter">A</span><span class="quiz-text">To make the button accessible</span></label>
+<label class="quiz-choice"><input type="radio" name="27-performance-q5" value="1"><span class="quiz-letter">B</span><span class="quiz-text">TypeScript required it</span></label>
+<label class="quiz-choice"><input type="radio" name="27-performance-q5" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Ids are faster than names</span></label>
+<label class="quiz-choice"><input type="radio" name="27-performance-q5" value="3"><span class="quiz-letter">D</span><span class="quiz-text">So the shelf can pass one stable function to every card, instead of a new arrow per card that can&#39;t be memoised</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: D.</strong></p>
+<p>The compiler can&#39;t memoise per item inside a <code>map</code>, so the design passes the same function down.</p>
+
+</details>
+</fieldset>
+<p class="quiz-score" aria-live="polite"></p>
+</div>
+<h2 id="exercise">Try it yourself</h2>
+<div class="exercise">
+<h3>Find the re-renders</h3>
+<p>Install React DevTools, open the shelf, and turn on <strong>Highlight updates when components render</strong>. Like a snack, type in the search, and add to the basket. Note which components flash each time, then explain one flash you didn&#39;t expect.</p>
+
+<details><summary><span>Hint</span></summary>
+<p>The Components tab&#39;s settings (⚙) has the highlight option. The Profiler tab can record and show <em>why</em> each component rendered.</p>
+</details>
+<details><summary><span>One way to do it</span></summary>
+<p>There&#39;s no single right answer: this is about reading the tools. Typically you&#39;ll see Header flash when the basket changes (its count and total changed), the cards flash when likes change, and SearchBar flash on each keystroke. If a component flashes that shouldn&#39;t, record in the Profiler and read &quot;Why did this render?&quot; to see which prop or context changed.</p>
+</details>
+</div>
+</section>
   </article>
 </main>
 <nav class="pager" aria-label="Lessons">

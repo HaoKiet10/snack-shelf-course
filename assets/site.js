@@ -47,6 +47,72 @@ window.addEventListener('DOMContentLoaded', () => {
     stops.forEach((s, i) => s.addEventListener('click', () => show(i)))
   }
 
+  // --- lesson pages: practice questions ---
+  // Pick a choice: right ones lock the question and open the explanation;
+  // wrong ones are crossed out so you can try again.
+  document.querySelectorAll('.quiz').forEach((quiz) => {
+    const questions = [...quiz.querySelectorAll('.quiz-q')]
+    const score = quiz.querySelector('.quiz-score')
+    const firstTry = new Map()
+
+    const update = () => {
+      const done = questions.filter((q) => q.classList.contains('done')).length
+      if (done < questions.length) {
+        score.textContent = ''
+        return
+      }
+      const right = [...firstTry.values()].filter(Boolean).length
+      score.textContent = `${right} of ${questions.length} right on the first try. `
+      const again = document.createElement('button')
+      again.type = 'button'
+      again.textContent = 'Start over'
+      again.addEventListener('click', reset)
+      score.appendChild(again)
+    }
+
+    const reset = () => {
+      firstTry.clear()
+      questions.forEach((q) => {
+        q.classList.remove('done')
+        q.querySelectorAll('.quiz-choice').forEach((c) => c.classList.remove('right', 'wrong'))
+        q.querySelectorAll('input').forEach((i) => {
+          i.checked = false
+          i.disabled = false
+        })
+        q.querySelector('.quiz-feedback').textContent = ''
+        q.querySelector('.quiz-why').open = false
+        q.querySelector('.quiz-why summary span').textContent = 'Show the answer'
+      })
+      update()
+      questions[0]?.scrollIntoView({ block: 'center' })
+    }
+
+    questions.forEach((q) => {
+      const answer = Number(q.dataset.answer)
+      const feedback = q.querySelector('.quiz-feedback')
+      q.addEventListener('change', (e) => {
+        const input = e.target
+        if (!(input instanceof HTMLInputElement) || q.classList.contains('done')) return
+        const label = input.closest('.quiz-choice')
+        if (Number(input.value) === answer) {
+          if (!firstTry.has(q)) firstTry.set(q, true)
+          label.classList.add('right')
+          q.classList.add('done')
+          q.querySelectorAll('input').forEach((i) => (i.disabled = true))
+          feedback.textContent = 'Right.'
+          q.querySelector('.quiz-why').open = true
+          q.querySelector('.quiz-why summary span').textContent = 'Why'
+        } else {
+          firstTry.set(q, false)
+          label.classList.add('wrong')
+          input.disabled = true
+          feedback.textContent = 'Not quite. Try another.'
+        }
+        update()
+      })
+    })
+  })
+
   // --- lesson pages: copy buttons on code blocks ---
   document.querySelectorAll('.prose pre.code').forEach((pre) => {
     const btn = document.createElement('button')

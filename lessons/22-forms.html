@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/site.css">
-<script src="../assets/site.js" defer></script>
+<link rel="stylesheet" href="../assets/site.css?v=57f4a1da">
+<script src="../assets/site.js?v=57f4a1da" defer></script>
 </head>
 <body class="lesson-page">
 <header class="bar">
@@ -141,7 +141,130 @@
 
 <p><code>useFormStatus</code> reads the form the component is rendered inside. It has to be called from a child of the <code>&lt;form&gt;</code>, not from the component that renders it.</p>
 </details>
+<section class="practice" aria-labelledby="practice">
+<h2 id="practice">Practice</h2>
+<p class="practice-intro">Pick an answer to see if it's right. Wrong picks are crossed out, so you can try again.</p>
+<div class="quiz">
+<fieldset class="quiz-q" data-answer="1">
+<legend class="visually-hidden">Question 1</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">1</span><div><p>When should a form field be <strong>controlled</strong>?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="22-forms-q1" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Only for checkboxes</span></label>
+<label class="quiz-choice"><input type="radio" name="22-forms-q1" value="1"><span class="quiz-letter">B</span><span class="quiz-text">When something must react to every keystroke, like a live counter or filter</span></label>
+<label class="quiz-choice"><input type="radio" name="22-forms-q1" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Always</span></label>
+<label class="quiz-choice"><input type="radio" name="22-forms-q1" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Never in React 19</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: B.</strong></p>
+<p>If the value only matters on submit, an uncontrolled field read with <code>FormData</code> is simpler.</p>
 
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="1">
+<legend class="visually-hidden">Question 2</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">2</span><div><p>What does <code>defaultValue</code> do on an input?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="22-forms-q2" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Makes it controlled</span></label>
+<label class="quiz-choice"><input type="radio" name="22-forms-q2" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Sets its starting value; after that the browser owns the value</span></label>
+<label class="quiz-choice"><input type="radio" name="22-forms-q2" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Shows a placeholder</span></label>
+<label class="quiz-choice"><input type="radio" name="22-forms-q2" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Resets it on every render</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: B.</strong></p>
+<p><code>value</code> makes React own it; <code>defaultValue</code> only sets where it starts.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="1">
+<legend class="visually-hidden">Question 3</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">3</span><div><p><code>const [state, formAction, isPending] = useActionState(placeOrder, initial)</code>. What is <code>state</code>?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="22-forms-q3" value="0"><span class="quiz-letter">A</span><span class="quiz-text"><code>true</code> while submitting</span></label>
+<label class="quiz-choice"><input type="radio" name="22-forms-q3" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Whatever <code>placeOrder</code> returned last time (or <code>initial</code> before the first submit)</span></label>
+<label class="quiz-choice"><input type="radio" name="22-forms-q3" value="2"><span class="quiz-letter">C</span><span class="quiz-text">The FormData object</span></label>
+<label class="quiz-choice"><input type="radio" name="22-forms-q3" value="3"><span class="quiz-letter">D</span><span class="quiz-text">The form&#39;s current field values</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: B.</strong></p>
+<p>The action&#39;s return value becomes the state, which is how errors and the order number reach the screen.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="2">
+<legend class="visually-hidden">Question 4</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">4</span><div><p>Why is <code>SubmitButton</code> its own component?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="22-forms-q4" value="0"><span class="quiz-letter">A</span><span class="quiz-text">To make it reusable in other apps</span></label>
+<label class="quiz-choice"><input type="radio" name="22-forms-q4" value="1"><span class="quiz-letter">B</span><span class="quiz-text">To avoid re-rendering the form</span></label>
+<label class="quiz-choice"><input type="radio" name="22-forms-q4" value="2"><span class="quiz-letter">C</span><span class="quiz-text"><code>useFormStatus</code> reads the form it is rendered inside, so it must be called from a child of the <code>&lt;form&gt;</code></span></label>
+<label class="quiz-choice"><input type="radio" name="22-forms-q4" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Buttons must be separate components</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: C.</strong></p>
+<p>Called in the component that renders the form, <code>useFormStatus</code> wouldn&#39;t be inside that form.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="3">
+<legend class="visually-hidden">Question 5</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">5</span><div><p>After a failed submit, why are the typed values still there?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="22-forms-q5" value="0"><span class="quiz-letter">A</span><span class="quiz-text"><code>noValidate</code> keeps them</span></label>
+<label class="quiz-choice"><input type="radio" name="22-forms-q5" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Uncontrolled inputs never reset</span></label>
+<label class="quiz-choice"><input type="radio" name="22-forms-q5" value="2"><span class="quiz-letter">C</span><span class="quiz-text">The browser remembers them</span></label>
+<label class="quiz-choice"><input type="radio" name="22-forms-q5" value="3"><span class="quiz-letter">D</span><span class="quiz-text">React resets the form after the action, and the action returned the submitted values, which the fields use as <code>defaultValue</code></span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: D.</strong></p>
+<p>On success the action returns empty values, so the same reset clears the form.</p>
+
+</details>
+</fieldset>
+<p class="quiz-score" aria-live="polite"></p>
+</div>
+<h2 id="exercise">Try it yourself</h2>
+<div class="exercise">
+<h3>A phone number</h3>
+<p>Add an optional phone field to the checkout. If something is typed, it must contain only digits, spaces and <code>+</code>, and have at least 8 digits; show an error otherwise.</p>
+
+<details><summary><span>Hint</span></summary>
+<p>Add <code>phone</code> to <code>FormValues</code>, read it from <code>formData</code>, and add a rule to <code>validate</code>. Count digits with <code>.replace(/\D/g, &#39;&#39;).length</code>.</p>
+</details>
+<details><summary><span>One way to do it</span></summary>
+<pre class="code" data-lang="ts"><code><span class="token keyword">type</span> <span class="token class-name">FormValues</span> <span class="token operator">=</span> <span class="token punctuation">{</span> name<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span> email<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span> pickup<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span> phone<span class="token operator">:</span> <span class="token builtin">string</span> <span class="token punctuation">}</span>
+
+<span class="token comment">// in placeOrder:</span>
+phone<span class="token operator">:</span> <span class="token function">String</span><span class="token punctuation">(</span>formData<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'phone'</span><span class="token punctuation">)</span> <span class="token operator">??</span> <span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">trim</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+
+<span class="token comment">// in validate:</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>v<span class="token punctuation">.</span>phone <span class="token operator">!==</span> <span class="token string">''</span> <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token regex"><span class="token regex-delimiter">/</span><span class="token regex-source language-regex">^[\d +]+$</span><span class="token regex-delimiter">/</span></span><span class="token punctuation">.</span><span class="token function">test</span><span class="token punctuation">(</span>v<span class="token punctuation">.</span>phone<span class="token punctuation">)</span> <span class="token operator">||</span> v<span class="token punctuation">.</span>phone<span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token regex"><span class="token regex-delimiter">/</span><span class="token regex-source language-regex">\D</span><span class="token regex-delimiter">/</span><span class="token regex-flags">g</span></span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">.</span>length <span class="token operator">&lt;</span> <span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  errors<span class="token punctuation">.</span>phone <span class="token operator">=</span> <span class="token string">'Use digits, spaces and +, at least 8 digits.'</span>
+<span class="token punctuation">}</span></code></pre>
+<pre class="code" data-lang="tsx"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span> <span class="token attr-name">htmlFor</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>phone<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">Phone (optional)</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>label</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span>
+  <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>phone<span class="token punctuation">"</span></span>
+  <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>phone<span class="token punctuation">"</span></span>
+  <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>tel<span class="token punctuation">"</span></span>
+  <span class="token attr-name">autoComplete</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>tel<span class="token punctuation">"</span></span>
+  <span class="token attr-name">defaultValue</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>values<span class="token punctuation">.</span>phone<span class="token punctuation">}</span></span>
+  <span class="token attr-name">aria-invalid</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>errors<span class="token punctuation">.</span>phone <span class="token operator">?</span> <span class="token boolean">true</span> <span class="token operator">:</span> <span class="token keyword">undefined</span><span class="token punctuation">}</span></span>
+  <span class="token attr-name">aria-describedby</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>errors<span class="token punctuation">.</span>phone <span class="token operator">?</span> <span class="token string">'phone-error'</span> <span class="token operator">:</span> <span class="token keyword">undefined</span><span class="token punctuation">}</span></span>
+<span class="token punctuation">/></span></span>
+<span class="token punctuation">{</span>errors<span class="token punctuation">.</span>phone <span class="token operator">&amp;&amp;</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>field-error<span class="token punctuation">"</span></span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>phone-error<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token punctuation">{</span>errors<span class="token punctuation">.</span>phone<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span><span class="token punctuation">}</span></code></pre>
+<p>Remember to add <code>phone: &#39;&#39;</code> to <code>EMPTY</code>.</p>
+</details>
+</div>
+</section>
   </article>
 </main>
 <nav class="pager" aria-label="Lessons">

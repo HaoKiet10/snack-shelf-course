@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/site.css">
-<script src="../assets/site.js" defer></script>
+<link rel="stylesheet" href="../assets/site.css?v=57f4a1da">
+<script src="../assets/site.js?v=57f4a1da" defer></script>
 </head>
 <body class="lesson-page">
 <header class="bar">
@@ -134,7 +134,117 @@
 
 <p>An init function. React calls it once with the second argument to produce the first state, so expensive setup, like reading storage, only happens once.</p>
 </details>
+<section class="practice" aria-labelledby="practice">
+<h2 id="practice">Practice</h2>
+<p class="practice-intro">Pick an answer to see if it's right. Wrong picks are crossed out, so you can try again.</p>
+<div class="quiz">
+<fieldset class="quiz-q" data-answer="0">
+<legend class="visually-hidden">Question 1</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">1</span><div><p>What makes a function a custom hook?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="18-custom-hooks-q1" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Its name starts with <code>use</code> and it calls other hooks</span></label>
+<label class="quiz-choice"><input type="radio" name="18-custom-hooks-q1" value="1"><span class="quiz-letter">B</span><span class="quiz-text">It&#39;s in a <code>hooks/</code> folder</span></label>
+<label class="quiz-choice"><input type="radio" name="18-custom-hooks-q1" value="2"><span class="quiz-letter">C</span><span class="quiz-text">It returns JSX</span></label>
+<label class="quiz-choice"><input type="radio" name="18-custom-hooks-q1" value="3"><span class="quiz-letter">D</span><span class="quiz-text">It&#39;s registered with React</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: A.</strong></p>
+<p>That&#39;s the whole definition. The <code>use</code> prefix tells people and the linter that the rules of hooks apply.</p>
 
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="1">
+<legend class="visually-hidden">Question 2</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">2</span><div><p>Header and Shelf both call <code>useSnacks()</code> (lesson 18&#39;s version). How many times are the snacks fetched?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="18-custom-hooks-q2" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Once; hooks share their state</span></label>
+<label class="quiz-choice"><input type="radio" name="18-custom-hooks-q2" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Twice; each call has its own state and effect</span></label>
+<label class="quiz-choice"><input type="radio" name="18-custom-hooks-q2" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Never; hooks can&#39;t fetch</span></label>
+<label class="quiz-choice"><input type="radio" name="18-custom-hooks-q2" value="3"><span class="quiz-letter">D</span><span class="quiz-text">It depends on the order</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: B.</strong></p>
+<p>Calling a hook is like pasting its code into that component. Custom hooks share logic, not state.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="2">
+<legend class="visually-hidden">Question 3</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">3</span><div><p>Why does <code>useLocalStorage</code> end with <code>return [value, setValue] as const</code>?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="18-custom-hooks-q3" value="0"><span class="quiz-letter">A</span><span class="quiz-text">To save it to storage</span></label>
+<label class="quiz-choice"><input type="radio" name="18-custom-hooks-q3" value="1"><span class="quiz-letter">B</span><span class="quiz-text">It&#39;s required for all hooks</span></label>
+<label class="quiz-choice"><input type="radio" name="18-custom-hooks-q3" value="2"><span class="quiz-letter">C</span><span class="quiz-text">So TypeScript sees a fixed pair (value, then setter) instead of an array of either type</span></label>
+<label class="quiz-choice"><input type="radio" name="18-custom-hooks-q3" value="3"><span class="quiz-letter">D</span><span class="quiz-text">To make the array read-only at runtime</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: C.</strong></p>
+<p>Without <code>as const</code>, each position could be either type, and destructuring loses precise types.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="2">
+<legend class="visually-hidden">Question 4</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">4</span><div><p><code>useReducer(basketReducer, BASKET_KEY, readSavedBasket)</code>. What is the third argument?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="18-custom-hooks-q4" value="0"><span class="quiz-letter">A</span><span class="quiz-text">A cleanup function</span></label>
+<label class="quiz-choice"><input type="radio" name="18-custom-hooks-q4" value="1"><span class="quiz-letter">B</span><span class="quiz-text">A function called on every render</span></label>
+<label class="quiz-choice"><input type="radio" name="18-custom-hooks-q4" value="2"><span class="quiz-letter">C</span><span class="quiz-text">An init function React calls once with the second argument to make the first state</span></label>
+<label class="quiz-choice"><input type="radio" name="18-custom-hooks-q4" value="3"><span class="quiz-letter">D</span><span class="quiz-text">The dispatch function</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: C.</strong></p>
+<p>Like <code>useState(fn)</code>, it avoids repeating expensive setup, here reading <code>localStorage</code>, on every render.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="3">
+<legend class="visually-hidden">Question 5</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">5</span><div><p>Which is a <strong>poor</strong> custom hook?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="18-custom-hooks-q5" value="0"><span class="quiz-letter">A</span><span class="quiz-text"><code>useSnacks</code>, loading data with its status</span></label>
+<label class="quiz-choice"><input type="radio" name="18-custom-hooks-q5" value="1"><span class="quiz-letter">B</span><span class="quiz-text"><code>useLocalStorage</code>, a value saved in storage</span></label>
+<label class="quiz-choice"><input type="radio" name="18-custom-hooks-q5" value="2"><span class="quiz-letter">C</span><span class="quiz-text"><code>useBasketState</code>, a reducer plus saving</span></label>
+<label class="quiz-choice"><input type="radio" name="18-custom-hooks-q5" value="3"><span class="quiz-letter">D</span><span class="quiz-text"><code>useToggle</code>, wrapping a single <code>useState(false)</code> and nothing else</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: D.</strong></p>
+<p>A hook that hides one <code>useState</code> adds a file and hides nothing. Good hooks hide effects and related state with a name.</p>
+
+</details>
+</fieldset>
+<p class="quiz-score" aria-live="polite"></p>
+</div>
+<h2 id="exercise">Try it yourself</h2>
+<div class="exercise">
+<h3>useDocumentTitle</h3>
+<p>Write a <code>useDocumentTitle(title: string)</code> hook that sets <code>document.title</code>, and use it in App to show the basket count.</p>
+
+<details><summary><span>Hint</span></summary>
+<p>It&#39;s an effect that depends on <code>title</code>. A hook doesn&#39;t have to return anything.</p>
+</details>
+<details><summary><span>One way to do it</span></summary>
+<pre class="code" data-lang="ts"><code><span class="token keyword">import</span> <span class="token punctuation">{</span> useEffect <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'react'</span>
+
+<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">useDocumentTitle</span><span class="token punctuation">(</span>title<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token function">useEffect</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+    document<span class="token punctuation">.</span>title <span class="token operator">=</span> title
+  <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">[</span>title<span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<pre class="code" data-lang="tsx"><code><span class="token function">useDocumentTitle</span><span class="token punctuation">(</span>count <span class="token operator">></span> <span class="token number">0</span> <span class="token operator">?</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">(</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>count<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">) Yune's Snack Shelf</span><span class="token template-punctuation string">`</span></span> <span class="token operator">:</span> <span class="token string">"Yune's Snack Shelf"</span><span class="token punctuation">)</span></code></pre>
+</details>
+</div>
+</section>
   </article>
 </main>
 <nav class="pager" aria-label="Lessons">

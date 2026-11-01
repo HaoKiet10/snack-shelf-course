@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/site.css">
-<script src="../assets/site.js" defer></script>
+<link rel="stylesheet" href="../assets/site.css?v=57f4a1da">
+<script src="../assets/site.js?v=57f4a1da" defer></script>
 </head>
 <body class="lesson-page">
 <header class="bar">
@@ -127,7 +127,126 @@ dist/assets/NotFoundPage-BfVq4otY.js  0.3 kB</code></pre>
 
 <p>The page goes into its own JavaScript file, downloaded the first time the page renders. Until then the component suspends.</p>
 </details>
+<section class="practice" aria-labelledby="practice">
+<h2 id="practice">Practice</h2>
+<p class="practice-intro">Pick an answer to see if it's right. Wrong picks are crossed out, so you can try again.</p>
+<div class="quiz">
+<fieldset class="quiz-q" data-answer="2">
+<legend class="visually-hidden">Question 1</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">1</span><div><p>What happens when a component suspends?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="28-suspense-q1" value="0"><span class="quiz-letter">A</span><span class="quiz-text">It throws an error</span></label>
+<label class="quiz-choice"><input type="radio" name="28-suspense-q1" value="1"><span class="quiz-letter">B</span><span class="quiz-text">It renders <code>null</code></span></label>
+<label class="quiz-choice"><input type="radio" name="28-suspense-q1" value="2"><span class="quiz-letter">C</span><span class="quiz-text">React shows the nearest <code>&lt;Suspense&gt;</code> boundary&#39;s fallback until it&#39;s ready</span></label>
+<label class="quiz-choice"><input type="radio" name="28-suspense-q1" value="3"><span class="quiz-letter">D</span><span class="quiz-text">The whole page reloads</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: C.</strong></p>
+<p>Suspense is the loading twin of an error boundary.</p>
 
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="1">
+<legend class="visually-hidden">Question 2</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">2</span><div><p>What does <code>useSuspenseQuery</code> return while the data is loading?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="28-suspense-q2" value="0"><span class="quiz-letter">A</span><span class="quiz-text"><code>undefined</code></span></label>
+<label class="quiz-choice"><input type="radio" name="28-suspense-q2" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Nothing: the component suspends, so the line doesn&#39;t return until the data is there</span></label>
+<label class="quiz-choice"><input type="radio" name="28-suspense-q2" value="2"><span class="quiz-letter">C</span><span class="quiz-text"><code>{ status: &#39;loading&#39; }</code></span></label>
+<label class="quiz-choice"><input type="radio" name="28-suspense-q2" value="3"><span class="quiz-letter">D</span><span class="quiz-text">An empty array</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: B.</strong></p>
+<p>That&#39;s why the pages could drop their status checks and <code>data</code> is never <code>undefined</code>.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="2">
+<legend class="visually-hidden">Question 3</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">3</span><div><p>A query fails inside <code>useSuspenseQuery</code>. Where does the error go?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="28-suspense-q3" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Into <code>isError</code></span></label>
+<label class="quiz-choice"><input type="radio" name="28-suspense-q3" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Into the Suspense fallback</span></label>
+<label class="quiz-choice"><input type="radio" name="28-suspense-q3" value="2"><span class="quiz-letter">C</span><span class="quiz-text">It&#39;s thrown during rendering, and the nearest error boundary catches it</span></label>
+<label class="quiz-choice"><input type="radio" name="28-suspense-q3" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Into the console only</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: C.</strong></p>
+<p>Loading goes to Suspense, failure goes to the error boundary.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="3">
+<legend class="visually-hidden">Question 4</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">4</span><div><p>Why does <code>BasketProvider</code> use <code>useQuery</code> rather than <code>useSuspenseQuery</code>?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="28-suspense-q4" value="0"><span class="quiz-letter">A</span><span class="quiz-text">It&#39;s faster</span></label>
+<label class="quiz-choice"><input type="radio" name="28-suspense-q4" value="1"><span class="quiz-letter">B</span><span class="quiz-text">It needs a different query key</span></label>
+<label class="quiz-choice"><input type="radio" name="28-suspense-q4" value="2"><span class="quiz-letter">C</span><span class="quiz-text"><code>useSuspenseQuery</code> can&#39;t be used in providers</span></label>
+<label class="quiz-choice"><input type="radio" name="28-suspense-q4" value="3"><span class="quiz-letter">D</span><span class="quiz-text">It wraps the whole app; suspending there would hide everything, header included, until the snacks load</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: D.</strong></p>
+<p>Same key, same cache entry, just a non-suspending way to read it.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="3">
+<legend class="visually-hidden">Question 5</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">5</span><div><p>What does <code>lazy(() =&gt; import(&#39;./pages/SnackPage.tsx&#39;))</code> change?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="28-suspense-q5" value="0"><span class="quiz-letter">A</span><span class="quiz-text">The page loads before the app</span></label>
+<label class="quiz-choice"><input type="radio" name="28-suspense-q5" value="1"><span class="quiz-letter">B</span><span class="quiz-text">The page renders on the server</span></label>
+<label class="quiz-choice"><input type="radio" name="28-suspense-q5" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Nothing in the build</span></label>
+<label class="quiz-choice"><input type="radio" name="28-suspense-q5" value="3"><span class="quiz-letter">D</span><span class="quiz-text">The page goes into its own JS file, loaded the first time it renders, suspending until then</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: D.</strong></p>
+<p><code>import()</code> as a function call loads a module on demand; <code>lazy</code> wraps it as a component.</p>
+
+</details>
+</fieldset>
+<p class="quiz-score" aria-live="polite"></p>
+</div>
+<h2 id="exercise">Try it yourself</h2>
+<div class="exercise">
+<h3>A shelf skeleton</h3>
+<p>Replace the plain &quot;Loading…&quot; fallback with a skeleton: six grey card shapes the size of real cards, so the page doesn&#39;t jump when the snacks arrive.</p>
+
+<details><summary><span>Hint</span></summary>
+<p>Make a <code>ShelfSkeleton</code> component that renders the <code>.shelf</code> grid with six empty boxes. Use it as the fallback. Respect reduced motion if you animate it.</p>
+</details>
+<details><summary><span>One way to do it</span></summary>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">ShelfSkeleton</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>shelf<span class="token punctuation">"</span></span> <span class="token attr-name">aria-busy</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span> <span class="token attr-name">aria-label</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Loading snacks<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token punctuation">{</span><span class="token builtin">Array</span><span class="token punctuation">.</span><span class="token function">from</span><span class="token punctuation">(</span><span class="token punctuation">{</span> length<span class="token operator">:</span> <span class="token number">6</span> <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>_<span class="token punctuation">,</span> i<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">(</span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">key</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>i<span class="token punctuation">}</span></span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>card-skeleton<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+      <span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<pre class="code" data-lang="css"><code><span class="token selector">.card-skeleton</span> <span class="token punctuation">{</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> 160px<span class="token punctuation">;</span>
+  <span class="token property">height</span><span class="token punctuation">:</span> 190px<span class="token punctuation">;</span>
+  <span class="token property">border-radius</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--radius<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token property">background</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--lilac<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<pre class="code" data-lang="tsx"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Suspense</span></span> <span class="token attr-name">fallback</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">ShelfSkeleton</span></span> <span class="token punctuation">/></span></span><span class="token punctuation">}</span></span><span class="token punctuation">></span></span></code></pre>
+<p>Using the index as the key is fine here: the list never changes order (lesson 9&#39;s rule 4).</p>
+</details>
+</div>
+</section>
   </article>
 </main>
 <nav class="pager" aria-label="Lessons">

@@ -2,7 +2,9 @@
 
 A free course in **React and TypeScript**, from the first component to advanced topics like Suspense, Server Components and accessibility. You build one small web app, a shelf of Japanese snacks with like buttons and a search box, adding one idea per lesson.
 
-Each lesson has a written explanation, the app's real code at that point, a live demo, and a few "check yourself" questions with answers.
+Each lesson has a written explanation, the app's real code at that point, a live demo, a few "check yourself" questions, and a **practice** section: five multiple-choice questions that check themselves as you answer, plus a small exercise with a hint and a solution.
+
+The practice lives in `content/practice/<lesson>.md`, in a short format described at the top of `scripts/build-site.mjs`.
 
 ## Lessons
 

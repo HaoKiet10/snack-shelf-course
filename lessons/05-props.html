@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/site.css">
-<script src="../assets/site.js" defer></script>
+<link rel="stylesheet" href="../assets/site.css?v=57f4a1da">
+<script src="../assets/site.js?v=57f4a1da" defer></script>
 </head>
 <body class="lesson-page">
 <header class="bar">
@@ -110,7 +110,130 @@ price<span class="token operator">=</span><span class="token string">"1.8"</span
 
 <p>The card needs to change it on a click, and props are read-only for the component that receives them. Something the component changes itself belongs in state.</p>
 </details>
+<section class="practice" aria-labelledby="practice">
+<h2 id="practice">Practice</h2>
+<p class="practice-intro">Pick an answer to see if it's right. Wrong picks are crossed out, so you can try again.</p>
+<div class="quiz">
+<fieldset class="quiz-q" data-answer="2">
+<legend class="visually-hidden">Question 1</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">1</span><div><p>What are props?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="05-props-q1" value="0"><span class="quiz-letter">A</span><span class="quiz-text">CSS properties for a component</span></label>
+<label class="quiz-choice"><input type="radio" name="05-props-q1" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Global variables every component can read</span></label>
+<label class="quiz-choice"><input type="radio" name="05-props-q1" value="2"><span class="quiz-letter">C</span><span class="quiz-text">The arguments a parent passes to a component</span></label>
+<label class="quiz-choice"><input type="radio" name="05-props-q1" value="3"><span class="quiz-letter">D</span><span class="quiz-text">State that a component owns</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: C.</strong></p>
+<p><code>&lt;SnackCard name=&quot;Pocky&quot; price={2.5} /&gt;</code> calls <code>SnackCard</code> with <code>{ name: &#39;Pocky&#39;, price: 2.5 }</code>. Props flow from parent to child.</p>
 
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="1">
+<legend class="visually-hidden">Question 2</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">2</span><div><p>What&#39;s the difference between <code>price=&quot;2.5&quot;</code> and <code>price={2.5}</code>?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="05-props-q2" value="0"><span class="quiz-letter">A</span><span class="quiz-text">None</span></label>
+<label class="quiz-choice"><input type="radio" name="05-props-q2" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Quotes pass the string &quot;2.5&quot;; braces pass the number 2.5</span></label>
+<label class="quiz-choice"><input type="radio" name="05-props-q2" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Braces pass a string; quotes pass a number</span></label>
+<label class="quiz-choice"><input type="radio" name="05-props-q2" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Quotes are for HTML elements only</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: B.</strong></p>
+<p>Quotes are always a string. Braces hold any JavaScript expression, so <code>{2.5}</code> is a number and <code>price.toFixed(2)</code> works on it.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="2">
+<legend class="visually-hidden">Question 3</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">3</span><div><p>Inside <code>SnackCard</code>, what happens if you write <code>name = name.toUpperCase()</code>?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="05-props-q3" value="0"><span class="quiz-letter">A</span><span class="quiz-text">TypeScript converts it to state</span></label>
+<label class="quiz-choice"><input type="radio" name="05-props-q3" value="1"><span class="quiz-letter">B</span><span class="quiz-text">The parent&#39;s data changes too</span></label>
+<label class="quiz-choice"><input type="radio" name="05-props-q3" value="2"><span class="quiz-letter">C</span><span class="quiz-text">It breaks the rule that props are read-only; the parent still owns the data</span></label>
+<label class="quiz-choice"><input type="radio" name="05-props-q3" value="3"><span class="quiz-letter">D</span><span class="quiz-text">React re-renders with the new name</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: C.</strong></p>
+<p>Props belong to the parent. A component reads them and never changes them. To show something different, calculate a new variable, like <code>const shout = name.toUpperCase()</code>.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="0">
+<legend class="visually-hidden">Question 4</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">4</span><div><pre class="code" data-lang="tsx"><code><span class="token keyword">type</span> <span class="token class-name">SnackCardProps</span> <span class="token operator">=</span> <span class="token punctuation">{</span> name<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span> price<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">;</span> emoji<span class="token operator">:</span> <span class="token builtin">string</span> <span class="token punctuation">}</span></code></pre>
+<p>What happens with <code>&lt;SnackCard name=&quot;Pocky&quot; price={2.5} /&gt;</code>?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="05-props-q4" value="0"><span class="quiz-letter">A</span><span class="quiz-text">TypeScript reports that <code>emoji</code> is missing</span></label>
+<label class="quiz-choice"><input type="radio" name="05-props-q4" value="1"><span class="quiz-letter">B</span><span class="quiz-text">It works, and <code>emoji</code> is an empty string</span></label>
+<label class="quiz-choice"><input type="radio" name="05-props-q4" value="2"><span class="quiz-letter">C</span><span class="quiz-text">It crashes in the browser only</span></label>
+<label class="quiz-choice"><input type="radio" name="05-props-q4" value="3"><span class="quiz-letter">D</span><span class="quiz-text">React adds a default emoji</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: A.</strong></p>
+<p>Every prop in the type is required unless it is marked optional with <code>?</code>. TypeScript checks each use of the component.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="0">
+<legend class="visually-hidden">Question 5</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">5</span><div><p>What does <code>function SnackCard({ name, price }: SnackCardProps)</code> do?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="05-props-q5" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Destructures the props object into <code>name</code> and <code>price</code> variables</span></label>
+<label class="quiz-choice"><input type="radio" name="05-props-q5" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Creates two new state variables</span></label>
+<label class="quiz-choice"><input type="radio" name="05-props-q5" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Makes <code>name</code> and <code>price</code> optional</span></label>
+<label class="quiz-choice"><input type="radio" name="05-props-q5" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Copies the props into the parent</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: A.</strong></p>
+<p>It is shorthand for <code>function SnackCard(props: SnackCardProps)</code> followed by <code>const { name, price } = props</code>.</p>
+
+</details>
+</fieldset>
+<p class="quiz-score" aria-live="polite"></p>
+</div>
+<h2 id="exercise">Try it yourself</h2>
+<div class="exercise">
+<h3>A sale price</h3>
+<p>Add an optional <code>oldPrice</code> prop to <code>SnackCard</code>. When it is given, show it crossed out next to the price. Use it on one snack.</p>
+
+<details><summary><span>Hint</span></summary>
+<p>Optional props are typed with <code>?</code>: <code>oldPrice?: number</code>. Show it only when it exists, with <code>{oldPrice &amp;&amp; …}</code> or a check, and use <code>&lt;s&gt;</code> for strike-through.</p>
+</details>
+<details><summary><span>One way to do it</span></summary>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">type</span> <span class="token class-name">SnackCardProps</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+  name<span class="token operator">:</span> <span class="token builtin">string</span>
+  price<span class="token operator">:</span> <span class="token builtin">number</span>
+  emoji<span class="token operator">:</span> <span class="token builtin">string</span>
+  oldPrice<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">number</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">SnackCard</span><span class="token punctuation">(</span><span class="token punctuation">{</span> name<span class="token punctuation">,</span> price<span class="token punctuation">,</span> emoji<span class="token punctuation">,</span> oldPrice <span class="token punctuation">}</span><span class="token operator">:</span> SnackCardProps<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>card<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token punctuation">{</span><span class="token comment">/* … */</span><span class="token punctuation">}</span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>price<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+        $</span><span class="token punctuation">{</span>price<span class="token punctuation">.</span><span class="token function">toFixed</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token plain-text">
+        </span><span class="token punctuation">{</span>oldPrice <span class="token operator">!==</span> <span class="token keyword">undefined</span> <span class="token operator">&amp;&amp;</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>s</span><span class="token punctuation">></span></span><span class="token plain-text"> $</span><span class="token punctuation">{</span>oldPrice<span class="token punctuation">.</span><span class="token function">toFixed</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>s</span><span class="token punctuation">></span></span><span class="token punctuation">}</span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<pre class="code" data-lang="tsx"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">SnackCard</span></span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Pocky<span class="token punctuation">"</span></span> <span class="token attr-name">price</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token number">2.5</span><span class="token punctuation">}</span></span> <span class="token attr-name">emoji</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>🍫<span class="token punctuation">"</span></span> <span class="token attr-name">oldPrice</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token number">3</span><span class="token punctuation">}</span></span> <span class="token punctuation">/></span></span></code></pre>
+<p><code>oldPrice !== undefined</code> rather than <code>oldPrice &amp;&amp;</code>: a price of 0 would otherwise print a stray 0 (lesson 10).</p>
+</details>
+</div>
+</section>
   </article>
 </main>
 <nav class="pager" aria-label="Lessons">

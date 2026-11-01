@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/site.css">
-<script src="../assets/site.js" defer></script>
+<link rel="stylesheet" href="../assets/site.css?v=57f4a1da">
+<script src="../assets/site.js?v=57f4a1da" defer></script>
 </head>
 <body class="lesson-page">
 <header class="bar">
@@ -150,7 +150,113 @@
 
 <p>Not necessarily. Automated checks catch only the mechanical problems; most issues, like confusing names or lost focus, need testing by hand with a keyboard and a screen reader.</p>
 </details>
+<section class="practice" aria-labelledby="practice">
+<h2 id="practice">Practice</h2>
+<p class="practice-intro">Pick an answer to see if it's right. Wrong picks are crossed out, so you can try again.</p>
+<div class="quiz">
+<fieldset class="quiz-q" data-answer="1">
+<legend class="visually-hidden">Question 1</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">1</span><div><p>A button shows only &quot;❤ 3&quot;. What does a screen reader announce?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="33-accessibility-q1" value="0"><span class="quiz-letter">A</span><span class="quiz-text">&quot;Button&quot;</span></label>
+<label class="quiz-choice"><input type="radio" name="33-accessibility-q1" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Something like &quot;red heart, 3&quot;: neither the action nor the snack</span></label>
+<label class="quiz-choice"><input type="radio" name="33-accessibility-q1" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Nothing at all</span></label>
+<label class="quiz-choice"><input type="radio" name="33-accessibility-q1" value="3"><span class="quiz-letter">D</span><span class="quiz-text">&quot;Like Pocky, 3 likes&quot;</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: B.</strong></p>
+<p>Give it an <code>aria-label</code> that says what it does and its state.</p>
 
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="1">
+<legend class="visually-hidden">Question 2</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">2</span><div><p>Why was <code>&lt;span aria-label=&quot;quantity&quot;&gt;2&lt;/span&gt;</code> ignored?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="33-accessibility-q2" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Spans can&#39;t hold numbers</span></label>
+<label class="quiz-choice"><input type="radio" name="33-accessibility-q2" value="1"><span class="quiz-letter">B</span><span class="quiz-text"><code>aria-label</code> only applies to elements with a role, like buttons, links and inputs</span></label>
+<label class="quiz-choice"><input type="radio" name="33-accessibility-q2" value="2"><span class="quiz-letter">C</span><span class="quiz-text">It needs <code>aria-hidden</code> too</span></label>
+<label class="quiz-choice"><input type="radio" name="33-accessibility-q2" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Screen readers ignore all spans</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: B.</strong></p>
+<p>Use real text that&#39;s hidden visually, with a <code>.visually-hidden</code> class.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="1">
+<legend class="visually-hidden">Question 3</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">3</span><div><p>Why does the app move focus to <code>&lt;main&gt;</code> after a page change?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="33-accessibility-q3" value="0"><span class="quiz-letter">A</span><span class="quiz-text">To hide the header</span></label>
+<label class="quiz-choice"><input type="radio" name="33-accessibility-q3" value="1"><span class="quiz-letter">B</span><span class="quiz-text">A single-page app swaps content without loading a page, so focus would stay on the old link and nothing would be announced</span></label>
+<label class="quiz-choice"><input type="radio" name="33-accessibility-q3" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Browsers require it</span></label>
+<label class="quiz-choice"><input type="radio" name="33-accessibility-q3" value="3"><span class="quiz-letter">D</span><span class="quiz-text">To scroll to the top faster</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: B.</strong></p>
+<p>Moving focus puts keyboard and screen-reader users at the start of the new content.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="1">
+<legend class="visually-hidden">Question 4</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">4</span><div><p>Why does the focus effect compare with the last path instead of skipping its first run with a flag?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="33-accessibility-q4" value="0"><span class="quiz-letter">A</span><span class="quiz-text">React forbids booleans in refs</span></label>
+<label class="quiz-choice"><input type="radio" name="33-accessibility-q4" value="1"><span class="quiz-letter">B</span><span class="quiz-text">StrictMode runs effects twice in development, so a &quot;first run&quot; flag let the second run steal focus on page load</span></label>
+<label class="quiz-choice"><input type="radio" name="33-accessibility-q4" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Flags are slower</span></label>
+<label class="quiz-choice"><input type="radio" name="33-accessibility-q4" value="3"><span class="quiz-letter">D</span><span class="quiz-text">To support older browsers</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: B.</strong></p>
+<p>Comparing values works however many times an effect runs.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="3">
+<legend class="visually-hidden">Question 5</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">5</span><div><p>The axe tests pass. What does that tell you?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="33-accessibility-q5" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Screen readers will work perfectly</span></label>
+<label class="quiz-choice"><input type="radio" name="33-accessibility-q5" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Colour contrast is fine</span></label>
+<label class="quiz-choice"><input type="radio" name="33-accessibility-q5" value="2"><span class="quiz-letter">C</span><span class="quiz-text">The app is fully accessible</span></label>
+<label class="quiz-choice"><input type="radio" name="33-accessibility-q5" value="3"><span class="quiz-letter">D</span><span class="quiz-text">No mechanical problems were found; most real problems still need testing by hand</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: D.</strong></p>
+<p>In this lesson, the axe tests passed before any of the fixes. Tab through it, and try a screen reader.</p>
+
+</details>
+</fieldset>
+<p class="quiz-score" aria-live="polite"></p>
+</div>
+<h2 id="exercise">Try it yourself</h2>
+<div class="exercise">
+<h3>Announce the basket</h3>
+<p>When a snack is added, make sure screen-reader users hear the new basket count, even if they can&#39;t see the header.</p>
+
+<details><summary><span>Hint</span></summary>
+<p>The toast already uses <code>aria-live</code>. Another way: a visually hidden <code>aria-live=&quot;polite&quot;</code> region in the Header that contains the count as a sentence.</p>
+</details>
+<details><summary><span>One way to do it</span></summary>
+<pre class="code" data-lang="tsx"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>visually-hidden<span class="token punctuation">"</span></span> <span class="token attr-name">aria-live</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>polite<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+  </span><span class="token punctuation">{</span>count <span class="token operator">===</span> <span class="token number">0</span> <span class="token operator">?</span> <span class="token string">'Basket is empty'</span> <span class="token operator">:</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>count<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>count <span class="token operator">===</span> <span class="token number">1</span> <span class="token operator">?</span> <span class="token string">'item'</span> <span class="token operator">:</span> <span class="token string">'items'</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> in the basket</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">}</span><span class="token plain-text">
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span></code></pre>
+<p>The region has to exist before its text changes; screen readers announce changes, not a region appearing with text already in it.</p>
+</details>
+</div>
+</section>
   </article>
 </main>
 <nav class="pager" aria-label="Lessons">
