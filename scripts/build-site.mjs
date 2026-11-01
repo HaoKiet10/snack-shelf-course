@@ -6,6 +6,7 @@
 
 import { readFile, writeFile, readdir, mkdir, rm, cp } from 'node:fs/promises'
 import { existsSync } from 'node:fs'
+import { createHash } from 'node:crypto'
 import { createRequire } from 'node:module'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -22,6 +23,14 @@ const REPO_URL = (pkg.repository?.url ?? pkg.repository ?? '').replace(/^git\+/,
 
 const manifest = JSON.parse(await readFile(path.join(ROOT, 'content/lessons.json'), 'utf8'))
 const credits = JSON.parse(await readFile(path.join(ROOT, 'assets/credits.json'), 'utf8'))
+
+// A fingerprint of the site's CSS and JS, added to their URLs (?v=…), so
+// browsers fetch the new files after an update instead of a cached copy.
+const ASSET_V = createHash('sha256')
+  .update(await readFile(path.join(ROOT, 'assets/site.css')))
+  .update(await readFile(path.join(ROOT, 'assets/site.js')))
+  .digest('hex')
+  .slice(0, 8)
 
 // ---------- helpers ----------
 
@@ -90,8 +99,8 @@ function head({ title, description, prefix }) {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="${prefix}assets/site.css">
-<script src="${prefix}assets/site.js" defer></script>
+<link rel="stylesheet" href="${prefix}assets/site.css?v=${ASSET_V}">
+<script src="${prefix}assets/site.js?v=${ASSET_V}" defer></script>
 </head>`
 }
 
