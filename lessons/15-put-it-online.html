@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Put it online · Snack Shelf</title>
+<meta name="description" content="Push the app to GitHub and let a workflow build and publish it to GitHub Pages on every push, so the shelf has a real address you can send to people.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head>
+<body class="lesson-page">
+<header class="bar">
+  <a class="wordmark" href="../index.html">Snack Shelf</a>
+  <nav aria-label="Site"><a href="../index.html#lessons">Lessons</a><a href="https://github.com/HaoKiet10/snack-shelf-course">GitHub</a></nav>
+</header>
+<main class="lesson">
+  <div class="lesson-head" data-reveal>
+    <h1>Put it online</h1>
+    <p class="lead">Push the app to GitHub and let a workflow build and publish it to GitHub Pages on every push, so the shelf has a real address you can send to people.</p>
+    <p class="meta">Lesson 15 of 15, about 20 minutes</p>
+  </div>
+  <aside class="demo" aria-label="Live demo">
+    <div class="demo-sticky">
+      <div class="demo-frame" data-ui>
+        <iframe src="../demos/15-put-it-online/index.html" title="Live demo for Put it online" loading="lazy"></iframe>
+      </div>
+      <p class="demo-links"><a href="../demos/15-put-it-online/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a><a href="https://github.com/HaoKiet10/snack-shelf-course/tree/main/code/lessons/15-put-it-online">Read this lesson's code</a></p>
+    </div>
+  </aside>
+  <article class="prose">
+<p>The last lesson has almost no app code. It makes the shelf live at an address like <code>https://you.github.io/snack-shelf/</code>, and keeps it up to date by itself.</p>
+<h2 id="static-hosting-is-enough">Static hosting is enough</h2>
+<p>After <code>npm run build</code>, the whole app is a folder of files (lesson 14). There is no server code: the browser downloads the files and runs everything itself. Any <strong>static host</strong> can serve that. GitHub Pages is free for public repositories, and it already has your code, so it is the simplest place to start. Netlify, Cloudflare Pages and Vercel work the same way.</p>
+<p>There are two ways to get the files onto Pages:</p>
+<div class="table-wrap"><table><thead><tr><th></th><th>commit the built files</th><th>build on GitHub</th></tr></thead><tbody><tr><td>how</td><td>run <code>npm run build</code> yourself, commit the output, Pages serves it from a branch</td><td>GitHub runs <code>npm run build</code> on every push and publishes the result</td></tr>
+<tr><td><code>dist/</code> in git</td><td>yes</td><td>no, stays in <code>.gitignore</code></td></tr>
+<tr><td>forget to rebuild</td><td>the site goes stale</td><td>cannot happen</td></tr>
+<tr><td>used by</td><td>this course site</td><td>the snack shelf</td></tr></tbody></table></div>
+<p>Building on GitHub is the usual choice for an app. You only push source code; the build happens on a clean machine every time, so &quot;it works on my computer&quot; cannot sneak in.</p>
+<h2 id="the-workflow-file">The workflow file</h2>
+<p><strong>GitHub Actions</strong> runs scripts on GitHub&#39;s machines when something happens in your repository. A workflow is a YAML file in <code>.github/workflows/</code>:</p>
+<pre class="code" data-lang="yaml"><code><span class="token comment"># .github/workflows/deploy.yml</span>
+<span class="token key atrule">name</span><span class="token punctuation">:</span> Deploy to GitHub Pages
+
+<span class="token key atrule">on</span><span class="token punctuation">:</span>
+  <span class="token key atrule">push</span><span class="token punctuation">:</span>
+    <span class="token key atrule">branches</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>main<span class="token punctuation">]</span>
+  <span class="token key atrule">workflow_dispatch</span><span class="token punctuation">:</span>
+
+<span class="token key atrule">permissions</span><span class="token punctuation">:</span>
+  <span class="token key atrule">contents</span><span class="token punctuation">:</span> read
+  <span class="token key atrule">pages</span><span class="token punctuation">:</span> write
+  <span class="token key atrule">id-token</span><span class="token punctuation">:</span> write
+
+<span class="token key atrule">concurrency</span><span class="token punctuation">:</span>
+  <span class="token key atrule">group</span><span class="token punctuation">:</span> pages
+  <span class="token key atrule">cancel-in-progress</span><span class="token punctuation">:</span> <span class="token boolean important">false</span>
+
+<span class="token key atrule">jobs</span><span class="token punctuation">:</span>
+  <span class="token key atrule">build</span><span class="token punctuation">:</span>
+    <span class="token key atrule">runs-on</span><span class="token punctuation">:</span> ubuntu<span class="token punctuation">-</span>latest
+    <span class="token key atrule">steps</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token key atrule">uses</span><span class="token punctuation">:</span> actions/checkout@v7
+      <span class="token punctuation">-</span> <span class="token key atrule">uses</span><span class="token punctuation">:</span> actions/setup<span class="token punctuation">-</span>node@v7
+        <span class="token key atrule">with</span><span class="token punctuation">:</span>
+          <span class="token key atrule">node-version</span><span class="token punctuation">:</span> <span class="token number">24</span>
+          <span class="token key atrule">cache</span><span class="token punctuation">:</span> npm
+      <span class="token punctuation">-</span> <span class="token key atrule">run</span><span class="token punctuation">:</span> npm ci
+      <span class="token punctuation">-</span> <span class="token key atrule">run</span><span class="token punctuation">:</span> npm run build
+      <span class="token punctuation">-</span> <span class="token key atrule">uses</span><span class="token punctuation">:</span> actions/configure<span class="token punctuation">-</span>pages@v6
+      <span class="token punctuation">-</span> <span class="token key atrule">uses</span><span class="token punctuation">:</span> actions/upload<span class="token punctuation">-</span>pages<span class="token punctuation">-</span>artifact@v5
+        <span class="token key atrule">with</span><span class="token punctuation">:</span>
+          <span class="token key atrule">path</span><span class="token punctuation">:</span> dist
+
+  <span class="token key atrule">deploy</span><span class="token punctuation">:</span>
+    <span class="token key atrule">needs</span><span class="token punctuation">:</span> build
+    <span class="token key atrule">runs-on</span><span class="token punctuation">:</span> ubuntu<span class="token punctuation">-</span>latest
+    <span class="token key atrule">environment</span><span class="token punctuation">:</span>
+      <span class="token key atrule">name</span><span class="token punctuation">:</span> github<span class="token punctuation">-</span>pages
+      <span class="token key atrule">url</span><span class="token punctuation">:</span> $<span class="token punctuation">{</span><span class="token punctuation">{</span> steps.deployment.outputs.page_url <span class="token punctuation">}</span><span class="token punctuation">}</span>
+    <span class="token key atrule">steps</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token key atrule">id</span><span class="token punctuation">:</span> deployment
+        <span class="token key atrule">uses</span><span class="token punctuation">:</span> actions/deploy<span class="token punctuation">-</span>pages@v5</code></pre>
+<p>Reading it top to bottom:</p>
+<ul>
+<li><strong><code>on</code></strong>: run on every push to <code>main</code>. <code>workflow_dispatch</code> adds a &quot;Run workflow&quot; button, for when you want to redeploy without a change.</li>
+<li><strong><code>permissions</code></strong>: what this workflow is allowed to do. Read the code, write to Pages, and get an <code>id-token</code>, which is how Pages verifies the upload came from this repository&#39;s workflow. Nothing else.</li>
+<li><strong><code>concurrency</code></strong>: one deploy at a time. If you push twice quickly, the second waits.</li>
+<li><strong><code>build</code> job</strong>, on a fresh Ubuntu machine:<ul>
+<li><code>checkout</code> downloads your repository.</li>
+<li><code>setup-node</code> installs Node 24; <code>cache: npm</code> keeps downloaded packages between runs.</li>
+<li><code>npm ci</code> installs the <strong>exact</strong> versions in <code>package-lock.json</code>. Unlike <code>npm install</code>, it never changes the lock file, and it fails if the lock file and <code>package.json</code> disagree. That is what you want on a build machine.</li>
+<li><code>npm run build</code> type-checks and builds <code>dist/</code>. A type error stops the deploy, so a broken build never goes live.</li>
+<li><code>upload-pages-artifact</code> packs <code>dist/</code> for Pages.</li>
+</ul>
+</li>
+<li><strong><code>deploy</code> job</strong>: <code>needs: build</code> makes it wait for the build to succeed. Then <code>deploy-pages</code> publishes the files.</li>
+</ul>
+<p>The <code>@v7</code>, <code>@v6</code> and <code>@v5</code> are the major versions of each action. Each action&#39;s GitHub page lists its current version.</p>
+<h2 id="steps-once">Steps, once</h2>
+<ol>
+<li><p>Create an empty repository on GitHub named <code>snack-shelf</code>, without a README.</p>
+</li>
+<li><p>In the project folder:</p>
+<pre class="code" data-lang="bash"><code><span class="token function">git</span> init
+<span class="token function">git</span> <span class="token function">add</span> <span class="token parameter variable">-A</span>
+<span class="token function">git</span> commit <span class="token parameter variable">-m</span> <span class="token string">"Snack shelf"</span>
+<span class="token function">git</span> branch <span class="token parameter variable">-M</span> main
+<span class="token function">git</span> remote <span class="token function">add</span> origin https://github.com/YOUR-NAME/snack-shelf.git
+<span class="token function">git</span> push <span class="token parameter variable">-u</span> origin main</code></pre>
+<p><code>.gitignore</code> already keeps out <code>node_modules/</code> and <code>dist/</code>, so only the source is pushed.</p>
+</li>
+<li><p>On GitHub: <strong>Settings → Pages → Build and deployment → Source: GitHub Actions</strong>.</p>
+</li>
+<li><p>Open the <strong>Actions</strong> tab. If the first run started before step 3 and failed, press <strong>Run workflow</strong>.</p>
+</li>
+<li><p>When both jobs are green, the address appears on the deploy job and on the Pages settings page.</p>
+</li>
+</ol>
+<p>From now on, deploying is just <code>git push</code>. Change something, push, and about a minute later it is live.</p>
+<p>Pages on a private repository needs a paid GitHub plan. On a free account, the repository has to be public.</p>
+<h2 id="when-it-does-not-work">When it does not work</h2>
+<div class="table-wrap"><table><thead><tr><th>what you see</th><th>likely cause</th></tr></thead><tbody><tr><td>blank page, and 404s for <code>/assets/...</code> in the Network tab</td><td><code>base</code> is not set (lesson 14)</td></tr>
+<tr><td>the build job fails on <code>npm ci</code></td><td><code>package-lock.json</code> was not committed, or is out of date: run <code>npm install</code> and commit it</td></tr>
+<tr><td>the build job fails on <code>tsc</code></td><td>a type error; it fails the same way locally with <code>npm run build</code></td></tr>
+<tr><td>the deploy job says Pages is not enabled</td><td>step 3 was skipped</td></tr>
+<tr><td>the old version still shows</td><td>the browser cached <code>index.html</code>: reload with Ctrl+F5</td></tr></tbody></table></div>
+<p>Read the failed step&#39;s log on the Actions tab. It is the same output you would get by running that command yourself.</p>
+<h2 id="where-to-go-from-here">Where to go from here</h2>
+<p>The shelf now covers the core of React: components, props, state, events, lists, conditional rendering, lifting state, effects, styling and shipping. Good next steps, in roughly this order:</p>
+<ul>
+<li><strong>Forms with several fields</strong>, and a <strong>reducer</strong> (<code>useReducer</code>) when one state update has to change several things at once. The basket would be a good candidate: remove an item, change a quantity.</li>
+<li><strong>Context</strong> (<code>useContext</code>), for data that many components at different depths need, so you do not pass the same prop through five layers.</li>
+<li><strong>Routing</strong> (React Router), for an app with several pages, such as a page per snack.</li>
+<li><strong>Data fetching libraries</strong> (TanStack Query), which handle loading, errors, caching and retries so you rarely write the lesson-12 effect by hand.</li>
+<li><strong>Testing</strong> (Vitest and Testing Library).</li>
+</ul>
+<p>And the best next step of all: build something of your own. The concepts carry over; the snacks were only an excuse.</p>
+<h2 id="check-yourself">Check yourself</h2>
+<details>
+<summary><span>Why build on GitHub instead of committing <code>dist/</code>?</span></summary>
+
+<p>Every push is built fresh on a clean machine, so the site can never be stale or built from uncommitted local changes, and the repository holds only source code.</p>
+</details>
+
+<details>
+<summary><span>What is the difference between <code>npm ci</code> and <code>npm install</code>?</span></summary>
+
+<p><code>npm ci</code> installs exactly what <code>package-lock.json</code> says and never changes it; it fails if the lock file is out of date. <code>npm install</code> may update the lock file. For builds you want the exact, repeatable versions.</p>
+</details>
+
+<details>
+<summary><span>The type checker finds an error during the workflow. What happens to the live site?</span></summary>
+
+<p>Nothing. The build job fails, the deploy job needs it, so it never runs. The previous version stays live.</p>
+</details>
+
+  </article>
+</main>
+<nav class="pager" aria-label="Lessons">
+  <a class="pager-prev" href="14-building.html"><span>Previous</span>Building for production</a>
+  
+</nav>
+<footer class="foot-small">
+  <p>Snack Shelf, a beginner course in React and TypeScript. 15 lessons.</p>
+</footer>
+</body>
+</html>

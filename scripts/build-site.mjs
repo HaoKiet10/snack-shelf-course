@@ -14,7 +14,7 @@ import { build } from 'vite'
 
 const require = createRequire(import.meta.url)
 const Prism = require('prismjs')
-require('prismjs/components/index.js')(['markup', 'css', 'javascript', 'jsx', 'typescript', 'tsx', 'bash'])
+require('prismjs/components/index.js')(['markup', 'css', 'javascript', 'jsx', 'typescript', 'tsx', 'bash', 'json', 'yaml'])
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const pkg = JSON.parse(await readFile(path.join(ROOT, 'package.json'), 'utf8'))
@@ -38,7 +38,7 @@ function parseFrontMatter(text) {
   return { meta, body: m[2] }
 }
 
-const LANGS = { tsx: 'tsx', ts: 'typescript', jsx: 'jsx', js: 'javascript', html: 'markup', css: 'css', bash: 'bash' }
+const LANGS = { tsx: 'tsx', ts: 'typescript', jsx: 'jsx', js: 'javascript', html: 'markup', css: 'css', bash: 'bash', json: 'json', yaml: 'yaml' }
 
 marked.use({
   renderer: {
@@ -170,7 +170,7 @@ ${html}
 </main>
 ${pager}
 <footer class="foot-small">
-  <p>Snack Shelf, a beginner course in React and TypeScript. ${published.length} of ${manifest.length} lessons written.</p>
+  <p>Snack Shelf, a beginner course in React and TypeScript. ${published.length === manifest.length ? `${manifest.length} lessons.` : `${published.length} of ${manifest.length} lessons written.`}</p>
 </footer>
 </body>
 </html>
@@ -197,6 +197,12 @@ async function buildHome() {
   tpl = tpl
     .replaceAll('{{HEAD}}', head({ title: 'Snack Shelf: learn React one snack at a time', description: 'A free beginner course in React and TypeScript. Build a small snack-shelf web app, one idea per lesson.', prefix: '' }).replace(/^<!doctype html>\n<html lang="en">\n/, ''))
     .replaceAll('{{LESSON_ROWS}}', rows)
+    .replaceAll(
+      '{{LESSONS_NOTE}}',
+      published === manifest.length
+        ? `All ${manifest.length} lessons are written, each with its code and a live demo.`
+        : `${published} of ${manifest.length} written so far. New lessons arrive as they are finished.`,
+    )
     .replaceAll('{{PUBLISHED}}', String(published))
     .replaceAll('{{TOTAL}}', String(manifest.length))
     .replaceAll('{{CREDITS}}', creditsHtml)

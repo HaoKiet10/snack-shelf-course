@@ -1,0 +1,21 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background: var(--peach);
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.basket {
+  font-size: 1.2rem;
+}
+
+.basket .total {
+  font-size: 1rem;
+  opacity: 0.8;
+}

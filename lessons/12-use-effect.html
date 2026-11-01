@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>useEffect · Snack Shelf</title>
+<meta name="description" content="Load the snacks from the network with loading and error states, save likes in the browser, and learn the one question that tells you whether you need an effect at all.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head>
+<body class="lesson-page">
+<header class="bar">
+  <a class="wordmark" href="../index.html">Snack Shelf</a>
+  <nav aria-label="Site"><a href="../index.html#lessons">Lessons</a><a href="https://github.com/HaoKiet10/snack-shelf-course">GitHub</a></nav>
+</header>
+<main class="lesson">
+  <div class="lesson-head" data-reveal>
+    <h1>useEffect</h1>
+    <p class="lead">Load the snacks from the network with loading and error states, save likes in the browser, and learn the one question that tells you whether you need an effect at all.</p>
+    <p class="meta">Lesson 12 of 15, about 25 minutes</p>
+  </div>
+  <aside class="demo" aria-label="Live demo">
+    <div class="demo-sticky">
+      <div class="demo-frame" data-ui>
+        <iframe src="../demos/12-use-effect/index.html" title="Live demo for useEffect" loading="lazy"></iframe>
+      </div>
+      <p class="demo-links"><a href="../demos/12-use-effect/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a><a href="https://github.com/HaoKiet10/snack-shelf-course/tree/main/code/lessons/12-use-effect">Read this lesson's code</a></p>
+    </div>
+  </aside>
+  <article class="prose">
+<p>The snacks are no longer written into the code. They are a file on the server, <code>snacks.json</code>, and the app fetches them when it starts. The likes are saved in the browser now, so they survive a reload.</p>
+<h2 id="rendering-must-be-pure">Rendering must be pure</h2>
+<p>Since lesson 4, a component has been a function that <strong>calculates</strong> UI from props and state. React may call it at any time, as often as it likes, and even twice in a row in development (StrictMode, lesson 7). So rendering must have no <strong>side effects</strong>: it should not change anything outside itself.</p>
+<p>Fetching is a side effect. Writing to <code>localStorage</code> is a side effect. Put a <code>fetch</code> straight in the component body and it runs on <strong>every render</strong>; when it finishes it sets state, which causes another render, which fetches again, forever.</p>
+<p>An <strong>effect</strong> is React&#39;s place for that kind of code: &quot;after you have put this render on the screen, also run this&quot;.</p>
+<pre class="code" data-lang="tsx"><code><span class="token function">useEffect</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  <span class="token comment">// runs AFTER React has updated the screen</span>
+<span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token comment">/* dependencies */</span><span class="token punctuation">]</span><span class="token punctuation">)</span></code></pre>
+<h2 id="the-dependency-array">The dependency array</h2>
+<p>The second argument says <strong>when</strong> to run it again:</p>
+<div class="table-wrap"><table><thead><tr><th>you write</th><th>it runs</th></tr></thead><tbody><tr><td><code>useEffect(fn, [])</code></td><td>after the first render only</td></tr>
+<tr><td><code>useEffect(fn, [a, b])</code></td><td>after the first render, then after any render where <code>a</code> or <code>b</code> changed</td></tr>
+<tr><td><code>useEffect(fn)</code></td><td>after every render (rarely what you want)</td></tr></tbody></table></div>
+<p>List <strong>every</strong> prop, state or variable from the component that the effect reads. Leaving one out does not make the effect &quot;run less&quot;; it makes it run with <strong>stale</strong> values. The dependency array is not a schedule you choose, it is a description of what the effect reads.</p>
+<h2 id="step-1-the-data-moves-to-a-server">Step 1: the data moves to a server</h2>
+<pre class="code" data-lang="json"><code><span class="token comment">// public/snacks.json</span>
+<span class="token punctuation">[</span>
+  <span class="token punctuation">{</span> <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"pocky"</span><span class="token punctuation">,</span> <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"Pocky"</span><span class="token punctuation">,</span> <span class="token property">"price"</span><span class="token operator">:</span> <span class="token number">2.5</span><span class="token punctuation">,</span> <span class="token property">"emoji"</span><span class="token operator">:</span> <span class="token string">"🍫"</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  ...
+<span class="token punctuation">]</span></code></pre>
+<p>Files in <code>public/</code> are served as they are, so this one is at <code>snacks.json</code>, next to <code>index.html</code>. It stands in for a real API.</p>
+<pre class="code" data-lang="ts"><code><span class="token comment">// src/data/snacks.ts</span>
+<span class="token keyword">export</span> <span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">loadSnacks</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span>Snack<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">></span> <span class="token punctuation">{</span>
+  <span class="token comment">// Pretend the network is slow, so you can actually see "Loading…".</span>
+  <span class="token keyword">await</span> <span class="token keyword">new</span> <span class="token class-name"><span class="token builtin">Promise</span></span><span class="token punctuation">(</span><span class="token punctuation">(</span>resolve<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">setTimeout</span><span class="token punctuation">(</span>resolve<span class="token punctuation">,</span> <span class="token number">600</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+  <span class="token keyword">const</span> res <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token function">fetch</span><span class="token punctuation">(</span><span class="token string">'snacks.json'</span><span class="token punctuation">)</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>res<span class="token punctuation">.</span>ok<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">Error</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">HTTP </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>res<span class="token punctuation">.</span>status<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token keyword">await</span> res<span class="token punctuation">.</span><span class="token function">json</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">as</span> Snack<span class="token punctuation">[</span><span class="token punctuation">]</span>
+<span class="token punctuation">}</span></code></pre>
+<p><code>fetch</code> only throws for network failures. A 404 is a successful <em>request</em> with a failed <em>answer</em>, so check <code>res.ok</code> yourself. <code>res.json()</code> is typed as <code>any</code>, and <code>as Snack[]</code> tells TypeScript what we expect; TypeScript cannot check data that arrives at runtime, so a real app would validate it.</p>
+<h2 id="step-2-three-states-not-one">Step 2: three states, not one</h2>
+<p>The snacks start empty, and the app has to say what is going on:</p>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">type</span> <span class="token class-name">Status</span> <span class="token operator">=</span> <span class="token string">'loading'</span> <span class="token operator">|</span> <span class="token string">'ready'</span> <span class="token operator">|</span> <span class="token string">'error'</span>
+
+<span class="token keyword">const</span> <span class="token punctuation">[</span>snacks<span class="token punctuation">,</span> setSnacks<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token generic-function"><span class="token function">useState</span><span class="token generic class-name"><span class="token operator">&lt;</span>Snack<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token keyword">const</span> <span class="token punctuation">[</span>status<span class="token punctuation">,</span> setStatus<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token generic-function"><span class="token function">useState</span><span class="token generic class-name"><span class="token operator">&lt;</span>Status<span class="token operator">></span></span></span><span class="token punctuation">(</span><span class="token string">'loading'</span><span class="token punctuation">)</span>
+<span class="token keyword">const</span> <span class="token punctuation">[</span>attempt<span class="token punctuation">,</span> setAttempt<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">useState</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span></code></pre>
+<p><code>&#39;loading&#39; | &#39;ready&#39; | &#39;error&#39;</code> is a <strong>union of string literals</strong>: <code>status</code> can only ever be one of those three words, and a typo like <code>&#39;redy&#39;</code> is a type error.</p>
+<h2 id="step-3-the-loading-effect">Step 3: the loading effect</h2>
+<pre class="code" data-lang="tsx"><code><span class="token function">useEffect</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  <span class="token keyword">let</span> ignore <span class="token operator">=</span> <span class="token boolean">false</span>
+  <span class="token function">loadSnacks</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span>data<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>ignore<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">setSnacks</span><span class="token punctuation">(</span>data<span class="token punctuation">)</span>
+        <span class="token function">setStatus</span><span class="token punctuation">(</span><span class="token string">'ready'</span><span class="token punctuation">)</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">catch</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>ignore<span class="token punctuation">)</span> <span class="token function">setStatus</span><span class="token punctuation">(</span><span class="token string">'error'</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+    ignore <span class="token operator">=</span> <span class="token boolean">true</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">[</span>attempt<span class="token punctuation">]</span><span class="token punctuation">)</span></code></pre>
+<p>In order:</p>
+<ol>
+<li>App renders for the first time, with no snacks and <code>status = &#39;loading&#39;</code>. The screen says &quot;Loading snacks…&quot;.</li>
+<li>React runs the effect. The fetch starts.</li>
+<li>600ms later the data arrives. <code>setSnacks</code> and <code>setStatus</code> cause a re-render, and the cards appear.</li>
+</ol>
+<p><strong>The function you return is the cleanup.</strong> React calls it before running the effect again, and when the component is removed. Here it sets <code>ignore = true</code>, so if this request finishes late, after it has been replaced, its result is thrown away instead of overwriting newer data. Without it, a slow old request can arrive after a fast new one and win.</p>
+<p>In development you will see the effect run, get cleaned up and run again on start. That is StrictMode doing it on purpose, to prove your cleanup works. In a production build it runs once.</p>
+<h2 id="step-4-retry-by-changing-a-dependency">Step 4: retry by changing a dependency</h2>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">function</span> <span class="token function">retry</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token function">setStatus</span><span class="token punctuation">(</span><span class="token string">'loading'</span><span class="token punctuation">)</span>
+  <span class="token function">setAttempt</span><span class="token punctuation">(</span><span class="token punctuation">(</span>a<span class="token punctuation">)</span> <span class="token operator">=></span> a <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<p>The effect depends on <code>[attempt]</code>. Changing <code>attempt</code> is the way to say &quot;run it again&quot;. The effect never reads <code>attempt</code>&#39;s value, it just reacts to it changing.</p>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">let</span> content<span class="token operator">:</span> ReactNode
+<span class="token keyword">if</span> <span class="token punctuation">(</span>status <span class="token operator">===</span> <span class="token string">'loading'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  content <span class="token operator">=</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>status<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">Loading snacks…</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+<span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>status <span class="token operator">===</span> <span class="token string">'error'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  content <span class="token operator">=</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>status<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+      Couldn't load the snacks. </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>retry<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">Try again</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>visible<span class="token punctuation">.</span>length <span class="token operator">===</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  content <span class="token operator">=</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>empty<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">No snacks match …</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+<span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+  content <span class="token operator">=</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>main</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>shelf<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token punctuation">{</span><span class="token comment">/* cards */</span><span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>main</span><span class="token punctuation">></span></span>
+<span class="token punctuation">}</span></code></pre>
+<p>Four outcomes is too many for nested <code>? :</code>, so this is lesson 10&#39;s <code>if</code>, before the <code>return</code>, building a variable that the JSX then puts in place with <code>{content}</code>. <code>ReactNode</code> is the type of &quot;anything React can render&quot;.</p>
+<p>To see the error, open DevTools, go to the Network tab, set throttling to <strong>Offline</strong>, and reload. Then go back online and press <strong>Try again</strong>.</p>
+<h2 id="step-5-save-the-likes">Step 5: save the likes</h2>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">const</span> <span class="token punctuation">[</span>likes<span class="token punctuation">,</span> setLikes<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token generic-function"><span class="token function">useState</span><span class="token generic class-name"><span class="token operator">&lt;</span>Record<span class="token operator">&lt;</span><span class="token builtin">string</span><span class="token punctuation">,</span> <span class="token builtin">number</span><span class="token operator">>></span></span></span><span class="token punctuation">(</span>readSavedLikes<span class="token punctuation">)</span>
+
+<span class="token function">useEffect</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  localStorage<span class="token punctuation">.</span><span class="token function">setItem</span><span class="token punctuation">(</span><span class="token constant">LIKES_KEY</span><span class="token punctuation">,</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span>likes<span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">[</span>likes<span class="token punctuation">]</span><span class="token punctuation">)</span></code></pre>
+<p><code>localStorage</code> is outside React, so keeping it in step with state is an effect: &quot;after any render where <code>likes</code> changed, write them down&quot;.</p>
+<p>Reading them back happens in <code>useState</code>. Note <code>readSavedLikes</code>, <strong>without brackets</strong>. You pass the function, and React calls it once, for the first value only. Writing <code>useState(readSavedLikes())</code> would read and parse <code>localStorage</code> on every single render and throw the result away every time after the first.</p>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">function</span> <span class="token function">readSavedLikes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> Record<span class="token operator">&lt;</span><span class="token builtin">string</span><span class="token punctuation">,</span> <span class="token builtin">number</span><span class="token operator">></span> <span class="token punctuation">{</span>
+  <span class="token keyword">try</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>localStorage<span class="token punctuation">.</span><span class="token function">getItem</span><span class="token punctuation">(</span><span class="token constant">LIKES_KEY</span><span class="token punctuation">)</span> <span class="token operator">??</span> <span class="token string">'{}'</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<p>The <code>try</code> matters: storage can be blocked or hold broken text, and a crash on start is worse than forgetting some likes.</p>
+<h2 id="when-you-do-not-need-an-effect">When you do not need an effect</h2>
+<p>The question to ask is: <strong>is this syncing with something outside React?</strong> The network, <code>localStorage</code>, a timer, the page title, a chat connection: yes, use an effect. Anything calculated from props and state: no.</p>
+<pre class="code" data-lang="tsx"><code><span class="token comment">// ❌ an effect to keep derived data "in sync"</span>
+<span class="token keyword">const</span> <span class="token punctuation">[</span>visible<span class="token punctuation">,</span> setVisible<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token generic-function"><span class="token function">useState</span><span class="token generic class-name"><span class="token operator">&lt;</span>Snack<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token function">useEffect</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  <span class="token function">setVisible</span><span class="token punctuation">(</span>snacks<span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span> <span class="token operator">=></span> s<span class="token punctuation">.</span>name<span class="token punctuation">.</span><span class="token function">toLowerCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">includes</span><span class="token punctuation">(</span>q<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">[</span>snacks<span class="token punctuation">,</span> q<span class="token punctuation">]</span><span class="token punctuation">)</span>
+
+<span class="token comment">// ✅ just calculate it while rendering</span>
+<span class="token keyword">const</span> visible <span class="token operator">=</span> snacks<span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span> <span class="token operator">=></span> s<span class="token punctuation">.</span>name<span class="token punctuation">.</span><span class="token function">toLowerCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">includes</span><span class="token punctuation">(</span>q<span class="token punctuation">)</span><span class="token punctuation">)</span></code></pre>
+<p>The effect version renders once with the <strong>old</strong> list, then again with the new one, and it is one more thing to get wrong. The same goes for responding to a click: put that code in the event handler, not in an effect that watches for the state the click changed.</p>
+<p>Effects are the escape hatch from React&#39;s world, not a general &quot;do this when that changes&quot; tool. This app has exactly two, and both talk to the outside.</p>
+<h2 id="check-yourself">Check yourself</h2>
+<details>
+<summary><span>Why can't the fetch go straight in the component body?</span></summary>
+
+<p>The body runs on every render. The fetch would set state, which re-renders, which fetches again, forever. Rendering must stay pure; side effects go in effects or event handlers.</p>
+</details>
+
+<details>
+<summary><span>What does the dependency array <code>[attempt]</code> mean, and how does Try again use it?</span></summary>
+
+<p>Run the effect after the first render, and again after any render where <code>attempt</code> changed. Try again increments <code>attempt</code>, so the effect runs again and refetches.</p>
+</details>
+
+<details>
+<summary><span>What is the cleanup function for in the loading effect?</span></summary>
+
+<p>It marks the old request as ignored when the effect re-runs or App goes away, so a late response cannot overwrite newer data or set state on a component that is gone.</p>
+</details>
+
+<details>
+<summary><span>Why <code>useState(readSavedLikes)</code> and not <code>useState(readSavedLikes())</code>?</span></summary>
+
+<p>The first passes the function, which React calls once for the initial value. The second calls it on every render and throws the result away every time after the first.</p>
+</details>
+
+<details>
+<summary><span>Should <code>total</code> (the basket price) be calculated in an effect?</span></summary>
+
+<p>No. It comes from <code>basket</code> and <code>snacks</code>, both already available while rendering. Calculate it directly; effects are for syncing with things outside React.</p>
+</details>
+
+  </article>
+</main>
+<nav class="pager" aria-label="Lessons">
+  <a class="pager-prev" href="11-lifting-state-up.html"><span>Previous</span>Lifting state up</a>
+  <a class="pager-next" href="13-styling.html"><span>Next</span>Styling it</a>
+</nav>
+<footer class="foot-small">
+  <p>Snack Shelf, a beginner course in React and TypeScript. 15 lessons.</p>
+</footer>
+</body>
+</html>

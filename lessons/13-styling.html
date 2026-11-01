@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Styling it · Snack Shelf</title>
+<meta name="description" content="Scope a component's CSS with a CSS Module, put the colours in CSS variables and get dark mode almost for free, and use inline styles only for values that change at runtime.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head>
+<body class="lesson-page">
+<header class="bar">
+  <a class="wordmark" href="../index.html">Snack Shelf</a>
+  <nav aria-label="Site"><a href="../index.html#lessons">Lessons</a><a href="https://github.com/HaoKiet10/snack-shelf-course">GitHub</a></nav>
+</header>
+<main class="lesson">
+  <div class="lesson-head" data-reveal>
+    <h1>Styling it</h1>
+    <p class="lead">Scope a component's CSS with a CSS Module, put the colours in CSS variables and get dark mode almost for free, and use inline styles only for values that change at runtime.</p>
+    <p class="meta">Lesson 13 of 15, about 18 minutes</p>
+  </div>
+  <aside class="demo" aria-label="Live demo">
+    <div class="demo-sticky">
+      <div class="demo-frame" data-ui>
+        <iframe src="../demos/13-styling/index.html" title="Live demo for Styling it" loading="lazy"></iframe>
+      </div>
+      <p class="demo-links"><a href="../demos/13-styling/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a><a href="https://github.com/HaoKiet10/snack-shelf-course/tree/main/code/lessons/13-styling">Read this lesson's code</a></p>
+    </div>
+  </aside>
+  <article class="prose">
+<p>The app follows your system&#39;s light or dark setting now, each card has a small like meter, and <code>SnackCard</code>&#39;s styles can no longer collide with anyone else&#39;s.</p>
+<h2 id="the-problem-with-plain-css-files">The problem with plain CSS files</h2>
+<p>Since lesson 4, each component has imported its own <code>.css</code> file. That <em>looks</em> like each file belongs to its component. It does not. Vite puts every imported CSS file onto the <strong>same page</strong>, and every class is <strong>global</strong>.</p>
+<pre class="code" data-lang="css"><code><span class="token comment">/* SnackCard.css */</span>
+<span class="token selector">.badge</span> <span class="token punctuation">{</span> <span class="token property">background</span><span class="token punctuation">:</span> crimson<span class="token punctuation">;</span> <span class="token punctuation">}</span>
+
+<span class="token comment">/* someday, Header.css */</span>
+<span class="token selector">.badge</span> <span class="token punctuation">{</span> <span class="token property">background</span><span class="token punctuation">:</span> gold<span class="token punctuation">;</span> <span class="token punctuation">}</span></code></pre>
+<p>Both rules apply to every <code>.badge</code> on the page, and whichever comes later wins. Nothing warns you. In a six-file app you can keep the names apart in your head. In a two-hundred-file app you cannot.</p>
+<h2 id="css-modules-scoped-class-names">CSS Modules: scoped class names</h2>
+<p>Rename the file to end in <strong><code>.module.css</code></strong>. That is the whole setup; Vite supports it out of the box.</p>
+<pre class="code" data-lang="css"><code><span class="token comment">/* SnackCard.module.css */</span>
+<span class="token selector">.card</span> <span class="token punctuation">{</span> ... <span class="token punctuation">}</span>
+<span class="token selector">.badge</span> <span class="token punctuation">{</span> ... <span class="token punctuation">}</span>
+<span class="token selector">.like</span> <span class="token punctuation">{</span> ... <span class="token punctuation">}</span>
+<span class="token selector">.liked</span> <span class="token punctuation">{</span> ... <span class="token punctuation">}</span></code></pre>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">import</span> styles <span class="token keyword">from</span> <span class="token string">'./SnackCard.module.css'</span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>card<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+  </span><span class="token punctuation">{</span>popular <span class="token operator">&amp;&amp;</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span> <span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>badge<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">Fan favourite</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span><span class="token punctuation">}</span></code></pre>
+<p>Vite renames every class to something unique, like <code>_card_13giw_2</code>, and <code>styles</code> is an object mapping your names to the real ones: <code>styles.card === &#39;_card_13giw_2&#39;</code>. Open DevTools and inspect a card to see it. Another file&#39;s <code>.badge</code> gets a different name, so they cannot meet.</p>
+<p>Two things to know:</p>
+<ul>
+<li>Give each element its own class (<code>.name</code>) rather than writing <code>.card h2</code>. Only class names are renamed: in <code>.card h2</code>, the <code>h2</code> part is not, so that rule is scoped only by the <code>.card</code> in front of it.</li>
+<li>A misspelt <code>styles.crad</code> is <code>undefined</code>, which renders as no class at all, so it fails silently. If a style is missing, check the name first.</li>
+</ul>
+<p><code>Header.css</code> and <code>App.css</code> are still plain global CSS. Mixing is fine. Page-wide basics, like <code>body</code> and the colour variables, <em>should</em> be global.</p>
+<h2 id="combining-classes">Combining classes</h2>
+<p><code>className</code> is just a string, so combining classes is plain JavaScript:</p>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">const</span> likeClass <span class="token operator">=</span> <span class="token punctuation">[</span>styles<span class="token punctuation">.</span>button<span class="token punctuation">,</span> styles<span class="token punctuation">.</span>like<span class="token punctuation">,</span> liked <span class="token operator">&amp;&amp;</span> styles<span class="token punctuation">.</span>liked<span class="token punctuation">]</span>
+  <span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span>Boolean<span class="token punctuation">)</span>
+  <span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token string">' '</span><span class="token punctuation">)</span></code></pre>
+<p>The array is three class names, or two names and <code>false</code>. <code>filter(Boolean)</code> drops the <code>false</code>, and <code>join(&#39; &#39;)</code> makes one string. For exactly two, a template string reads fine:</p>
+<pre class="code" data-lang="tsx"><code>className<span class="token operator">=</span><span class="token punctuation">{</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>styles<span class="token punctuation">.</span>button<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>styles<span class="token punctuation">.</span>add<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">}</span></code></pre>
+<p>Libraries such as <code>clsx</code> do the same job with nicer syntax. You do not need one yet.</p>
+<h2 id="css-variables-name-each-colour-once">CSS variables: name each colour once</h2>
+<p>Before, <code>#ffe2c4</code> was typed in four places. Now <code>index.css</code> names every colour once:</p>
+<pre class="code" data-lang="css"><code><span class="token selector">:root</span> <span class="token punctuation">{</span>
+  <span class="token property">--bg</span><span class="token punctuation">:</span> #fff8ef<span class="token punctuation">;</span>
+  <span class="token property">--surface</span><span class="token punctuation">:</span> #ffffff<span class="token punctuation">;</span>
+  <span class="token property">--ink</span><span class="token punctuation">:</span> #3a2a1e<span class="token punctuation">;</span>
+  <span class="token property">--peach</span><span class="token punctuation">:</span> #ffe2c4<span class="token punctuation">;</span>
+  <span class="token property">--lilac</span><span class="token punctuation">:</span> #f3e8ff<span class="token punctuation">;</span>
+  <span class="token property">--line</span><span class="token punctuation">:</span> #e0c9b0<span class="token punctuation">;</span>
+  <span class="token property">--accent</span><span class="token punctuation">:</span> crimson<span class="token punctuation">;</span>
+  <span class="token property">--radius</span><span class="token punctuation">:</span> 12px<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>and every other file uses them:</p>
+<pre class="code" data-lang="css"><code><span class="token selector">.add</span> <span class="token punctuation">{</span>
+  <span class="token property">background</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--peach<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>These are <strong>CSS custom properties</strong>, part of CSS itself, not React or Vite. They are inherited like <code>color</code> is, so defining them on <code>:root</code> (the <code>&lt;html&gt;</code> element) makes them available everywhere.</p>
+<h2 id="dark-mode-by-changing-the-variables">Dark mode, by changing the variables</h2>
+<p>Because every colour goes through a variable, dark mode is one block that redefines them:</p>
+<pre class="code" data-lang="css"><code><span class="token atrule"><span class="token rule">@media</span> <span class="token punctuation">(</span><span class="token property">prefers-color-scheme</span><span class="token punctuation">:</span> dark<span class="token punctuation">)</span></span> <span class="token punctuation">{</span>
+  <span class="token selector">:root</span> <span class="token punctuation">{</span>
+    <span class="token property">--bg</span><span class="token punctuation">:</span> #1f1812<span class="token punctuation">;</span>
+    <span class="token property">--surface</span><span class="token punctuation">:</span> #2c231b<span class="token punctuation">;</span>
+    <span class="token property">--ink</span><span class="token punctuation">:</span> #f4e9dc<span class="token punctuation">;</span>
+    <span class="token property">--peach</span><span class="token punctuation">:</span> #5a3d24<span class="token punctuation">;</span>
+    ...
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<p>No component changed. Switch your system to dark (or in Chrome DevTools: ⋮ → More tools → Rendering → <em>Emulate CSS media feature prefers-color-scheme</em>) and the whole app follows.</p>
+<h2 id="inline-styles-for-runtime-values">Inline styles for runtime values</h2>
+<p>The like meter&#39;s width depends on <code>likes</code>, which CSS cannot know. That is what the <code>style</code> prop is for:</p>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">const</span> meterWidth <span class="token operator">=</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token punctuation">(</span>Math<span class="token punctuation">.</span><span class="token function">min</span><span class="token punctuation">(</span>likes<span class="token punctuation">,</span> <span class="token constant">METER_MAX</span><span class="token punctuation">)</span> <span class="token operator">/</span> <span class="token constant">METER_MAX</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token number">100</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">%</span><span class="token template-punctuation string">`</span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>meter<span class="token punctuation">}</span></span> <span class="token attr-name">aria-hidden</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">style</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">{</span> width<span class="token operator">:</span> meterWidth <span class="token punctuation">}</span><span class="token punctuation">}</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span></code></pre>
+<p><code>style</code> takes an <strong>object</strong>, not a string, with <strong>camelCase</strong> keys: <code>backgroundColor</code>, not <code>background-color</code>. The double braces are not special syntax. The outer pair means &quot;JavaScript here&quot; and the inner pair is the object.</p>
+<p>Keep inline styles for values that come from data. Everything that does not change, the meter&#39;s height, colour and rounded ends, stays in the CSS file, where hover, media queries and dark mode can reach it. Inline styles cannot do <code>:hover</code> or <code>@media</code>.</p>
+<p><code>aria-hidden=&quot;true&quot;</code> hides the meter from screen readers, because the button already says the number of likes.</p>
+<h2 id="the-other-ways-people-style-react">The other ways people style React</h2>
+<div class="table-wrap"><table><thead><tr><th>approach</th><th>what it looks like</th><th>good at</th></tr></thead><tbody><tr><td>plain global CSS</td><td><code>className=&quot;card&quot;</code></td><td>small apps, page-wide basics</td></tr>
+<tr><td>CSS Modules</td><td><code>className={styles.card}</code></td><td>scoping with no new tools (this app)</td></tr>
+<tr><td>utility classes (Tailwind)</td><td><code>className=&quot;p-4 rounded-xl bg-white&quot;</code></td><td>styling without leaving the JSX, fast prototyping</td></tr>
+<tr><td>CSS-in-JS</td><td>styles written as JS in the component</td><td>styles that depend heavily on props</td></tr></tbody></table></div>
+<p>None of these is React. React only passes <code>className</code> and <code>style</code> through to the DOM. Tailwind is very common in new projects: you install it, and instead of writing CSS rules you compose many small ready-made classes. It is worth trying once you are comfortable with plain CSS, because underneath, its classes are just the same CSS properties.</p>
+<h2 id="check-yourself">Check yourself</h2>
+<details>
+<summary><span>Why can two plain CSS files clash, even if each is imported by a different component?</span></summary>
+
+<p>All imported CSS ends up on the same page and class names are global. Importing a file in a component does not limit its rules to that component.</p>
+</details>
+
+<details>
+<summary><span>What is <code>styles.card</code> at runtime?</span></summary>
+
+<p>A string: the unique class name Vite generated for <code>.card</code> in that module, such as <code>_card_13giw_2</code>.</p>
+</details>
+
+<details>
+<summary><span>How did dark mode work without changing any component?</span></summary>
+
+<p>All colours go through CSS variables. A <code>prefers-color-scheme: dark</code> media query redefines the variables, and every rule that uses them picks up the new values.</p>
+</details>
+
+<details>
+<summary><span>When is an inline <code>style</code> the right tool?</span></summary>
+
+<p>When the value depends on data at runtime, like the meter&#39;s width. Fixed styles belong in CSS, where they can use <code>:hover</code>, media queries and variables.</p>
+</details>
+
+  </article>
+</main>
+<nav class="pager" aria-label="Lessons">
+  <a class="pager-prev" href="12-use-effect.html"><span>Previous</span>useEffect</a>
+  <a class="pager-next" href="14-building.html"><span>Next</span>Building for production</a>
+</nav>
+<footer class="foot-small">
+  <p>Snack Shelf, a beginner course in React and TypeScript. 15 lessons.</p>
+</footer>
+</body>
+</html>

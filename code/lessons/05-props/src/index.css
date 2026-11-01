@@ -1,4 +1,4 @@
-/* Page-wide basics. Imported once in main.jsx, applies everywhere. */
+/* Page-wide basics. Imported once in main.tsx, applies everywhere. */
 body {
   margin: 0;
   font-family: system-ui, sans-serif;

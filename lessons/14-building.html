@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Building for production · Snack Shelf</title>
+<meta name="description" content="What npm run build actually makes, why the files have strange names, how to check the build before shipping it, and how code can behave differently in development and production.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head>
+<body class="lesson-page">
+<header class="bar">
+  <a class="wordmark" href="../index.html">Snack Shelf</a>
+  <nav aria-label="Site"><a href="../index.html#lessons">Lessons</a><a href="https://github.com/HaoKiet10/snack-shelf-course">GitHub</a></nav>
+</header>
+<main class="lesson">
+  <div class="lesson-head" data-reveal>
+    <h1>Building for production</h1>
+    <p class="lead">What npm run build actually makes, why the files have strange names, how to check the build before shipping it, and how code can behave differently in development and production.</p>
+    <p class="meta">Lesson 14 of 15, about 15 minutes</p>
+  </div>
+  <aside class="demo" aria-label="Live demo">
+    <div class="demo-sticky">
+      <div class="demo-frame" data-ui>
+        <iframe src="../demos/14-building/index.html" title="Live demo for Building for production" loading="lazy"></iframe>
+      </div>
+      <p class="demo-links"><a href="../demos/14-building/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a><a href="https://github.com/HaoKiet10/snack-shelf-course/tree/main/code/lessons/14-building">Read this lesson's code</a></p>
+    </div>
+  </aside>
+  <article class="prose">
+<p>Until now the app has only run under <code>npm run dev</code>. Browsers cannot run that setup by themselves, and nobody visiting your site will have Vite. This lesson turns the app into plain files any web server can hand out.</p>
+<h2 id="two-different-jobs">Two different jobs</h2>
+<p><code>npm run dev</code> is built for <strong>you</strong>. Vite serves your source files nearly as they are, translates TypeScript and JSX one file at a time when the browser asks for it, and pushes changes to the page the moment you save. It is fast to start and easy to debug, but it is slow to load for a visitor: hundreds of small requests, unminified code, and development-only checks.</p>
+<p><code>npm run build</code> is built for <strong>visitors</strong>. It does the slow work once, ahead of time:</p>
+<pre class="code" data-lang="bash"><code><span class="token function">npm</span> run build</code></pre>
+<pre class="diagram"><code>dist/index.html                   0.47 kB │ gzip:  0.30 kB
+dist/assets/index-CzRbQHv-.css    2.38 kB │ gzip:  0.92 kB
+dist/assets/index-CoFGYht5.js   222.76 kB │ gzip: 69.94 kB</code></pre>
+<p>The script in <code>package.json</code> is <code>tsc -b &amp;&amp; vite build</code>. First TypeScript checks every file, and <strong>the build stops if there is a type error</strong>. Then Vite builds.</p>
+<h2 id="what-is-in-dist">What is in dist</h2>
+<pre class="diagram"><code>dist/
+  index.html            the page, now pointing at the files below
+  assets/
+    index-CoFGYht5.js   ALL your code + React, in one file
+    index-CzRbQHv-.css  ALL your CSS, in one file
+  favicon.svg           copied from public/
+  snacks.json           copied from public/</code></pre>
+<p>What happened on the way:</p>
+<ul>
+<li><strong>Bundled.</strong> Every <code>import</code> was followed and your files plus React became one JavaScript file. One request instead of dozens.</li>
+<li><strong>Compiled.</strong> TypeScript types and JSX are gone; it is plain JavaScript a browser understands.</li>
+<li><strong>Minified.</strong> Spaces, comments and long names were removed. <code>loadSnacks</code> became something like <code>_</code>. Open the JS file to see.</li>
+<li><strong>Tree-shaken.</strong> Code that nothing uses was left out.</li>
+<li><strong>Hashed.</strong> <code>CoFGYht5</code> is a fingerprint of the file&#39;s contents.</li>
+</ul>
+<p>The hash is there for <strong>caching</strong>. A browser can keep <code>index-CoFGYht5.js</code> forever, because if you change the code, the file gets a different name, and the new <code>index.html</code> points at the new name. Visitors never get stuck with an old version, and never download an unchanged one twice.</p>
+<p><code>public/</code> is the exception. Its files are copied <strong>as they are</strong>, with their names unchanged, which is what you want for <code>snacks.json</code> and <code>favicon.svg</code>: things referred to by a fixed URL.</p>
+<h2 id="check-it-before-you-ship-it">Check it before you ship it</h2>
+<pre class="code" data-lang="bash"><code><span class="token function">npm</span> run preview</code></pre>
+<p>This serves the <strong>built</strong> <code>dist/</code> folder locally, as a real server would. Always test it once: some bugs only show up in a build, like a file path that only worked because the dev server was forgiving.</p>
+<p>Opening <code>dist/index.html</code> by double-clicking does <strong>not</strong> work. The page loads its code as an ES module, and browsers refuse to load modules from <code>file://</code> addresses. It needs a server, even a local one.</p>
+<h2 id="development-and-production-can-differ">Development and production can differ</h2>
+<p>Vite gives your code a few values that are fixed at build time:</p>
+<div class="table-wrap"><table><thead><tr><th>value</th><th>under <code>npm run dev</code></th><th>in <code>npm run build</code></th></tr></thead><tbody><tr><td><code>import.meta.env.DEV</code></td><td><code>true</code></td><td><code>false</code></td></tr>
+<tr><td><code>import.meta.env.PROD</code></td><td><code>false</code></td><td><code>true</code></td></tr>
+<tr><td><code>import.meta.env.MODE</code></td><td><code>&#39;development&#39;</code></td><td><code>&#39;production&#39;</code></td></tr>
+<tr><td><code>import.meta.env.BASE_URL</code></td><td>the <code>base</code> setting</td><td>the <code>base</code> setting</td></tr></tbody></table></div>
+<p>The fake slow network from lesson 12 should only slow <em>you</em> down, not visitors:</p>
+<pre class="code" data-lang="ts"><code><span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">import</span><span class="token punctuation">.</span>meta<span class="token punctuation">.</span>env<span class="token punctuation">.</span><span class="token constant">DEV</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">await</span> <span class="token keyword">new</span> <span class="token class-name"><span class="token builtin">Promise</span></span><span class="token punctuation">(</span><span class="token punctuation">(</span>resolve<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">setTimeout</span><span class="token punctuation">(</span>resolve<span class="token punctuation">,</span> <span class="token number">600</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<p>And a small marker shows which version you are looking at:</p>
+<pre class="code" data-lang="tsx"><code><span class="token punctuation">{</span><span class="token keyword">import</span><span class="token punctuation">.</span>meta<span class="token punctuation">.</span>env<span class="token punctuation">.</span><span class="token constant">DEV</span> <span class="token operator">&amp;&amp;</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>dev-note<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">Development build</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span><span class="token punctuation">}</span></code></pre>
+<p>In the build, Vite replaces <code>import.meta.env.DEV</code> with the literal <code>false</code>. <code>if (false) { ... }</code> can never run, so the minifier <strong>deletes the whole block</strong>. Search the built JS for &quot;Development build&quot; and it is not there. The demo on this page is a build, so you will not see the marker or the delay; run <code>npm run dev</code> and you will.</p>
+<p>React does the same thing internally. Its helpful development warnings, like the missing-<code>key</code> warning from lesson 9, and StrictMode&#39;s double renders, all live behind checks like this. That is part of why the production build is smaller and faster.</p>
+<p>These values are <strong>public</strong>. Anything your code reads ends up in the JS file that every visitor downloads. Never put a secret key in front-end code; if it needs to stay secret, it needs a server.</p>
+<h2 id="base-where-the-app-will-live">base: where the app will live</h2>
+<p>By default, Vite writes absolute paths into <code>index.html</code>: <code>/assets/index-CoFGYht5.js</code>. That only works if the app is at the <strong>root</strong> of a domain. GitHub Pages serves a project at a sub-path like <code>https://you.github.io/snack-shelf/</code>, where <code>/assets/...</code> points at the wrong place and the page is blank.</p>
+<pre class="code" data-lang="ts"><code><span class="token comment">// vite.config.ts</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">defineConfig</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  plugins<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token function">react</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  base<span class="token operator">:</span> <span class="token string">'./'</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span></code></pre>
+<p><code>base: &#39;./&#39;</code> makes every path relative, <code>./assets/index-CoFGYht5.js</code>, so the build works in any folder. It is why <code>loadSnacks</code> uses <code>fetch(&#39;snacks.json&#39;)</code> without a leading slash, too. If you know the exact path, <code>base: &#39;/snack-shelf/&#39;</code> also works; relative is simply the setting you cannot get wrong for a one-page app like this one.</p>
+<h2 id="check-yourself">Check yourself</h2>
+<details>
+<summary><span>Why do the built files have names like <code>index-CoFGYht5.js</code>?</span></summary>
+
+<p>The hash is based on the contents. Browsers can cache the file forever, because changed code gets a new file name, and the new <code>index.html</code> points at it.</p>
+</details>
+
+<details>
+<summary><span>What happens to <code>if (import.meta.env.DEV) { … }</code> in a production build?</span></summary>
+
+<p>Vite replaces the condition with <code>false</code>, so the block can never run, and the minifier removes it from the output completely.</p>
+</details>
+
+<details>
+<summary><span>Why does the built app show a blank page at <code>/snack-shelf/</code> without <code>base</code>?</span></summary>
+
+<p>The default paths start with <code>/</code>, so the browser asks for <code>/assets/…</code> at the domain root instead of <code>/snack-shelf/assets/…</code>, and gets nothing.</p>
+</details>
+
+<details>
+<summary><span>Is it safe to put an API key in <code>import.meta.env</code>?</span></summary>
+
+<p>No. Whatever the front-end code reads is written into the JS file that every visitor downloads. Secrets belong on a server.</p>
+</details>
+
+  </article>
+</main>
+<nav class="pager" aria-label="Lessons">
+  <a class="pager-prev" href="13-styling.html"><span>Previous</span>Styling it</a>
+  <a class="pager-next" href="15-put-it-online.html"><span>Next</span>Put it online</a>
+</nav>
+<footer class="foot-small">
+  <p>Snack Shelf, a beginner course in React and TypeScript. 15 lessons.</p>
+</footer>
+</body>
+</html>

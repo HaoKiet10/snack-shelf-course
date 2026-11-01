@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lifting state up · Snack Shelf</title>
+<meta name="description" content="Move the likes out of the cards and into App, so they survive the search. Then add a basket that two components share, and learn why state updates make new objects instead of changing old ones.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head>
+<body class="lesson-page">
+<header class="bar">
+  <a class="wordmark" href="../index.html">Snack Shelf</a>
+  <nav aria-label="Site"><a href="../index.html#lessons">Lessons</a><a href="https://github.com/HaoKiet10/snack-shelf-course">GitHub</a></nav>
+</header>
+<main class="lesson">
+  <div class="lesson-head" data-reveal>
+    <h1>Lifting state up</h1>
+    <p class="lead">Move the likes out of the cards and into App, so they survive the search. Then add a basket that two components share, and learn why state updates make new objects instead of changing old ones.</p>
+    <p class="meta">Lesson 11 of 15, about 20 minutes</p>
+  </div>
+  <aside class="demo" aria-label="Live demo">
+    <div class="demo-sticky">
+      <div class="demo-frame" data-ui>
+        <iframe src="../demos/11-lifting-state-up/index.html" title="Live demo for Lifting state up" loading="lazy"></iframe>
+      </div>
+      <p class="demo-links"><a href="../demos/11-lifting-state-up/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a><a href="https://github.com/HaoKiet10/snack-shelf-course/tree/main/code/lessons/11-lifting-state-up">Read this lesson's code</a></p>
+    </div>
+  </aside>
+  <article class="prose">
+<p>Two bugs and one missing feature, all with the same cause. Liked snacks forget their likes when a search hides them. The 🧺 in the header has said 0 since lesson 4. And there is no way to add anything to the basket.</p>
+<h2 id="where-state-lives-decides-what-it-can-do">Where state lives decides what it can do</h2>
+<p>State lives inside the component that calls <code>useState</code>, and it lasts exactly as long as that component stays in the tree (lesson 7). That gives two rules of thumb:</p>
+<ol>
+<li><strong>State lives as long as its component.</strong> If the component can disappear, so can the state.</li>
+<li><strong>Only a component and its children can see its state.</strong> Data flows down through props (lesson 5), never up or sideways.</li>
+</ol>
+<p>The likes broke rule 1: they lived in <code>SnackCard</code>, and the filter removes cards. The basket would break rule 2: the cards need to change it, the <code>Header</code> needs to show it, and they are <strong>siblings</strong>. Neither can see the other&#39;s state.</p>
+<p>The fix for both is the same. <strong>Move the state up to the closest common parent</strong>, and pass it down.</p>
+<pre class="diagram"><code>        App            ← likes and basket live here now
+       /    \
+  Header    SnackCard × 6
+  (shows    (shows likes,
+   count)    reports clicks)</code></pre>
+<h2 id="step-1-app-owns-the-data">Step 1: App owns the data</h2>
+<pre class="code" data-lang="tsx"><code><span class="token comment">// App.tsx</span>
+<span class="token keyword">const</span> <span class="token punctuation">[</span>likes<span class="token punctuation">,</span> setLikes<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token generic-function"><span class="token function">useState</span><span class="token generic class-name"><span class="token operator">&lt;</span>Record<span class="token operator">&lt;</span><span class="token builtin">string</span><span class="token punctuation">,</span> <span class="token builtin">number</span><span class="token operator">>></span></span></span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token keyword">const</span> <span class="token punctuation">[</span>basket<span class="token punctuation">,</span> setBasket<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token generic-function"><span class="token function">useState</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span></code></pre>
+<p><code>Record&lt;string, number&gt;</code> is TypeScript for &quot;an object whose keys are strings and values are numbers&quot;, like <code>{ pocky: 3, onigiri: 1 }</code>. A snack that has never been liked is simply missing, so reading it gives <code>undefined</code>, and <code>?? 0</code> turns that into 0:</p>
+<pre class="code" data-lang="tsx"><code>likes<span class="token operator">=</span><span class="token punctuation">{</span>likes<span class="token punctuation">[</span>snack<span class="token punctuation">.</span>id<span class="token punctuation">]</span> <span class="token operator">??</span> <span class="token number">0</span><span class="token punctuation">}</span></code></pre>
+<p>The basket is a list of ids, one per item added. <code>[&#39;pocky&#39;, &#39;pocky&#39;, &#39;ramune&#39;]</code> is two Pocky and a Ramune.</p>
+<h2 id="step-2-the-card-shows-and-reports">Step 2: the card shows, and reports</h2>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">type</span> <span class="token class-name">SnackCardProps</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+  name<span class="token operator">:</span> <span class="token builtin">string</span>
+  price<span class="token operator">:</span> <span class="token builtin">number</span>
+  emoji<span class="token operator">:</span> <span class="token builtin">string</span>
+  likes<span class="token operator">:</span> <span class="token builtin">number</span>
+  <span class="token function-variable function">onLike</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token keyword">void</span>
+  <span class="token function-variable function">onAdd</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token keyword">void</span>
+<span class="token punctuation">}</span></code></pre>
+<p>The card has <strong>no <code>useState</code> any more</strong>. It displays the <code>likes</code> it is given, and when a button is clicked, it calls a function it was given. <code>() =&gt; void</code> is the type of &quot;a function that takes nothing and returns nothing&quot;.</p>
+<pre class="code" data-lang="tsx"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>liked <span class="token operator">?</span> <span class="token string">'like liked'</span> <span class="token operator">:</span> <span class="token string">'like'</span><span class="token punctuation">}</span></span> <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>onLike<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+  ❤ </span><span class="token punctuation">{</span>likes<span class="token punctuation">}</span><span class="token plain-text">
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span></code></pre>
+<p>This is how data goes <strong>up</strong>: not by reaching into the parent, but by the parent handing down a function to call. The card does not know what a like does to the app. It only says &quot;I was liked&quot;. App decides what that means.</p>
+<pre class="code" data-lang="tsx"><code><span class="token comment">// App.tsx, inside the map</span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">SnackCard</span></span>
+  <span class="token attr-name">key</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>snack<span class="token punctuation">.</span>id<span class="token punctuation">}</span></span>
+  <span class="token attr-name">...</span>
+  <span class="token attr-name">likes</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>likes<span class="token punctuation">[</span>snack<span class="token punctuation">.</span>id<span class="token punctuation">]</span> <span class="token operator">??</span> <span class="token number">0</span><span class="token punctuation">}</span></span>
+  <span class="token attr-name">onLike</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">like</span><span class="token punctuation">(</span>snack<span class="token punctuation">.</span>id<span class="token punctuation">)</span><span class="token punctuation">}</span></span>
+  <span class="token attr-name">onAdd</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">addToBasket</span><span class="token punctuation">(</span>snack<span class="token punctuation">.</span>id<span class="token punctuation">)</span><span class="token punctuation">}</span></span>
+<span class="token punctuation">/></span></span></code></pre>
+<p>The arrow functions remember which snack each card is, so the card does not need to know its own id.</p>
+<h2 id="step-3-update-by-making-something-new">Step 3: update by making something new</h2>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">function</span> <span class="token function">like</span><span class="token punctuation">(</span>id<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token function">setLikes</span><span class="token punctuation">(</span><span class="token punctuation">(</span>prev<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">(</span><span class="token punctuation">{</span> <span class="token operator">...</span>prev<span class="token punctuation">,</span> <span class="token punctuation">[</span>id<span class="token punctuation">]</span><span class="token operator">:</span> <span class="token punctuation">(</span>prev<span class="token punctuation">[</span>id<span class="token punctuation">]</span> <span class="token operator">??</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">1</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">function</span> <span class="token function">addToBasket</span><span class="token punctuation">(</span>id<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token function">setBasket</span><span class="token punctuation">(</span><span class="token punctuation">(</span>prev<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">[</span><span class="token operator">...</span>prev<span class="token punctuation">,</span> id<span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<p>Read <code>{ ...prev, [id]: ... }</code> as &quot;a <strong>new</strong> object with everything from <code>prev</code>, plus this one key set to a new value&quot;. <code>[...prev, id]</code> is &quot;a <strong>new</strong> array with everything from <code>prev</code>, plus <code>id</code> on the end&quot;. <code>...</code> is the spread syntax; <code>[id]</code> as a key means &quot;the key whose name is in the variable <code>id</code>&quot;.</p>
+<p>Why not simply this?</p>
+<pre class="code" data-lang="tsx"><code>likes<span class="token punctuation">[</span>id<span class="token punctuation">]</span> <span class="token operator">=</span> likes<span class="token punctuation">[</span>id<span class="token punctuation">]</span> <span class="token operator">+</span> <span class="token number">1</span>   <span class="token comment">// changes the existing object</span>
+<span class="token function">setLikes</span><span class="token punctuation">(</span>likes<span class="token punctuation">)</span>             <span class="token comment">// the SAME object as before</span></code></pre>
+<p>Because when you call <code>setLikes</code>, React checks whether the new value <strong>is the same object</strong> as the old one (<code>Object.is</code>). It is, so React concludes nothing changed and <strong>skips the re-render</strong>. The data changed, and the screen did not. That is the exact out-of-sync bug React exists to prevent (lesson 2), sneaking back in.</p>
+<p>The rule: <strong>treat state as read-only. To change it, make a new one.</strong></p>
+<div class="table-wrap"><table><thead><tr><th>to do this</th><th>instead of</th><th>write</th></tr></thead><tbody><tr><td>change a key</td><td><code>obj.k = v</code></td><td><code>{ ...obj, k: v }</code></td></tr>
+<tr><td>add to an array</td><td><code>arr.push(x)</code></td><td><code>[...arr, x]</code></td></tr>
+<tr><td>remove from an array</td><td><code>arr.splice(i, 1)</code></td><td><code>arr.filter((x) =&gt; x !== gone)</code></td></tr>
+<tr><td>change one item</td><td><code>arr[i] = x</code></td><td><code>arr.map((y) =&gt; (y.id === id ? x : y))</code></td></tr></tbody></table></div>
+<p>The spread only copies one level. The new object holds the same inner values, which is fine as long as you never change those in place either.</p>
+<h2 id="step-4-the-header-gets-props">Step 4: the header gets props</h2>
+<pre class="code" data-lang="tsx"><code><span class="token comment">// App.tsx</span>
+<span class="token keyword">const</span> total <span class="token operator">=</span> basket<span class="token punctuation">.</span><span class="token function">reduce</span><span class="token punctuation">(</span><span class="token punctuation">(</span>sum<span class="token punctuation">,</span> id<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> snack <span class="token operator">=</span> <span class="token constant">SNACKS</span><span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span> <span class="token operator">=></span> s<span class="token punctuation">.</span>id <span class="token operator">===</span> id<span class="token punctuation">)</span>
+  <span class="token keyword">return</span> sum <span class="token operator">+</span> <span class="token punctuation">(</span>snack <span class="token operator">?</span> snack<span class="token punctuation">.</span>price <span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Header</span></span> <span class="token attr-name">count</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>basket<span class="token punctuation">.</span>length<span class="token punctuation">}</span></span> <span class="token attr-name">total</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>total<span class="token punctuation">}</span></span> <span class="token punctuation">/></span></span></code></pre>
+<p>The count and the total are <strong>derived</strong> from the basket, not stored. <code>reduce</code> walks the array carrying a running value (<code>sum</code>, starting at <code>0</code>), which is the &quot;combine into one value&quot; tool from lesson 9.</p>
+<pre class="code" data-lang="tsx"><code><span class="token comment">// Header.tsx</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">Header</span><span class="token punctuation">(</span><span class="token punctuation">{</span> count<span class="token punctuation">,</span> total <span class="token punctuation">}</span><span class="token operator">:</span> HeaderProps<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>header</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>header<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span><span class="token plain-text">Yune's Snack Shelf</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>basket<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+        🧺 </span><span class="token punctuation">{</span>count<span class="token punctuation">}</span><span class="token plain-text">
+        </span><span class="token punctuation">{</span>count <span class="token operator">></span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>total<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text"> · $</span><span class="token punctuation">{</span>total<span class="token punctuation">.</span><span class="token function">toFixed</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span><span class="token punctuation">}</span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>header</span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<p>Note <code>count &gt; 0 &amp;&amp;</code>, a boolean, not <code>count &amp;&amp;</code> (lesson 10&#39;s stray 0).</p>
+<h2 id="did-it-work">Did it work?</h2>
+<p>Like Pocky three times, search &quot;oni&quot;, clear the search. Pocky still has 3 likes and its badge. The card was still removed and rebuilt, but it never stored anything, so there was nothing to lose. The likes are in App, which stays.</p>
+<p>Add Pocky and Onigiri to the basket. The header says <strong>🧺 2 · $4.30</strong>. Clicking inside one component changed what another one shows, because both read from the same place.</p>
+<h2 id="single-source-of-truth">Single source of truth</h2>
+<p>Every piece of state should have <strong>one owner</strong>. The likes are in App and nowhere else; the cards only display a copy passed as props. If a card also kept its own <code>useState</code> for likes, you would have two numbers to keep in sync, and sooner or later they would disagree.</p>
+<p>Lifting has a cost: App now re-renders, and so do all its children, on every like. For six cards that costs nothing worth measuring. Lift state <strong>as high as it needs to go, and no higher</strong>. The search <code>query</code> is used only by App&#39;s own JSX, so it stays in App; it would not belong any higher even if there were somewhere higher to go.</p>
+<h2 id="check-yourself">Check yourself</h2>
+<details>
+<summary><span>Header and SnackCard both need the basket. Where should it live, and why?</span></summary>
+
+<p>In App, their closest common parent. Siblings cannot see each other&#39;s state, and props only flow down, so the state has to live above both.</p>
+</details>
+
+<details>
+<summary><span>How does a click inside SnackCard change state that lives in App?</span></summary>
+
+<p>App passes a function down as a prop (<code>onLike</code>). The card calls it. The function was written in App, so it can call App&#39;s <code>setLikes</code>.</p>
+</details>
+
+<details>
+<summary><span>Why does <code>likes[id]++</code> followed by <code>setLikes(likes)</code> not update the screen?</span></summary>
+
+<p>It changes the existing object and passes the same object back. React compares old and new with <code>Object.is</code>, sees the same object, and skips the re-render. Make a new object: <code>{ ...likes, [id]: likes[id] + 1 }</code>.</p>
+</details>
+
+<details>
+<summary><span>Why are the likes no longer lost when a search hides a card?</span></summary>
+
+<p>The card is still removed, but it no longer holds the likes. They are in App, which is never removed, and are passed back in as a prop when the card returns.</p>
+</details>
+
+  </article>
+</main>
+<nav class="pager" aria-label="Lessons">
+  <a class="pager-prev" href="10-show-or-hide.html"><span>Previous</span>Show or hide</a>
+  <a class="pager-next" href="12-use-effect.html"><span>Next</span>useEffect</a>
+</nav>
+<footer class="foot-small">
+  <p>Snack Shelf, a beginner course in React and TypeScript. 15 lessons.</p>
+</footer>
+</body>
+</html>

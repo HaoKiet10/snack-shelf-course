@@ -17,7 +17,12 @@ Each lesson has a written explanation, the app's real code at that point, a live
 | 7 | Re-rendering | When React calls your function again, and what it changes |
 | 8 | Clicks and typing | Events, and inputs that React controls |
 | 9 | Lists and keys | Turning data into cards with map, and why keys matter |
-| 10–15 | Coming soon | Show or hide, lifting state up, useEffect, styling, building, putting it online |
+| 10 | Show or hide | Conditional rendering: empty states and badges |
+| 11 | Lifting state up | Sharing state between siblings: the basket count |
+| 12 | useEffect | Loading snacks from the network, and when not to use effects |
+| 13 | Styling it | CSS Modules, CSS variables and inline styles |
+| 14 | Building for production | What npm run build makes, and why |
+| 15 | Put it online | Deploying the shelf to a real address |
 
 ## Reading the course
 

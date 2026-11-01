@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Show or hide · Snack Shelf</title>
+<meta name="description" content="Render something only sometimes. An empty-search message, a hint that appears while you type, a badge for popular snacks, and the stray 0 that catches everyone once.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head>
+<body class="lesson-page">
+<header class="bar">
+  <a class="wordmark" href="../index.html">Snack Shelf</a>
+  <nav aria-label="Site"><a href="../index.html#lessons">Lessons</a><a href="https://github.com/HaoKiet10/snack-shelf-course">GitHub</a></nav>
+</header>
+<main class="lesson">
+  <div class="lesson-head" data-reveal>
+    <h1>Show or hide</h1>
+    <p class="lead">Render something only sometimes. An empty-search message, a hint that appears while you type, a badge for popular snacks, and the stray 0 that catches everyone once.</p>
+    <p class="meta">Lesson 10 of 15, about 15 minutes</p>
+  </div>
+  <aside class="demo" aria-label="Live demo">
+    <div class="demo-sticky">
+      <div class="demo-frame" data-ui>
+        <iframe src="../demos/10-show-or-hide/index.html" title="Live demo for Show or hide" loading="lazy"></iframe>
+      </div>
+      <p class="demo-links"><a href="../demos/10-show-or-hide/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a><a href="https://github.com/HaoKiet10/snack-shelf-course/tree/main/code/lessons/10-show-or-hide">Read this lesson's code</a></p>
+    </div>
+  </aside>
+  <article class="prose">
+<p>Search for &quot;zzz&quot; and the shelf no longer goes blank: it says nothing matched. Like a snack three times and it gets a <strong>Fan favourite</strong> badge.</p>
+<h2 id="there-is-no-v-if">There is no v-if</h2>
+<p>Some frameworks have special template syntax for &quot;show this only if&quot;. React has none. A component is a function, so you decide what to render with <strong>plain JavaScript</strong>. There are three tools, and which one fits depends on where you are standing.</p>
+<div class="table-wrap"><table><thead><tr><th>where</th><th>tool</th><th>use it for</th></tr></thead><tbody><tr><td>before <code>return</code></td><td><code>if</code></td><td>whole different outcomes, early exits</td></tr>
+<tr><td>inside JSX</td><td><code>cond ? a : b</code></td><td>one of two things</td></tr>
+<tr><td>inside JSX</td><td><code>cond &amp;&amp; a</code></td><td>something or nothing</td></tr></tbody></table></div>
+<p>Inside JSX&#39;s braces you can only put an <strong>expression</strong> (lesson 9&#39;s side note), which is why <code>if</code> cannot go there but <code>? :</code> and <code>&amp;&amp;</code> can.</p>
+<h2 id="if-before-the-return">if, before the return</h2>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">function</span> <span class="token function">Price</span><span class="token punctuation">(</span><span class="token punctuation">{</span> price <span class="token punctuation">}</span><span class="token operator">:</span> <span class="token punctuation">{</span> price<span class="token operator">:</span> <span class="token builtin">number</span> <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>price <span class="token operator">===</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>price<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">Free!</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">return</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>price<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">$</span><span class="token punctuation">{</span>price<span class="token punctuation">.</span><span class="token function">toFixed</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+<span class="token punctuation">}</span></code></pre>
+<p>The function returns different JSX depending on its props. Nothing new to learn, it is an ordinary <code>if</code>. Good for when the outcomes are very different, or for an <strong>early exit</strong> at the top of a component.</p>
+<p>A component can also <strong>return <code>null</code></strong> to render nothing at all:</p>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">function</span> <span class="token function">Hint</span><span class="token punctuation">(</span><span class="token punctuation">{</span> query <span class="token punctuation">}</span><span class="token operator">:</span> <span class="token punctuation">{</span> query<span class="token operator">:</span> <span class="token builtin">string</span> <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>query <span class="token operator">===</span> <span class="token string">''</span><span class="token punctuation">)</span> <span class="token keyword">return</span> <span class="token keyword">null</span>
+  <span class="token keyword">return</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span><span class="token plain-text">Searching for “</span><span class="token punctuation">{</span>query<span class="token punctuation">}</span><span class="token plain-text">”</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+<span class="token punctuation">}</span></code></pre>
+<h2 id="picks-one-of-two">? : picks one of two</h2>
+<p>The shelf shows cards, or a message when there are none:</p>
+<pre class="code" data-lang="tsx"><code><span class="token punctuation">{</span>visible<span class="token punctuation">.</span>length <span class="token operator">></span> <span class="token number">0</span> <span class="token operator">?</span> <span class="token punctuation">(</span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>main</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>shelf<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token punctuation">{</span>visible<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span>snack<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">SnackCard</span></span> <span class="token attr-name">key</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>snack<span class="token punctuation">.</span>id<span class="token punctuation">}</span></span> <span class="token attr-name">...</span> <span class="token punctuation">/></span></span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>main</span><span class="token punctuation">></span></span>
+<span class="token punctuation">)</span> <span class="token operator">:</span> <span class="token punctuation">(</span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>empty<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+    No snacks match “</span><span class="token punctuation">{</span>query<span class="token punctuation">.</span><span class="token function">trim</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token plain-text">”. Try “pocky” or “mochi”.
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+<span class="token punctuation">)</span><span class="token punctuation">}</span></code></pre>
+<p><code>condition ? whenTrue : whenFalse</code> is JavaScript&#39;s conditional expression, an <code>if/else</code> that produces a value. The parentheses are only there so the JSX can span several lines.</p>
+<p>It works for small things too, like lesson 6&#39;s class name:</p>
+<pre class="code" data-lang="tsx"><code>className<span class="token operator">=</span><span class="token punctuation">{</span>liked <span class="token operator">?</span> <span class="token string">'like liked'</span> <span class="token operator">:</span> <span class="token string">'like'</span><span class="token punctuation">}</span></code></pre>
+<p>This &quot;nothing here&quot; message is called an <strong>empty state</strong>. Before, a search with no matches left a blank page, which looks broken. An empty state tells you the app is fine and what to try instead.</p>
+<h2 id="renders-something-or-nothing">&amp;&amp; renders something or nothing</h2>
+<p>The search hint only makes sense while you are searching:</p>
+<pre class="code" data-lang="tsx"><code><span class="token punctuation">{</span>query <span class="token operator">!==</span> <span class="token string">''</span> <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>search-hint<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+    Showing </span><span class="token punctuation">{</span>visible<span class="token punctuation">.</span>length<span class="token punctuation">}</span><span class="token plain-text"> of </span><span class="token punctuation">{</span><span class="token constant">SNACKS</span><span class="token punctuation">.</span>length<span class="token punctuation">}</span><span class="token plain-text"> snacks
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+<span class="token punctuation">)</span><span class="token punctuation">}</span></code></pre>
+<p>And the badge, in <code>SnackCard</code>:</p>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">const</span> popular <span class="token operator">=</span> likes <span class="token operator">>=</span> <span class="token number">3</span>
+
+<span class="token punctuation">{</span>popular <span class="token operator">&amp;&amp;</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>badge<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">Fan favourite</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span><span class="token punctuation">}</span></code></pre>
+<p>Why does this work? <code>a &amp;&amp; b</code> in JavaScript does not return <code>true</code> or <code>false</code>. It returns <strong><code>a</code> if <code>a</code> is falsy, otherwise <code>b</code></strong>:</p>
+<pre class="code" data-lang="js"><code><span class="token boolean">true</span> <span class="token operator">&amp;&amp;</span> <span class="token string">'badge'</span>    <span class="token comment">// 'badge'</span>
+<span class="token boolean">false</span> <span class="token operator">&amp;&amp;</span> <span class="token string">'badge'</span>   <span class="token comment">// false</span></code></pre>
+<p>And React renders <code>false</code>, <code>true</code>, <code>null</code> and <code>undefined</code> as <strong>nothing</strong>. So <code>false &amp;&amp; &lt;Badge /&gt;</code> gives <code>false</code>, which draws nothing, and <code>true &amp;&amp; &lt;Badge /&gt;</code> gives the badge.</p>
+<h2 id="the-stray-0">The stray 0</h2>
+<p>Here is the catch. Suppose you write the condition with a number:</p>
+<pre class="code" data-lang="tsx"><code><span class="token punctuation">{</span>likes <span class="token operator">&amp;&amp;</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>badge<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">Liked</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span><span class="token punctuation">}</span></code></pre>
+<p>When <code>likes</code> is <code>0</code>, <code>0 &amp;&amp; ...</code> returns <code>0</code>, because <code>0</code> is falsy. And React does <strong>not</strong> skip numbers. It renders them. The card shows a lonely <strong>0</strong> where the badge would be.</p>
+<p>Only <code>false</code>, <code>null</code>, <code>undefined</code> and <code>true</code> render as nothing. <code>0</code> and <code>NaN</code> render as text, and so does an empty string (invisibly). So make the left side of <code>&amp;&amp;</code> a real <strong>boolean</strong>:</p>
+<pre class="code" data-lang="tsx"><code><span class="token punctuation">{</span>likes <span class="token operator">></span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>badge<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">Liked</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span><span class="token punctuation">}</span>   <span class="token comment">// boolean: fine</span>
+<span class="token punctuation">{</span>popular <span class="token operator">&amp;&amp;</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>badge<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">Fan favourite</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span><span class="token punctuation">}</span>   <span class="token comment">// boolean: fine</span>
+<span class="token punctuation">{</span>items<span class="token punctuation">.</span>length <span class="token operator">&amp;&amp;</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">List</span></span> <span class="token punctuation">/></span></span><span class="token punctuation">}</span>       <span class="token comment">// 0 when empty: bug</span>
+<span class="token punctuation">{</span>items<span class="token punctuation">.</span>length <span class="token operator">></span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">List</span></span> <span class="token punctuation">/></span></span><span class="token punctuation">}</span>   <span class="token comment">// fine</span></code></pre>
+<p>TypeScript will not catch this one, because rendering a number is perfectly legal. Naming the condition (<code>const popular = likes &gt;= 3</code>) is a good habit: it makes the boolean obvious and the JSX easier to read.</p>
+<h2 id="not-rendered-is-not-the-same-as-hidden">Not rendered is not the same as hidden</h2>
+<p>Like Pocky three times, search &quot;oni&quot;, then clear. Pocky&#39;s badge is gone, and so are its likes.</p>
+<p>When a condition turns false, React does not hide the element. It <strong>removes it from the tree</strong>, the same as the filter does, and any state inside is thrown away (lessons 7 and 9). When it comes back, it is a new component starting from scratch.</p>
+<p>The other option is to keep it in the tree and hide it. Every card would be rendered, and each one&#39;s outer <code>&lt;div&gt;</code> would get the HTML <code>hidden</code> attribute when it does not match:</p>
+<pre class="code" data-lang="tsx"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>card<span class="token punctuation">"</span></span> <span class="token attr-name">hidden</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token operator">!</span>matches<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">   // stays mounted, keeps its likes</span></code></pre>
+<div class="table-wrap"><table><thead><tr><th></th><th>conditional rendering</th><th>hidden with CSS</th></tr></thead><tbody><tr><td>in the DOM</td><td>no</td><td>yes, just not shown</td></tr>
+<tr><td>state inside</td><td>lost</td><td>kept</td></tr>
+<tr><td>cost</td><td>nothing for hidden items</td><td>every item is still rendered</td></tr>
+<tr><td>usual choice</td><td>yes</td><td>tabs you switch back and forth, for example</td></tr></tbody></table></div>
+<p>Hiding would fix the lost likes here, but it treats the symptom. The likes are still stored in a card that should not have to stay alive to remember them. Lesson 11 moves them up into App, where they survive whatever the cards do.</p>
+<h2 id="check-yourself">Check yourself</h2>
+<details>
+<summary><span>Why can you write <code>? :</code> inside JSX but not <code>if</code>?</span></summary>
+
+<p>JSX braces take an expression, something that produces a value. <code>? :</code> produces a value; <code>if</code> is a statement and produces nothing. Use <code>if</code> before the <code>return</code> instead.</p>
+</details>
+
+<details>
+<summary><span>A list shows a stray <code>0</code> when it is empty. What is the likely line, and the fix?</span></summary>
+
+<p>Something like <code>{items.length &amp;&amp; &lt;List /&gt;}</code>. When the length is 0, <code>&amp;&amp;</code> returns <code>0</code>, and React renders numbers. Fix it with a boolean: <code>{items.length &gt; 0 &amp;&amp; &lt;List /&gt;}</code>.</p>
+</details>
+
+<details>
+<summary><span>How does a component render nothing at all?</span></summary>
+
+<p>It returns <code>null</code>. In JSX, <code>false</code>, <code>null</code>, <code>undefined</code> and <code>true</code> also render nothing.</p>
+</details>
+
+<details>
+<summary><span>Why does Pocky lose its badge after a search that hides it?</span></summary>
+
+<p>Conditional rendering removes the card from the tree, and its state goes with it. When Pocky comes back, it is a new card with likes at 0, so <code>popular</code> is false.</p>
+</details>
+
+  </article>
+</main>
+<nav class="pager" aria-label="Lessons">
+  <a class="pager-prev" href="09-lists-and-keys.html"><span>Previous</span>Lists and keys</a>
+  <a class="pager-next" href="11-lifting-state-up.html"><span>Next</span>Lifting state up</a>
+</nav>
+<footer class="foot-small">
+  <p>Snack Shelf, a beginner course in React and TypeScript. 15 lessons.</p>
+</footer>
+</body>
+</html>

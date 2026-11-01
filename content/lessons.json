@@ -8,10 +8,10 @@
   { "slug": "07-re-rendering", "title": "Re-rendering", "idea": "When React calls your function again, and what it changes" },
   { "slug": "08-clicks-and-typing", "title": "Clicks and typing", "idea": "Events, and inputs that React controls" },
   { "slug": "09-lists-and-keys", "title": "Lists and keys", "idea": "Turning data into cards with map, and why keys matter" },
-  { "slug": "10-show-or-hide", "title": "Show or hide", "idea": "Conditional rendering: empty states and badges", "soon": true },
-  { "slug": "11-lifting-state-up", "title": "Lifting state up", "idea": "Sharing state between siblings: the basket count", "soon": true },
-  { "slug": "12-use-effect", "title": "useEffect", "idea": "Loading snacks from the network, and when not to use effects", "soon": true },
-  { "slug": "13-styling", "title": "Styling it", "idea": "className, CSS files, and utility classes", "soon": true },
-  { "slug": "14-building", "title": "Building for production", "idea": "What npm run build makes, and why", "soon": true },
-  { "slug": "15-put-it-online", "title": "Put it online", "idea": "Deploying the shelf to a real address", "soon": true }
+  { "slug": "10-show-or-hide", "title": "Show or hide", "idea": "Conditional rendering: empty states and badges" },
+  { "slug": "11-lifting-state-up", "title": "Lifting state up", "idea": "Sharing state between siblings: the basket count" },
+  { "slug": "12-use-effect", "title": "useEffect", "idea": "Loading snacks from the network, and when not to use effects" },
+  { "slug": "13-styling", "title": "Styling it", "idea": "CSS Modules, CSS variables and inline styles" },
+  { "slug": "14-building", "title": "Building for production", "idea": "What npm run build makes, and why" },
+  { "slug": "15-put-it-online", "title": "Put it online", "idea": "Deploying the shelf to a real address" }
 ]
