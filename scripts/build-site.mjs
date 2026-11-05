@@ -227,7 +227,7 @@ ${ex.solution ? `<details><summary><span>One way to do it</span></summary>\n${ma
     .join('\n')
   return `<section class="practice" aria-labelledby="practice">
 <h2 id="practice">Practice</h2>
-<p class="practice-intro">Pick an answer to see if it's right. Wrong picks are crossed out, so you can try again.</p>
+<p class="practice-intro">Pick an answer to see if it's right. Wrong picks are crossed out, so you can try again. With a keyboard, move with the arrow keys and press Space to answer.</p>
 <div class="quiz">
 ${qs}
 <p class="quiz-score" aria-live="polite"></p>

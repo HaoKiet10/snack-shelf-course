@@ -87,12 +87,34 @@ window.addEventListener('DOMContentLoaded', () => {
       questions[0]?.scrollIntoView({ block: 'center' })
     }
 
+    // Arrow keys move through a radio group by checking each option they
+    // reach, which fires "change". So with the keyboard, arrows only move
+    // and Space or Enter answers; clicks and taps answer straight away.
+    let arrowing = false
+    quiz.addEventListener('keydown', (e) => {
+      arrowing = e.key.startsWith('Arrow')
+      const input = e.target
+      if ((e.key === ' ' || e.key === 'Enter') && input instanceof HTMLInputElement) {
+        e.preventDefault()
+        input.checked = true
+        input.closest('.quiz-q')?.dispatchEvent(new CustomEvent('answer', { detail: input }))
+      }
+    })
+    quiz.addEventListener('pointerdown', () => (arrowing = false))
+
     questions.forEach((q) => {
       const answer = Number(q.dataset.answer)
       const feedback = q.querySelector('.quiz-feedback')
       q.addEventListener('change', (e) => {
-        const input = e.target
-        if (!(input instanceof HTMLInputElement) || q.classList.contains('done')) return
+        if (arrowing) {
+          feedback.textContent = 'Press Space to answer.'
+          return
+        }
+        q.dispatchEvent(new CustomEvent('answer', { detail: e.target }))
+      })
+      q.addEventListener('answer', (e) => {
+        const input = e.detail
+        if (!(input instanceof HTMLInputElement) || input.disabled || q.classList.contains('done')) return
         const label = input.closest('.quiz-choice')
         if (Number(input.value) === answer) {
           if (!firstTry.has(q)) firstTry.set(q, true)
