@@ -1,0 +1,34 @@
+.snack-page {
+  max-width: 480px;
+  margin: 24px;
+}
+
+.back {
+  color: inherit;
+  opacity: 0.8;
+}
+
+.snack-hero {
+  margin-top: 16px;
+  font-size: 5rem;
+}
+
+.snack-page h2 {
+  margin: 8px 0 4px;
+  font-size: 2rem;
+}
+
+.snack-price {
+  margin: 0;
+  opacity: 0.7;
+}
+
+.snack-about {
+  line-height: 1.5;
+}
+
+.snack-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}

@@ -45,6 +45,8 @@ The practice lives in `content/practice/<lesson>.md`, in a short format describe
 | 31 | State libraries (Zustand) | A basket store with selectors instead of a context |
 | 32 | Server Components and Next.js | React on the server, and actions that run there |
 | 33 | Accessibility | Keyboard, screen readers, focus, and what automated checks miss |
+| | **Extras** | |
+| 34 | Tailwind CSS | Utility classes on the elements, moved over one component at a time |
 
 ## Reading the course
 
@@ -65,7 +67,7 @@ npm run lesson -- code/lessons/06-state
 
 Lessons 1 and 2 are plain HTML; open their `index.html` directly. Lesson 32 is a Next.js project: run `npm install` and `npm run dev` inside its folder.
 
-The latest lesson's tests (lesson 33) run with:
+The latest lesson's tests (lesson 34) run with:
 
 ```bash
 npm test

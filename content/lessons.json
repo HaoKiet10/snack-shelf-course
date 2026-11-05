@@ -31,5 +31,6 @@
   { "slug": "30-typescript-patterns", "title": "TypeScript for components", "idea": "Generic components, derived types, and checking server data" },
   { "slug": "31-zustand", "title": "State libraries (Zustand)", "idea": "A basket store with selectors instead of a context" },
   { "slug": "32-server-components", "title": "Server Components and Next.js", "idea": "React on the server, and actions that run there" },
-  { "slug": "33-accessibility", "title": "Accessibility", "idea": "Keyboard, screen readers, focus, and what automated checks miss" }
+  { "slug": "33-accessibility", "title": "Accessibility", "idea": "Keyboard, screen readers, focus, and what automated checks miss" },
+  { "slug": "34-tailwind", "title": "Tailwind CSS", "idea": "Utility classes on the elements, moved over one component at a time" }
 ]

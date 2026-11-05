@@ -5,7 +5,7 @@ minutes: 25
 demo: 33-accessibility
 ---
 
-The last lesson changes little you can see, and a lot you can hear. Press <kbd>Tab</kbd> on a fresh page and a **Skip to content** link appears. Open a snack and the browser tab says its name. Turn on a screen reader (Narrator on Windows: <kbd>Ctrl</kbd>+<kbd>Win</kbd>+<kbd>Enter</kbd>; VoiceOver on a Mac: <kbd>Cmd</kbd>+<kbd>F5</kbd>) and the heart button says "Like Pocky, 3 likes" instead of "red heart, 3".
+This lesson changes little you can see, and a lot you can hear. Press <kbd>Tab</kbd> on a fresh page and a **Skip to content** link appears. Open a snack and the browser tab says its name. Turn on a screen reader (Narrator on Windows: <kbd>Ctrl</kbd>+<kbd>Win</kbd>+<kbd>Enter</kbd>; VoiceOver on a Mac: <kbd>Cmd</kbd>+<kbd>F5</kbd>) and the heart button says "Like Pocky, 3 likes" instead of "red heart, 3".
 
 ## Who this is for
 

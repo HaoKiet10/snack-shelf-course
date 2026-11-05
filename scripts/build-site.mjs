@@ -321,7 +321,7 @@ ${pager}
 
 async function buildHome() {
   let tpl = await readFile(path.join(ROOT, 'content/home.html'), 'utf8')
-  const groups = [3, 9, 15, 24] // extra space after these lesson numbers
+  const groups = [3, 9, 15, 24, 33] // extra space after these lesson numbers
   const rows = manifest
     .map((l, i) => {
       const cls = groups.includes(i) ? ' class="group-start"' : ''

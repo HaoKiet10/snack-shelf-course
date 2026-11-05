@@ -9,7 +9,7 @@
     "check": "tsc -b",
     "lint": "oxlint code --ignore-pattern \"code/lessons/32-server-components/**\"",
     "build": "tsc -b && node scripts/build-site.mjs",
-    "test": "vitest run --root code/lessons/33-accessibility"
+    "test": "vitest run --root code/lessons/34-tailwind"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.105.1",
@@ -21,6 +21,7 @@
   "devDependencies": {
     "@babel/core": "^8.0.10",
     "@rolldown/plugin-babel": "^0.2.4",
+    "@tailwindcss/vite": "^4.3.3",
     "@testing-library/dom": "^10.4.2",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
@@ -35,6 +36,7 @@
     "marked": "^16.0.0",
     "oxlint": "^1.89.0",
     "prismjs": "^1.30.0",
+    "tailwindcss": "^4.3.3",
     "typescript": "~7.0.2",
     "vite": "^8.3.5",
     "vitest": "^5.0.5"

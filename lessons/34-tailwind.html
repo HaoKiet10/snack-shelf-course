@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tailwind CSS · Snack Shelf</title>
+<meta name="description" content="Style components with small utility classes written right on the elements. Add Tailwind to Vite without breaking the existing CSS, turn the app's colours into Tailwind colours, use hover, disabled, aria and screen-size variants, and learn the one rule that trips everyone up: class names must be written out in full.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css?v=0df98d7a">
+<script src="../assets/site.js?v=0df98d7a" defer></script>
+</head>
+<body class="lesson-page">
+<header class="bar">
+  <a class="wordmark" href="../index.html">Snack Shelf</a>
+  <nav aria-label="Site"><a href="../index.html#lessons">Lessons</a><a href="https://github.com/HaoKiet10/snack-shelf-course">GitHub</a></nav>
+</header>
+<main class="lesson">
+  <div class="lesson-head" data-reveal>
+    <h1>Tailwind CSS</h1>
+    <p class="lead">Style components with small utility classes written right on the elements. Add Tailwind to Vite without breaking the existing CSS, turn the app's colours into Tailwind colours, use hover, disabled, aria and screen-size variants, and learn the one rule that trips everyone up: class names must be written out in full.</p>
+    <p class="meta">Lesson 34 of 34, about 22 minutes</p>
+  </div>
+  <aside class="demo" aria-label="Live demo">
+    <div class="demo-sticky">
+      <div class="demo-frame" data-ui>
+        <iframe src="../demos/34-tailwind/index.html" title="Live demo for Tailwind CSS" loading="lazy"></iframe>
+      </div>
+      <p class="demo-links"><a href="../demos/34-tailwind/index.html" target="_blank" rel="noopener">Open the demo in its own tab</a><a href="https://github.com/HaoKiet10/snack-shelf-course/tree/main/code/lessons/34-tailwind">Read this lesson's code</a></p>
+    </div>
+  </aside>
+  <article class="prose">
+<p>The shelf looks exactly the same as before, and that is the point. Under the hood, the snack card, the buttons, the sort control and the shelf grid are now styled with <strong>Tailwind</strong>, and four CSS files are gone. Inspect a card in DevTools and you&#39;ll see classes like <code>rounded-xl bg-surface p-4</code> instead of <code>_card_13giw_2</code>.</p>
+<h2 id="what-tailwind-is">What Tailwind is</h2>
+<p>Lesson 13 wrote CSS the usual way: name a thing (<code>.card</code>), then describe it in a separate file. Tailwind turns that around. It gives you thousands of tiny classes that each do <strong>one</strong> thing, and you put them straight on the element:</p>
+<pre class="code" data-lang="tsx"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>relative w-40 rounded-xl bg-surface p-4 text-center shadow-card<span class="token punctuation">"</span></span><span class="token punctuation">></span></span></code></pre>
+<div class="table-wrap"><table><thead><tr><th>Class</th><th>CSS</th></tr></thead><tbody><tr><td><code>relative</code></td><td><code>position: relative</code></td></tr>
+<tr><td><code>w-40</code></td><td><code>width: 10rem</code> (160px)</td></tr>
+<tr><td><code>rounded-xl</code></td><td><code>border-radius: 0.75rem</code> (12px)</td></tr>
+<tr><td><code>p-4</code></td><td><code>padding: 1rem</code></td></tr>
+<tr><td><code>text-center</code></td><td><code>text-align: center</code></td></tr></tbody></table></div>
+<p>The numbers come from one scale: <strong>one step is 0.25rem, which is 4px</strong>. So <code>p-4</code> is 16px, <code>gap-1.5</code> is 6px, <code>w-40</code> is 160px. Once you know the scale, you can read most classes without looking them up.</p>
+<p>Why people like it:</p>
+<ul>
+<li><strong>No naming.</strong> No more deciding between <code>.card-inner</code>, <code>.card-body</code> and <code>.card-content</code>.</li>
+<li><strong>No jumping between files.</strong> The look of a component is in the component.</li>
+<li><strong>Delete with confidence.</strong> Delete a component and its styles go with it. Unused plain CSS tends to stay forever, because nobody is sure it&#39;s unused.</li>
+<li><strong>A built-in system.</strong> Spacing, font sizes and colours come from a scale, so things line up.</li>
+</ul>
+<p>Why some people don&#39;t: long class strings are harder to read at first, and the HTML gets busy. Both are real. Lesson 13&#39;s tools are still good tools; this is another one, and very common in React jobs.</p>
+<p>The CSS Tailwind ships is small: it <strong>reads your source files</strong>, finds the class names you used, and writes CSS for only those. Nothing else ends up in the build.</p>
+<h2 id="adding-it-to-vite">Adding it to Vite</h2>
+<pre class="code" data-lang="bash"><code><span class="token function">npm</span> <span class="token function">install</span> <span class="token parameter variable">-D</span> tailwindcss @tailwindcss/vite</code></pre>
+<p>Add the plugin next to the others in <code>vite.config.ts</code>:</p>
+<pre class="code" data-lang="ts"><code><span class="token keyword">import</span> tailwindcss <span class="token keyword">from</span> <span class="token string">'@tailwindcss/vite'</span>
+
+plugins<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token function">react</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">babel</span><span class="token punctuation">(</span><span class="token punctuation">{</span> presets<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token function">reactCompilerPreset</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">tailwindcss</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span></code></pre>
+<p>In a new project, one line at the top of your CSS is the whole setup:</p>
+<pre class="code" data-lang="css"><code><span class="token atrule"><span class="token rule">@import</span> <span class="token string">'tailwindcss'</span><span class="token punctuation">;</span></span></code></pre>
+<p>That line brings in three things: the <strong>theme</strong> (colours, sizes), <strong>preflight</strong> (a reset that removes the browser&#39;s default styles: margins on headings, borders on buttons, bullets on lists) and the <strong>utilities</strong> (the classes).</p>
+<p>Our app is not new. It has a dozen CSS files that rely on the browser defaults, and preflight would change all of them at once. So <code>index.css</code> brings in only two of the three:</p>
+<pre class="code" data-lang="css"><code><span class="token atrule"><span class="token rule">@layer</span> theme<span class="token punctuation">,</span> base<span class="token punctuation">,</span> components<span class="token punctuation">,</span> utilities<span class="token punctuation">;</span></span>
+<span class="token atrule"><span class="token rule">@import</span> <span class="token string">'tailwindcss/theme.css'</span> <span class="token function">layer</span><span class="token punctuation">(</span>theme<span class="token punctuation">)</span><span class="token punctuation">;</span></span>
+<span class="token atrule"><span class="token rule">@import</span> <span class="token string">'tailwindcss/utilities.css'</span> <span class="token function">layer</span><span class="token punctuation">(</span>utilities<span class="token punctuation">)</span><span class="token punctuation">;</span></span></code></pre>
+<p>Now every component can move over when you get to it, and the rest keep working. That&#39;s how teams usually adopt Tailwind in a real app.</p>
+<p>One side effect: without preflight, elements keep the browser&#39;s <code>box-sizing: content-box</code>, where padding is <em>added</em> to the width. The old card set <code>box-sizing: border-box</code>, so the new one has the <code>box-border</code> class for the same result.</p>
+<h2 id="layers-who-wins">Layers: who wins</h2>
+<p><code>@layer</code> is plain CSS, not Tailwind. It sorts rules into named groups, and <strong>a later layer beats an earlier one, whatever the selectors</strong>. That&#39;s why the order line lists <code>utilities</code> last.</p>
+<p>One more rule: CSS that is <strong>not</strong> in any layer beats everything that is. All our old CSS files are unlayered, so if <code>Header.css</code> styled a <code>button</code>, it would beat <code>bg-peach</code> on that button. It doesn&#39;t happen here because the old files only style their own class names. But if a Tailwind class seems ignored in a mixed app, look for an unlayered rule hitting the same element.</p>
+<h2 id="your-colours-as-tailwind-colours">Your colours as Tailwind colours</h2>
+<p>Tailwind has its own palette (<code>bg-red-500</code>, <code>text-slate-700</code>, …). We already have ours in CSS variables, with dark mode. <code>@theme</code> adds them to Tailwind:</p>
+<pre class="code" data-lang="css"><code><span class="token atrule"><span class="token rule">@theme</span> inline</span> <span class="token punctuation">{</span>
+  <span class="token property">--color-page</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--bg<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token property">--color-surface</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--surface<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token property">--color-ink</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--ink<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token property">--color-peach</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--peach<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token property">--color-lilac</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--lilac<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token property">--color-line</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--line<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token property">--color-accent</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--accent<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token property">--shadow-card</span><span class="token punctuation">:</span> 0 2px 8px <span class="token function">rgba</span><span class="token punctuation">(</span>0<span class="token punctuation">,</span> 0<span class="token punctuation">,</span> 0<span class="token punctuation">,</span> 0.15<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>The <strong>name</strong> of each variable becomes classes. <code>--color-peach</code> makes <code>bg-peach</code>, <code>text-peach</code>, <code>border-peach</code> and every other colour class. <code>--shadow-card</code> makes <code>shadow-card</code>.</p>
+<p><code>inline</code> makes <code>bg-peach</code> use <code>var(--peach)</code> directly, instead of going through <code>--color-peach</code>. In this app the dark-mode colours are set on <code>:root</code>, the same place as the theme, so plain <code>@theme</code> would work too. <code>inline</code> matters when a variable changes <strong>lower down</strong> the page, for example a dark panel inside a light page: without it, the class would still use the value worked out on <code>:root</code>. It&#39;s the safe choice whenever a token points at another variable. Either way, dark mode keeps working with no extra classes.</p>
+<p>(Tailwind also has a <code>dark:</code> variant, as in <code>bg-white dark:bg-black</code>. It&#39;s handy when you don&#39;t have variables. With variables, you don&#39;t need it.)</p>
+<h2 id="the-card">The card</h2>
+<p>Here is the whole card&#39;s markup now. Every style from <code>SnackCard.module.css</code> is in the classes:</p>
+<pre class="code" data-lang="tsx"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>relative box-border w-40 rounded-xl bg-surface p-4 text-center shadow-card<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+  </span><span class="token punctuation">{</span>popular <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>absolute -top-2 -right-2 rounded-full bg-accent px-2 py-0.5 text-xs font-bold text-white<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+      Fan favourite
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>text-[2.5rem]<span class="token punctuation">"</span></span> <span class="token attr-name">aria-hidden</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token punctuation">{</span>emoji<span class="token punctuation">}</span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h2</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>mt-2 mb-1 text-lg<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Link</span></span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>text-inherit<span class="token punctuation">"</span></span> <span class="token attr-name">to</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">/snack/</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>id<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token punctuation">{</span>name<span class="token punctuation">}</span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Link</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h2</span><span class="token punctuation">></span></span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>mt-0 mb-2 opacity-70<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">$</span><span class="token punctuation">{</span>price<span class="token punctuation">.</span><span class="token function">toFixed</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>mx-2 mb-3 h-1 overflow-hidden rounded-full bg-lilac<span class="token punctuation">"</span></span> <span class="token attr-name">aria-hidden</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>h-full bg-accent transition-[width] duration-200<span class="token punctuation">"</span></span> <span class="token attr-name">style</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">{</span> width<span class="token operator">:</span> meterWidth <span class="token punctuation">}</span><span class="token punctuation">}</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+  …
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span></code></pre>
+<p>A few things to notice:</p>
+<ul>
+<li><strong>Negative values</strong> start with a minus: <code>-top-2</code> is <code>top: -0.5rem</code>, which pushes the badge over the corner.</li>
+<li><strong>Square brackets</strong> are for a value the scale doesn&#39;t have: <code>text-[2.5rem]</code> is exactly <code>font-size: 2.5rem</code>. They&#39;re an escape hatch. If you use the same one in many places, add it to <code>@theme</code> instead.</li>
+<li><code>text-lg</code> is 1.125rem; the old CSS said 1.1rem. Close enough, and now it&#39;s on the scale.</li>
+<li>The meter&#39;s width is <strong>still an inline style</strong>. Lesson 13&#39;s rule holds: a value only known at runtime goes in <code>style</code>. Tailwind can&#39;t make a class for a number it never sees in your code.</li>
+</ul>
+<h2 id="variants-hover-disabled-aria-screen-size">Variants: hover, disabled, aria, screen size</h2>
+<p>Put a <strong>variant</strong> and a colon in front of a class, and the class only applies in that situation. The new <code>Button</code>:</p>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">const</span> base <span class="token operator">=</span>
+  <span class="token string">'cursor-pointer rounded-full border-0 px-3.5 py-2 font-[inherit] enabled:hover:brightness-95 disabled:cursor-default disabled:opacity-50'</span></code></pre>
+<ul>
+<li><code>hover:brightness-95</code>: slightly darker while the mouse is over it.</li>
+<li><code>disabled:opacity-50</code>: half see-through when it has the <code>disabled</code> attribute.</li>
+<li><code>enabled:hover:…</code>: variants stack. Hovered, <strong>and</strong> not disabled, so a disabled button doesn&#39;t react.</li>
+</ul>
+<p>The sort control uses an attribute variant:</p>
+<pre class="code" data-lang="tsx"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span>
+  <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>… border border-line bg-transparent aria-pressed:border-peach aria-pressed:bg-peach aria-pressed:font-semibold<span class="token punctuation">"</span></span>
+  <span class="token attr-name">aria-pressed</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>o<span class="token punctuation">.</span>value <span class="token operator">===</span> value<span class="token punctuation">}</span></span>
+<span class="token punctuation">></span></span></code></pre>
+<p><code>aria-pressed:bg-peach</code> applies when the button has <code>aria-pressed=&quot;true&quot;</code>. The look comes from the same attribute screen readers announce (lesson 33), so the two can never disagree. No <code>isActive ? &#39;active&#39; : &#39;&#39;</code> needed.</p>
+<p><strong>Screen sizes</strong> are variants too, and they&#39;re <strong>mobile-first</strong>: a plain class applies everywhere, and <code>sm:</code> means &quot;from 640px wide and up&quot;. The shelf:</p>
+<pre class="code" data-lang="tsx"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>flex flex-wrap gap-4 p-4 sm:p-6<span class="token punctuation">"</span></span><span class="token punctuation">></span></span></code></pre>
+<p>16px of padding on a phone, 24px on anything wider. The others are <code>md:</code> (768px), <code>lg:</code> (1024px), <code>xl:</code> and <code>2xl:</code>. Narrow your browser window to see the shelf&#39;s edge shrink.</p>
+<h2 id="the-rule-that-trips-everyone-up">The rule that trips everyone up</h2>
+<p>Tailwind finds classes by <strong>reading your files as text</strong>. It doesn&#39;t run your code. So this does not work:</p>
+<pre class="code" data-lang="tsx"><code><span class="token comment">// ✗ Tailwind never sees "bg-lilac" or "bg-accent" written anywhere</span>
+<span class="token keyword">const</span> classes <span class="token operator">=</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">bg-</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>variant <span class="token operator">===</span> <span class="token string">'soft'</span> <span class="token operator">?</span> <span class="token string">'lilac'</span> <span class="token operator">:</span> <span class="token string">'accent'</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span></code></pre>
+<p>The browser gets the class <code>bg-lilac</code>, but no CSS was made for it. Write every class out <strong>in full</strong>, for example in an object:</p>
+<pre class="code" data-lang="tsx"><code><span class="token keyword">const</span> variants <span class="token operator">=</span> <span class="token punctuation">{</span>
+  soft<span class="token operator">:</span> <span class="token string">'bg-lilac text-ink'</span><span class="token punctuation">,</span>
+  primary<span class="token operator">:</span> <span class="token string">'bg-accent font-semibold text-white'</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">const</span> classes <span class="token operator">=</span> <span class="token punctuation">[</span>base<span class="token punctuation">,</span> variants<span class="token punctuation">[</span>variant<span class="token punctuation">]</span><span class="token punctuation">,</span> className<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span>Boolean<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token string">' '</span><span class="token punctuation">)</span></code></pre>
+<p>The same goes for the card&#39;s like button: <code>liked ? &#39;font-bold text-accent&#39; : &#39;&#39;</code>, both class names written out.</p>
+<h2 id="combining-and-overriding-classes">Combining and overriding classes</h2>
+<p>Combining classes is still plain JavaScript, exactly as in lesson 13. Many projects use a tiny library called <strong>clsx</strong> to make it shorter, <code>clsx(base, liked &amp;&amp; &#39;text-accent&#39;)</code>, but you don&#39;t need it.</p>
+<p>One trap: <code>Button</code> accepts a <code>className</code>, so you could write <code>&lt;Button className=&quot;px-6&quot;&gt;</code>. It already has <code>px-3.5</code>. Which wins? <strong>Not</strong> the one that comes later in the string. Classes in <code>className</code> have no order. The one later in the <em>CSS file</em> wins, and Tailwind decides that order. For small apps, avoid passing classes that clash. Bigger apps use a library called <strong>tailwind-merge</strong>, which removes the clashing class (<code>px-3.5</code>) for you.</p>
+<h2 id="apply-and-why-not">@apply, and why not</h2>
+<p>Tailwind lets you put utility classes back into a CSS class:</p>
+<pre class="code" data-lang="css"><code><span class="token selector">.btn</span> <span class="token punctuation">{</span> <span class="token atrule"><span class="token rule">@apply</span> rounded-full px-3.5 py-2<span class="token punctuation">;</span></span> <span class="token punctuation">}</span></code></pre>
+<p>It&#39;s tempting when class strings get long, but it brings back everything Tailwind removed: naming things, and styles in another file. In React, the long string already has a name: the <strong>component</strong>. <code>Button</code> <em>is</em> the reusable button style. Reach for <code>@apply</code> rarely, for example to style HTML you don&#39;t control, like Markdown output.</p>
+<h2 id="tools-that-help">Tools that help</h2>
+<ul>
+<li><strong>Tailwind CSS IntelliSense</strong> (VS Code extension): autocompletes class names, shows the CSS on hover, and warns about clashes like <code>p-2 p-4</code>.</li>
+<li><strong>prettier-plugin-tailwindcss</strong>: sorts the classes in every string into a standard order when you format, so <code>className</code>s look the same across the project.</li>
+</ul>
+<h2 id="what-39-s-still-plain-css">What&#39;s still plain CSS</h2>
+<p><code>Header.css</code>, <code>SearchBar.css</code>, <code>BasketPanel.css</code>, the pages and the toasts kept their CSS files, and <code>index.css</code> still holds the page basics, the focus ring, the skip link and the reduced-motion rule. That&#39;s fine. Mixing is the normal state of an app partway through a move. The exercise below moves one more.</p>
+<h2 id="going-further">Going further</h2>
+<p>This lesson is the short version. <strong><a href="https://haokiet10.github.io/snack-box-course/">Snack Box</a></strong> is a full course in Tailwind CSS that follows on from this one: 19 lessons that build a new, more visual app, a snack subscription site with a shop, a sign-up form and an account dashboard. It starts from an empty project with the full Tailwind setup, preflight included, and goes on to responsive layouts, dark mode with a switch, components with variants, container queries, your own utilities and accessibility.</p>
+<h2 id="check-yourself">Check yourself</h2>
+<details>
+<summary><span>What is <code>px-2.5</code> in pixels?</span></summary>
+
+<p>10px of padding on the left and right. One step is 0.25rem (4px), so 2.5 steps is 0.625rem.</p>
+</details>
+
+<details>
+<summary><span>Why does the app import Tailwind's theme and utilities, but not <code>@import 'tailwindcss'</code>?</span></summary>
+
+<p>The full import includes preflight, a reset that removes browser default styles. The app&#39;s existing CSS files rely on those defaults, so preflight would change every page at once. Without it, components can move to Tailwind one at a time.</p>
+</details>
+
+<details>
+<summary><span>Why doesn't <code>`bg-${colour}`</code> work?</span></summary>
+
+<p>Tailwind makes CSS only for class names it finds written in your files. It reads them as text and never runs your code, so a class built at runtime gets no CSS. Write each class name out in full.</p>
+</details>
+
+<details>
+<summary><span>Why does the like meter still use an inline style?</span></summary>
+
+<p>Its width depends on the number of likes, which is only known at runtime. There&#39;s no class for a value that isn&#39;t written in the code.</p>
+</details>
+<section class="practice" aria-labelledby="practice">
+<h2 id="practice">Practice</h2>
+<p class="practice-intro">Pick an answer to see if it's right. Wrong picks are crossed out, so you can try again. With a keyboard, move with the arrow keys and press Space to answer.</p>
+<div class="quiz">
+<fieldset class="quiz-q" data-answer="2">
+<legend class="visually-hidden">Question 1</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">1</span><div><p>With Tailwind&#39;s spacing scale, how much padding is <code>p-6</code>?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="34-tailwind-q1" value="0"><span class="quiz-letter">A</span><span class="quiz-text">6px</span></label>
+<label class="quiz-choice"><input type="radio" name="34-tailwind-q1" value="1"><span class="quiz-letter">B</span><span class="quiz-text">0.6rem</span></label>
+<label class="quiz-choice"><input type="radio" name="34-tailwind-q1" value="2"><span class="quiz-letter">C</span><span class="quiz-text">1.5rem, which is 24px</span></label>
+<label class="quiz-choice"><input type="radio" name="34-tailwind-q1" value="3"><span class="quiz-letter">D</span><span class="quiz-text">6rem</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: C.</strong></p>
+<p>One step is 0.25rem (4px), so 6 steps is 1.5rem.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="0">
+<legend class="visually-hidden">Question 2</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">2</span><div><p>Why does the shelf&#39;s <code>index.css</code> import Tailwind&#39;s theme and utilities, but not preflight?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="34-tailwind-q2" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Preflight resets browser default styles, and the app&#39;s other CSS files rely on those defaults</span></label>
+<label class="quiz-choice"><input type="radio" name="34-tailwind-q2" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Preflight only works with Next.js</span></label>
+<label class="quiz-choice"><input type="radio" name="34-tailwind-q2" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Preflight makes the build too big</span></label>
+<label class="quiz-choice"><input type="radio" name="34-tailwind-q2" value="3"><span class="quiz-letter">D</span><span class="quiz-text">The utilities don&#39;t work without the theme</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: A.</strong></p>
+<p>Leaving preflight out lets components move to Tailwind one at a time while the rest look the same.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="3">
+<legend class="visually-hidden">Question 3</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">3</span><div><p>A <code>Badge</code> component sets <code>className={`bg-${colour}`}</code> with <code>colour</code> set to <code>&#39;peach&#39;</code>. What happens?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="34-tailwind-q3" value="0"><span class="quiz-letter">A</span><span class="quiz-text">It works, because Tailwind runs the code at build time</span></label>
+<label class="quiz-choice"><input type="radio" name="34-tailwind-q3" value="1"><span class="quiz-letter">B</span><span class="quiz-text">TypeScript reports an error</span></label>
+<label class="quiz-choice"><input type="radio" name="34-tailwind-q3" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Tailwind throws an error during the build</span></label>
+<label class="quiz-choice"><input type="radio" name="34-tailwind-q3" value="3"><span class="quiz-letter">D</span><span class="quiz-text">The element gets the class <code>bg-peach</code>, but no CSS was made for it, so there is no background</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: D.</strong></p>
+<p>Tailwind reads your files as text. Write out every full class name, for example in an object: <code>{ peach: &#39;bg-peach&#39;, lilac: &#39;bg-lilac&#39; }</code>.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="1">
+<legend class="visually-hidden">Question 4</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">4</span><div><p>What does <code>sm:p-6</code> mean?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="34-tailwind-q4" value="0"><span class="quiz-letter">A</span><span class="quiz-text">Padding of 6 on small screens only</span></label>
+<label class="quiz-choice"><input type="radio" name="34-tailwind-q4" value="1"><span class="quiz-letter">B</span><span class="quiz-text">Padding of 1.5rem from 640px wide and up</span></label>
+<label class="quiz-choice"><input type="radio" name="34-tailwind-q4" value="2"><span class="quiz-letter">C</span><span class="quiz-text">A small padding of 6px</span></label>
+<label class="quiz-choice"><input type="radio" name="34-tailwind-q4" value="3"><span class="quiz-letter">D</span><span class="quiz-text">Padding of 6 when the element is selected</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: B.</strong></p>
+<p>Tailwind is mobile-first: plain classes apply everywhere, and <code>sm:</code> and the other breakpoints switch on from that width and up.</p>
+
+</details>
+</fieldset>
+<fieldset class="quiz-q" data-answer="2">
+<legend class="visually-hidden">Question 5</legend>
+<div class="quiz-body"><span class="quiz-n" aria-hidden="true">5</span><div><p>What does <code>inline</code> change in <code>@theme inline { --color-peach: var(--peach) }</code>?</p>
+</div></div>
+<div class="quiz-choices">
+<label class="quiz-choice"><input type="radio" name="34-tailwind-q5" value="0"><span class="quiz-letter">A</span><span class="quiz-text">It puts the CSS in a <code>&lt;style&gt;</code> tag</span></label>
+<label class="quiz-choice"><input type="radio" name="34-tailwind-q5" value="1"><span class="quiz-letter">B</span><span class="quiz-text">It lets <code>@theme</code> accept variables</span></label>
+<label class="quiz-choice"><input type="radio" name="34-tailwind-q5" value="2"><span class="quiz-letter">C</span><span class="quiz-text">Classes like <code>bg-peach</code> use <code>var(--peach)</code> directly, so they follow <code>--peach</code> wherever it changes, even below <code>:root</code></span></label>
+<label class="quiz-choice"><input type="radio" name="34-tailwind-q5" value="3"><span class="quiz-letter">D</span><span class="quiz-text">It makes the CSS file smaller</span></label>
+</div>
+<p class="quiz-feedback" aria-live="polite"></p>
+<details class="quiz-why"><summary><span>Show the answer</span></summary>
+<p><strong>Answer: C.</strong></p>
+<p>Without <code>inline</code>, the class uses <code>--color-peach</code> as worked out on <code>:root</code>. That&#39;s fine while <code>--peach</code> only changes there, as in this app.</p>
+
+</details>
+</fieldset>
+<p class="quiz-score" aria-live="polite"></p>
+</div>
+<h2 id="exercise">Try it yourself</h2>
+<div class="exercise">
+<h3>Move the header</h3>
+<p>Move <code>Header</code> to Tailwind and delete <code>Header.css</code>. Keep the look: peach bar, the title on the left, the basket on the right, and a surface-coloured pill behind the basket while you&#39;re on the basket page.</p>
+
+<details><summary><span>Hint</span></summary>
+<p><code>&lt;NavLink&gt;</code> adds <code>aria-current=&quot;page&quot;</code> on the current page, as well as the <code>active</code> class. Tailwind has no built-in <code>aria-current:</code> variant, but square brackets work for any attribute: <code>aria-[current=page]:bg-surface</code>.</p>
+</details>
+<details><summary><span>One way to do it</span></summary>
+<pre class="code" data-lang="tsx"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>header</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>flex items-center justify-between bg-peach px-6 py-4<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>m-0 text-[1.4rem]<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Link</span></span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>text-inherit no-underline<span class="token punctuation">"</span></span> <span class="token attr-name">to</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+      Yune's Snack Shelf
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Link</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">NavLink</span></span>
+    <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>rounded-full px-2.5 py-1 text-[1.2rem] text-inherit no-underline aria-[current=page]:bg-surface<span class="token punctuation">"</span></span>
+    <span class="token attr-name">to</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/basket<span class="token punctuation">"</span></span>
+  <span class="token punctuation">></span></span><span class="token plain-text">
+    🧺 </span><span class="token punctuation">{</span>count<span class="token punctuation">}</span><span class="token plain-text">
+    </span><span class="token punctuation">{</span>count <span class="token operator">></span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>text-base opacity-80<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text"> · $</span><span class="token punctuation">{</span>total<span class="token punctuation">.</span><span class="token function">toFixed</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span><span class="token punctuation">}</span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">NavLink</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>header</span><span class="token punctuation">></span></span></code></pre>
+<p>Styling from <code>aria-current</code> instead of <code>.active</code> means the look follows the same attribute screen readers announce, like the sort buttons.</p>
+</details>
+</div>
+</section>
+  </article>
+</main>
+<nav class="pager" aria-label="Lessons">
+  <a class="pager-prev" href="33-accessibility.html"><span>Previous</span>Accessibility</a>
+  
+</nav>
+<footer class="foot-small">
+  <p>Snack Shelf, a course in React and TypeScript. 34 lessons.</p>
+</footer>
+</body>
+</html>
